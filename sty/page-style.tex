@@ -1,0 +1,29 @@
+\fancypagestyle{titlestyle}{
+	\fancyhf{}
+	% \fancyfoot[C]{\footnotesize\bigskip\thepage/\pageref{LastPage}}
+	\fancyfoot{}
+	\renewcommand{\footrulewidth}{0pt}
+	\renewcommand{\headrulewidth}{0pt}
+}
+
+\fancypagestyle{mainstyle}{
+	\fancyhf{}
+	\fancyfoot[C]{\footnotesize\bigskip\thepage}
+	\fancyhead[LO,RE]{\footnotesize \thetitle} %left
+	\fancyhead[RO,LE]{\footnotesize \theauthor} %right
+	\renewcommand{\footrulewidth}{0.5pt}
+	\renewcommand{\headrulewidth}{0.5pt}
+}
+
+\pagestyle{mainstyle}
+
+
+\newcommand{\articletitle}{
+	\thispagestyle{titlestyle}
+	\hrule
+	\section*{\centering \thetitle} % (fold)
+	\noindent
+	\parbox[b][][c]{0.5\textwidth}{\raggedright{\theauthor}}\hfill\parbox[b][][c]{0.5\textwidth}{\raggedleft{\email}}\\
+	\hrule
+	\bigskip
+}

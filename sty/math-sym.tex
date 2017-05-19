@@ -1,0 +1,158 @@
+% fast font types
+\newcommand{\m}[1]{\mathrm{#1}}
+\newcommand{\s}[1]{\mathcal{#1}}
+
+
+% logical equivalent define
+\newcommand{\logeq}{\mathrel{\vcentcolon\Longleftrightarrow}}
+
+
+% define
+\newcommand{\define}{\coloneqq}
+% define sign from the right
+\newcommand{\definedby}{\eqqcolon}
+% function
+\newcommand{\func}[3]{#1\colon#2\to#3}
+
+
+% brackets
+% curly brackets
+\newcommand{\curlb}[1]{\left\{ #1 \right\}}
+% box brackets
+\newcommand{\boxb}[1]{\left[ #1 \right]}
+% parentheses/curved brackets
+\newcommand{\curvb}[1]{\left( #1 \right)}
+% angle brackets
+\newcommand{\angleb}[1]{\left\langle #1 \right\rangle}
+% floor brackets
+\newcommand{\floorb}[1]{\left\lfloor #1 \right\rfloor}
+% ceil brackets
+\newcommand{\ceilb}[1]{\left\lceil #1 \right\rceil}
+
+
+% symbols for sets
+% create sets
+% \newcommand{\set}[2][]{ \curlb{#2 \ifx&#1&\else \enspace\middle\vert\enspace #1 \fi} }
+\newcommand{\set}[2][]{ \curlb{#2 \ifthenelse{\isempty{#1}}{}{\enspace\middle\vert\enspace #1}} }
+% standard sets
+\newcommand{\SR}{\mathds{R}} % real numbers
+\newcommand{\SC}{\mathds{C}} % complex numbers
+\newcommand{\SN}{\mathds{N}} % natural numbers
+\newcommand{\SZ}{\mathds{Z}} % integral numbers
+\newcommand{\SQ}{\mathds{Q}} % rational numbers
+\newcommand{\SFP}{\mathds{P}} % polynom functions
+\newcommand{\SFC}{\mathrm{C}} % complex valued functions (continous or differentiable)
+\newcommand{\SFL}{\mathcal{L}} % space of integrable functions
+\newcommand{\SFLL}{\mathrm{L}} % space of integrable function classes
+% set of linear maps
+\newcommand{\LM}{L}
+% hilbert space
+\newcommand{\SH}{\mathcal{H}}
+% set of matrices
+\newcommand{\SM}{\mathrm{M}}
+% set of invertible
+\newcommand{\SGL}{\mathrm{Gl}}
+% group of orthogonal matrices
+\newcommand{\SO}{\mathrm{O}}
+% special group of orthogonal matrices
+\newcommand{\SSO}{\mathrm{SO}}
+% group of unitary matrices
+\newcommand{\SU}{\mathrm{U}}
+% hauptraum/generalized eigenspace
+\newcommand{\hau}{\mathrm{Hau}}
+
+
+% elements
+% identity
+\DeclareMathOperator{\id}{id}
+% identity matrix
+\newcommand{\idmat}{\mathrm{I}}
+% normal distribution
+\newcommand{\FN}{\mathcal{N}}
+
+
+% operators
+% inverse
+\newcommand{\inv}[1]{ {#1}^{-1} }
+% magnitude/absolute value
+\newcommand{\abs}[1]{\left\vert #1 \right\vert}
+% norm
+\newcommand{\norm}[1]{\left\| #1 \right\|}
+% power of set
+\DeclareMathOperator{\setpow}{\mathcal{P}}
+% real part
+\DeclareMathOperator{\real}{Re}
+% imaginary part
+\DeclareMathOperator{\imag}{Im}
+% complex conjugate
+\newcommand{\conj}[1]{ \overline{#1} }
+% diagonal matrix
+\DeclareMathOperator{\diag}{diag}
+% trace of matrix
+\DeclareMathOperator{\tr}{tr}
+% kernel of function
+% \DeclareMathOperator{\ker}{ker}
+% image of function
+\DeclareMathOperator{\im}{im}
+% annihilator
+\DeclareMathOperator{\ann}{ann}
+% transponent matrix
+\newcommand{\transp}[1]{ {#1}^\m{T} }
+% spectrum of matrix
+\DeclareMathOperator{\spec}{\sigma}
+% rank of matrix
+\DeclareMathOperator{\rank}{rank}
+% signum of permutation or number
+\DeclareMathOperator{\sign}{sign}
+% expectation
+\DeclareMathOperator{\expect}{\mathbb{E}}
+% variance
+\DeclareMathOperator{\var}{var}
+% fourier transform
+\newcommand{\fourier}{\mathcal{F}}
+% derivative
+\DeclareMathOperator{\Deriv}{D}
+\newcommand{\deriv}[1]{ {#1}^{\prime} }
+\newcommand{\dderiv}[1]{ {#1}^{\prime\prime} }
+\newcommand{\ddderiv}[1]{ {#1}^{\prime\prime\prime} }
+\newcommand{\nderiv}[2][]{ \ifx&#1& \deriv{#2} \else {#2}^{(#1)} \fi }
+\DeclareMathOperator{\pderiv}{\partial}
+% infinitesimal difference
+\newcommand{\diff}{\mathrm{d}}
+% integral
+\newcommand{\integral}[4]{\int_{#1}^{#2} #3\ \diff #4}
+\newcommand{\Integral}[4]{\int\limits_{#1}^{#2} #3\ \diff #4}
+\newcommand{\iintegral}[2]{\int #1\ \diff #2} % indefinite integral
+% scalar product
+\newcommand{\dotp}[2]{\angleb{#1,#2}}
+% cross product sign
+\newcommand{\cross}{\times}
+% cross product function
+\newcommand{\crossp}[2]{#1 \cross #2}
+% sign for direct sum
+\newcommand{\dsum}{\oplus}
+% linear span
+\newcommand{\lspan}[1]{\angleb{#1}}
+% dual space
+\newcommand{\dual}[1]{ {#1}^* }
+\newcommand{\ddual}[1]{ {#1}^{**} }
+% bra-vector
+\newcommand{\ket}[1]{ \left| #1 \right\rangle }
+% ket-vector
+\newcommand{\bra}[1]{ \left\langle #1 \right| }
+% bracket
+\newcommand{\bracket}[2]{ \left\langle #1 \middle| #2 \right\rangle }
+% expectation of operator
+\newcommand{\opexpect}[1]{ \angleb{#1} }
+
+% converges arrow
+\newcommand{\conv}[1][]{\xrightarrow[]{#1}}
+
+
+% append unit
+\newcommand{\unit}[1]{\, \mathrm{#1}}
+
+% show formal atom with element name
+\newcommand{\atom}[3][]{\prescript{#3}{#1}{\m{#2}}}
+% show formal atom with variabel as name
+\newcommand{\atomv}[3][]{\prescript{#3}{#1}{#2}}

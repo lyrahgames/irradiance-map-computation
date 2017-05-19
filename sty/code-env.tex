@@ -1,0 +1,67 @@
+% definitions for listing colors
+\definecolor{codeDarkGray}{gray}{0.2}
+\definecolor{codeGray}{gray}{0.4}
+\definecolor{codeLightGray}{rgb}{0.94,0.94,0.91}
+\definecolor{codeBorder}{rgb}{0.34,0.24,0.21}
+% predefinitions for listings
+\newcommand{\listingcall}{Listing}
+\newlength{\listingframemargin}
+\setlength{\listingframemargin}{1em}
+\newlength{\listingmargin}
+\setlength{\listingmargin}{0.08\textwidth}
+% \newlength{\listingwidth}
+% \setlength{\listingwidth}{ ( \textwidth - \listingmargin * \real{2} + \listingframemargin * \real{2} ) }
+% definitions for list of listings
+\newcommand{\listoflistingscall}{\listingcall -Verzeichnis}
+\newlistof{listings}{listinglist}{\listoflistingscall}
+% style definition for standard code listings
+\lstdefinestyle{std}{
+	belowcaptionskip=0.5\baselineskip,
+	breaklines=true,
+	frameround=tttt,
+	% frame=false,
+	xleftmargin=0em,
+	xrightmargin=0em,
+	showstringspaces=false,
+	showtabs=false,
+	% tab=\smash{\rule[-.2\baselineskip]{.4pt}{\baselineskip}\kern.5em},
+	basicstyle= \fontfamily{pcr}\selectfont\footnotesize\bfseries,
+	keywordstyle= \bfseries\color{MidnightBlue}, %\color{codeDarkGray},
+	commentstyle= \itshape\color{codeGray},
+	identifierstyle=\color{codeDarkGray},
+	stringstyle=\color{BurntOrange}, %\color{codeDarkGray},
+	numberstyle=\tiny\ttfamily,
+	% numbers=left,
+	numbersep = 1em,
+	% stepnumber = 1,
+	% captionpos=t,
+	tabsize=4,
+	% backgroundcolor=\color{codebLightGray},
+	rulecolor=\color{codeBorder},
+	framexleftmargin=\listingframemargin,
+	framexrightmargin=\listingframemargin
+}
+% definition for unnumerated listing
+\newcommand{\inputlistingn}[3][]{
+	\begin{center}
+		\begin{adjustwidth}{\listingmargin}{\listingmargin}
+			\centerline{ {\fontfamily{lmr}\selectfont \footnotesize \listingcall:}\quad {\footnotesize #2} }
+			\lstinputlisting[style=std, #1]{#3}
+		\end{adjustwidth}
+	\end{center}
+}
+% definition for numerated listing
+\newcounter{listingc}[section]
+\newcommand*\listingnum{\thesection.\arabic{listingc}}
+\renewcommand{\thelistingc}{\listingnum}
+\newcommand{\inputlisting}[3][]{
+	\refstepcounter{listingc}
+	\addcontentsline{listinglist}{figure}{\protect{\numberline{\listingnum:} #2 } }
+	% \inputlistingn[#1]{#2}{#3}
+	\begin{center}
+		\begin{adjustwidth}{\listingmargin}{\listingmargin}
+			\centerline{ {\fontfamily{lmr}\selectfont \footnotesize \listingcall~\listingnum:}\quad {\footnotesize #2} }
+			\lstinputlisting[style=std, #1]{#3}
+		\end{adjustwidth}
+	\end{center}
+}

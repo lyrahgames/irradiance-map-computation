@@ -1,0 +1,173 @@
+% documentclass: article used for scientific journals, short reports, program documentation, etc
+% options: fontsize 11, generate document for double sided printing, a4-paper
+\documentclass[aspectratio=169]{beamer}
+
+% package for changing page layout
+% \usepackage{geometry}
+% \geometry{a4paper, lmargin=40mm, rmargin=45mm, tmargin=40mm, bmargin=45mm}
+% set indentation
+% \setlength{\parindent}{1em}
+% set factor for line spacing
+% \linespread{1.0}\selectfont
+% set (dynamic) additional line spacing
+% \setlength{\parskip}{1ex plus 0.5ex minus 0.3ex}
+
+% rigorous formatting (not too much hyphens)
+% \fussy
+% \sloppy
+
+% package for changing page layout (used to indent whole paragraphs with adjustwidth)
+\usepackage{changepage}
+
+% input encoding for special characters (e.g. ä,ü,ö,ß), only for non english text
+% options: utf8 as encoding standard, latin1
+\usepackage[utf8]{inputenc}
+% package for font encoding
+\usepackage[T1]{fontenc}
+% package for changing used language (especially for more than one language)
+% options: ngerman (new spelling) or default: english
+\usepackage[ngerman]{babel}
+% package for times font
+% \usepackage{times}
+% package for latin modern fonts
+\usepackage{lmodern}
+
+% package for math symbols, functions and environments from ams(american mathematical society)
+\usepackage{amsmath}
+\usepackage{mathtools}
+% package for extended symbols from ams
+\usepackage{amssymb}
+% package for math black board symbols (e.g. R,Q,Z,...)
+\usepackage{bbm}
+% package used for calligraphic math symbols
+\usepackage{mathrsfs}
+% package for extended symbols from stmaryrd(st mary road)
+\usepackage{stmaryrd}
+% package for more math blackboard symbols
+\usepackage{dsfont}
+
+% pack­age im­ple­ments scal­ing of the math ex­ten­sion font cmex; used for scaling math signs
+\usepackage{exscale}
+
+% package for including extern graphics plus scaling and rotating
+\usepackage{graphicx}
+%package for positioning figures
+\usepackage{float}
+% package for changing color of font and paper
+% options: using names of default colors (e.g red, black)
+% \usepackage[usenames]{color}
+% \usepackage[dvipsnames]{xcolor}
+\definecolor{shadecolor}{gray}{0.9}
+% package for customising captions
+\usepackage[footnotesize, hang]{caption}
+% package for customising enumerations (e.g. axioms)
+\usepackage{enumitem}
+% calc package reimplements \setcounter, \addtocounter, \setlength and \addtolength: commands now accept an infix notation expression
+\usepackage{calc}
+% package for creating framed, shaded, or differently highlighted regions that can break across pages; environments: framed, oframed, shaded, shaded*, snugshade, snugshade*, leftbar, titled-frame
+\usepackage{framed}
+% package for creating custom "list of"
+% options: titles: do not intefere with standard headings for "list of"
+% \usepackage[titles]{tocloft}
+% change enumeration style of equations
+% \renewcommand\theequation{\thesection.\arabic{equation}}
+
+
+% provides \ifthenelse command
+\usepackage{ifthen}
+% extra commands for if-conditions (e.g. \isempty)
+\usepackage{xifthen}
+
+% \input{math-env}
+\input{math-sym}
+
+
+
+% package for init listings(non-formatted  text) e.g. different source codes
+\usepackage{listings}
+
+
+% \input{code-env}
+
+
+% package for including csv-tables from file
+% \usepackage{csvsimple}
+% package for creating, loading and manipulating databases
+\usepackage{datatool}
+
+% package for converting eps-files to pdf-files and then include them
+\usepackage{epstopdf}
+% use another program (ps2pdf) for converting
+% !!! important: set shell_escape=1 in /etc/texmf/texmf.cnf (Linux/Ubuntu 12.04) for allowing to use other programs
+% !!!			or use the command line with -shell-escape
+% \epstopdfsetup{outdir=./}
+% \epstopdfDeclareGraphicsRule{.eps}{pdf}{.pdf}{
+% ps2pdf -dEPSCrop #1 \OutputFile
+% }
+
+
+% package for reference to last page (output number of last page)
+\usepackage{lastpage}
+% package for using header and footer
+% options: automate terms of right and left marks
+% \usepackage[automark]{scrpage2}
+% \setlength{\headheight}{4\baselineskip}
+% set style for footer and header
+% \pagestyle{scrheadings}
+% \pagestyle{headings}
+% clear pagestyle for redefining
+% \clearscrheadfoot
+% set header and footer: use <xx>head/foot[]{Text} (i...inner, o...outer, c...center, o...odd, e...even, l...left, r...right)
+
+% use that for mark to last page: \pageref{LastPage}
+% set header separation line
+% \setheadsepline[\textwidth]{0.5pt}
+% set foot separation line
+% \setfootsepline[\textwidth]{0.5pt}
+
+
+
+\usepackage{tcolorbox}
+% \usepackage{tikz}
+% \tcbuselibrary{listings}
+\tcbuselibrary{many}
+\tcbset{fonttitle=\footnotesize}
+
+\usepackage{array}
+
+\allowdisplaybreaks
+
+% \usepackage{epic, eepic}
+\usepackage{epic}
+
+\usepackage{natbib}
+\bibliographystyle{plain}
+\usepackage{url}
+
+\usepackage{indentfirst}
+
+
+% \usepackage{titling}
+% \title{}
+% \author{}
+
+% \usepackage{fancyhdr}
+% \input{page-style}
+
+
+\usefonttheme[onlymath]{serif}
+
+\AtBeginSection[]{
+	\begin{frame}
+		\vfill
+		\centering
+		\begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+			\hrule
+			\bigskip
+			\usebeamerfont{title}\insertsectionhead\par%
+			\bigskip
+			\hrule
+		\end{beamercolorbox}
+		\vfill
+	\end{frame}
+}
