@@ -1,0 +1,42 @@
+\documentclass{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{mathrsfs}
+\usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
+\pagestyle{empty}
+
+%<<<<<<<WARNING>>>>>>>
+% PGF/Tikz doesn't support the following mathematical functions:
+% cosh, acosh, sinh, asinh, tanh, atanh,
+% x^r with r not integer
+
+% Plotting will be done using GNUPLOT
+% GNUPLOT must be installed and you must allow Latex to call external programs by
+% Adding the following option to your compiler
+% shell-escape    OR    enable-write18
+% Example: pdflatex --shell-escape file.tex
+
+\begin{document}
+\definecolor{ccqqqq}{rgb}{0.8,0.,0.}
+\definecolor{ttttff}{rgb}{0.2,0.2,1.}
+\begin{tikzpicture}[line cap=round,line join=round,>={Stealth},x=0.4cm,y=0.4cm]
+\clip(-6.907504871460623,-0.09035873098899251) rectangle (7.1964306770415725,7.340359230625992);
+\draw[line width=0.4pt,color=ttttff, smooth,samples=100,domain=-1.5707963267948966:1.5707963267948966] plot[parametric] function{10.0*sin((t))*(1.0/(1.0+t**(2.0))-1.0/(1.0+3.1415926535**(2.0)/4.0)),10.0*cos((t))*(1.0/(1.0+t**(2.0))-1.0/(1.0+3.1415926535**(2.0)/4.0))};
+\draw [line width=0.4pt,domain=-6.907504871460623:7.1964306770415725] plot(\x,{(-0.-0.*\x)/8.});
+\draw [->,line width=0.4pt,color=ccqqqq] (0.,0.) -- (0.,4.);
+\draw [->,line width=0.4pt,dash pattern=on 2pt off 2pt,color=ttttff] (0.,0.) -- (1.773612837199418,1.1331679504011178);
+\draw [->,line width=0.4pt,dash pattern=on 2pt off 2pt,color=ttttff] (0.,0.) -- (2.5204596950464513,3.8406435853209215);
+\draw [->,line width=0.4pt,dash pattern=on 2pt off 2pt,color=ttttff] (0.,0.) -- (2.065922599331789,5.659280809773835);
+\draw [->,line width=0.4pt,dash pattern=on 2pt off 2pt,color=ttttff] (0.,0.) -- (0.967310085187278,6.855377940311542);
+\draw [->,line width=0.4pt,dash pattern=on 2pt off 2pt,color=ttttff] (0.,0.) -- (-1.7736128491432006,1.1331679677465123);
+\draw [->,line width=0.4pt,dash pattern=on 2pt off 2pt,color=ttttff] (0.,0.) -- (-2.5204596950440994,3.8406435853884244);
+\draw [->,line width=0.4pt,dash pattern=on 2pt off 2pt,color=ttttff] (0.,0.) -- (-2.065922615966747,5.659280777494383);
+\draw [->,line width=0.4pt,dash pattern=on 2pt off 2pt,color=ttttff] (0.,0.) -- (-0.9673085918349188,6.855378778745194);
+\begin{scriptsize}
+\draw[color=black] (-4.382503622368158,0.5769630276997318) node {$\partial K$};
+\draw[color=ccqqqq] (0.19857007241388552,5.194108168897393) node {$\mu$};
+\draw[color=ttttff] (5.212501124183207,5.879465650793921) node {$\mathcal{L}(\lambda,x,\omega)$};
+\end{scriptsize}
+\end{tikzpicture}
+\end{document}
