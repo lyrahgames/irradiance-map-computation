@@ -1,0 +1,198 @@
+\section{Grundlagen und Methoden} % (fold)
+\label{sec:grundlagen_und_methoden}
+
+	In den folgenden Kapiteln wird eine grundlegende Einführung und Definition der Verfahren gegeben, die für den weiteren Verlauf dieser Arbeit von Belang sind.
+	Viele dieser Themen können hier nur angerissen werden, da ihre komplette Behandlung den Rahmen und das Ziel des Themas verfehlen würden.
+
+	\subsection{Szenenrepresentation} % (fold)
+	\label{sec:szenenrepresentation}
+
+		Um realistische Bilder zu generieren, benötigen wir als Eingabe gewisse Daten der physikalischen Objekte, die durch den Beobachter oder auch die Kamera betrachtet werden.
+		Für die später betrachteten Algorithmen ist dabei vor allem das Verhalten von Licht auf den Oberflächen dieser Objekte wichtig.
+		Der Einfachheit halber wollen wir davon ausgehen, dass das Licht nur in den oberen Schichten eines Körpers mit dessen Material wechselwirkt.
+		Für uns ist es also ausreichend, nur die Oberflächen der gegebenen Objekte und nicht deren Inneres zu beschreiben.
+
+		Die Oberflächen realer physikalischer Objekte sind im Allgemeinen beliebig geformt und können nicht in geschlossener Form durch eine Gleichung beschrieben werden.
+		Dennoch lassen sie sich im analytischen Sinne durch einfachere Hyperflächen im Raum approximieren.
+		Für die Bildgenerierung wählt man für solch eine Fläche meist ein Dreieck.
+		Es ist einfach zu beschreiben und flexibel genug um die meisten Objekte beliebig genau zu approximieren.
+		Dabei wollen wir entartete Dreiecke, die nur aus einem Punkt oder einer Strecke bestehen, ausschließen, da sie für die betrachteten Render-Verfahren nicht darstellbar sind.
+		\begin{definition}[Dreieck]
+			Ein Dreieck $\triangle$ wird durch eine Sequenz $(A_\triangle,B_\triangle,C_\triangle)$ von Punkten in $\SR^3$, für die die Menge $\set{B_\triangle-A_\triangle, C_\triangle-A_\triangle}$ linear unabhängig ist, charakterisiert.
+			Die Menge $S(\triangle)$ der Punkte des Dreiecks ist definiert durch
+			\[
+				S(\triangle) \define \im{\varphi_\triangle}
+			\]
+			Dabei stellt $(M,\varphi_\triangle)$ mit den folgenden Definitionen die Standardparametrisierung der Menge $S(\triangle)$ dar.
+			\[
+				1 \define \set[u+v\leq 1]{(u,v)\in[0,1]^2}
+			\]
+			\[
+				\func{\varphi_\triangle}{M}{S(\triangle)},\qquad \varphi_\triangle(u,v) \define (1-u-v)A_\triangle + uB_\triangle + vC_\triangle
+			\]
+			Die baryzentrischen Koordinaten $(u,v,w)$ eines Punktes $x\in S(\triangle)$ sind durch die folgenden Eigenschaften gegeben.
+			\[
+				(u,v)\in M,\qquad w = 1-u-v,\qquad \varphi_\triangle(u,v) = x
+			\]
+			Die analytische äußere Normale $\mu(\triangle)$ ist gegeben durch den Ausdruck
+			\[
+				\mu_\triangle \define \frac{\crossp{(B_\triangle-A_\triangle)}{(C_\triangle-A_\triangle)}}{\norm{\crossp{(B_\triangle-A_\triangle)}{(C_\triangle-A_\triangle)}}}
+			\]
+		\end{definition}
+
+		Jedes Dreieck besitzt auf seiner gesamten Fläche eine eindeutige konstante äußere analytische Normale.
+		Für die Simulation von globalen Beleuchtungseffekten ist diese Eigenschaft jedoch ein Nachteil, weil die Beleuchtung eines Objektes stark vom Verlauf seiner Normalen abhängt.
+		Nähern wir ein Objekt nun durch $n\in\SN$ Dreiecke an, so nähern wir den Normalenverlauf des Objektes durch die stückweise konstanten Normalenverläufe der Dreiecke an.
+		Diese Tatsache tritt in Form eines facettenhaften Musters auf.
+		In den Bildern der Abbildung \ref{fig:facette} wird dies genauer an einem Beispiel demonstriert.
+		Dieses Problem kann durch eine Interpolation, die die Stetigkeit der Normalen erhält, gelöst werden.
+		\begin{definition}[Normalen-Funktion]
+			Seien $\triangle$ ein Dreieck und $\func{\nu}{S(\triangle)}{\SR^3}$.
+			Dann wird $\nu$ eine äußere Normalen-Funktion auf $\triangle$ genannt, wenn für alle $x\in S(\triangle)$ die folgenden Eigenschaften gelten.
+			\[
+				\norm{\nu(x)} = 1,\qquad \dotp{\mu(\triangle)}{\nu(x)} > 0
+			\]
+		\end{definition}
+
+		\begin{figure}
+			\begin{subfigure}[b]{0.5\textwidth}
+				\center
+				\includegraphics[scale=0.2]{pic/normal_facette-mark.png}
+				\caption{}
+			\end{subfigure}
+			\begin{subfigure}[b]{0.5\textwidth}
+				\center
+				\includegraphics[scale=0.2]{pic/normal_facette-zoom.png}
+				\caption{}
+			\end{subfigure}
+			\caption{Die Abbildungen zeigen das gerenderte Bild der \enquote{Dragon}-Szene. Das zweite Bild entspricht dem roten Bereich im ersten Bild. In dieser Szene werden die Normalen des Drachenmodells durch die analytischen Normalen der Dreiecke angenähert. Da das Modell sehr fein trianguliert ist, fällt dies im ersten Bild nicht auf. Zoomt man jedoch mit der Kamera heran werden die Fehler durch die Approximation deutlich.}
+			\label{fig:facette}
+		\end{figure}
+
+		\begin{theorem}[Vertex-Normalen-Funktion]
+			Sei $\triangle$ ein Dreieck und seien Normalen $\mu_A, \mu_B, \mu_C \in \SR^3$ an den Punkten des Dreiecks mit den folgenden Eigenschaften für alle $X\in\set{A,B,C}$ gegeben.
+			\[
+				\norm{\mu_X} = 1,\qquad \dotp{\mu_X}{\mu_\triangle} > 0
+			\]
+			Dann definiert die Abbildung $\func{\nu}{S(\triangle)}{\SR^3}$ eine stetige Normalen-Funktion auf $\triangle$.
+			\[
+				\nu(x) = \nu\circ\varphi_\triangle(u,v) \define \frac{w\mu_A + u\mu_B + v\mu_C}{\norm{w\mu_A + u\mu_B + v\mu_C}}
+			\]
+			Wir nennen $\nu$ in diesem Falle eine Vertex-Normalen-Funktion.
+		\end{theorem}
+
+		Durch das Setzen der Normalen an den Eckpunkten eines Dreiecks können wir sicher gehen, dass der Verlauf der Normalen stetig von einem Dreieck zu einem anderen übergeht.
+		Ein beipielhafter Verlauf einer Vertex-Normalen-Funktion wird in Abbildung \ref{fig:normal-function} gezeigt.
+		Für die in dieser Arbeit betrachteten Effekte und Verfahren reicht diese Interpolation aus.
+		Dennoch gibt es auch hier weitere Möglichkeiten, wie zum Beispiel \enquote{Normal Maps}, die eine noch genauere Approximation bieten.
+
+		\begin{figure}
+			\begin{subfigure}[b]{0.5\textwidth}
+				\center
+				\includegraphics{gg_fig/scheme_normal-function_1.pdf}
+				% \caption{Verlauf}
+			\end{subfigure}
+			\begin{subfigure}[b]{0.5\textwidth}
+				\center
+				\includegraphics{gg_fig/scheme_normal-function_2.pdf}
+				% \caption{approximierte Fläche}
+			\end{subfigure}
+			\caption{Die erste Skizze auf der linken Seite zeigt den Verlauf einer Vertex-Normalen-Funktion $\nu$ anhand eines Beispiels. $A_\triangle$ und $B_\triangle$ sind dabei die Eckpunkte eines Dreiecks $\triangle$. $\mu_A$ und $\mu_B$ sind die jeweilig gegebenen Vertex-Normalen an den Eckpunkten. Im rechten Bereich der Abbildung ist die durch $\nu$ approximierte gekrümmte Fläche $\tilde{S}(\triangle)$, für die Normalen $\nu(x)$ äußere Normalen bezeichnet, eingezeichnet.}
+			\label{fig:normal-function}
+		\end{figure}
+
+		Die kleinste Hyperfläche, die wir durch geschlossene Gleichungen beschreiben können und aus derer wir alle weiteren Objekte zusammensetzen, nennen wir \enquote{Primitiv} (engl.: \textit{primitive}).
+		Es soll in unserem Falle nicht nur die Informationen des Dreiecks beinhalten, sondern auch Aussagen über das Material oder die Oberflächenstruktur treffen können.
+		Dazu gehört vor allem auch, ob und wie das Primitiv Licht aussendet.
+		Für physikalische Materialien gibt es nun je nach den betrachteten Effekten verschiedene verallgemeinerte Varianten.
+		Um keine dieser Varianten auszuschließen, soll hier das Primitiv in einer abstrakteren Form definiert werden.
+		\begin{definition}[Primitiv]
+			Sei $X$ die Menge der Elemente, die Materialien von Objekten charakterisieren.
+			Dann ist ein Primitiv $P$ gerade ein Tupel $(\triangle_P, \nu_P, x_P)$, bestehend aus einem Dreieck $\triangle_P$, einer Normalen-Funktion $\nu_P$ auf $\triangle_P$ und einem Material $x\in X$.
+		\end{definition}
+
+		Für die eigentliche Bildgenerierung werden als Eingabe alle verwendeten Primitive benötigt.
+		Häufig werden auch verschiedene
+		Diese Eingabe wollen wir auch \enquote{Szene} (engl.: \textit{scene}) nennen.
+		\begin{definition}[Szene]
+			Eine Szene $\s{S}$ bezeichnet eine endliche Menge von Primitiven.
+			Die Menge $S(\s{S})$ der Punkte der Szene ist definiert durch
+			\[
+				S(\s{S}) \define \bigcup_{(\triangle,\nu,f)\in\s{S}} S(\triangle)
+			\]
+			% \[
+			% 	S(\s{S}) \define \cup \set[(\triangle,\nu,f)\in\s{S}]{S(\triangle)}
+			% \]
+		\end{definition}
+
+	% subsection szenenrepresentation (end)
+
+	\subsection{Raytracing} % (fold)
+	\label{sub:raytracing}
+
+		Im einfachsten Falle bezeichnet das Wort \enquote{Raytracing} (engl.: \textit{ray tracing}) einen Algorithmus zur Ermittlung der Sichtbarkeit von dreidimensionalen Objekten bezüglich eines Ursprungpunktes (engl.: \textit{origin}) im Raum.
+		Häufig versteht man darunter jedoch auch eine Render-Technik für die Generierung eines gesamten Bildes aus einer gegebenen Szene, die auf dem eben genannten Raytracing-Algorithmus basiert.
+
+		Grundsätzlich gibt es viele Verfahren, um ein Szene auf ein Bild zu rendern.
+		Die Erfahrung zeigt aber, dass vor allem in Bereichen, in denen die globalen Beleuchtungseffekte realistisch simuliert werden sollen, Raytracing eine wichtige Grundlage darstellt.
+		Der Grund dafür besteht in der Tatsache, dass Raytracing das Sichtbarkeitsproblem löst und durch die Verwendung von Strahlen eine Basis für die Lichtberechnung im Sinne der geometrischen Optik darstellt.
+		\begin{definition}[Sichtbarkeitsproblem]
+			Seien $\s{S}$ eine Szene, $o\in\SR^3$ und $x\in S(\s{S})$ gegeben.
+			Dann ist die Sichtbarkeitsfunktion die Abbildung $\func{V_\s{S}}{\SR^3\times S(\s{S})}{\set{0,1}}$ mit der Eigenschaft.
+			\[
+				V_\s{S}(o,x)=
+				\begin{cases}
+					1 &: S(\s{S}) \cap \set[\gamma\in(0,1)]{(1-\gamma)o + \gamma x} = \emptyset \\
+					0 &: \m{sonst}
+				\end{cases}
+			\]
+			Das Sichtbarkeitsproblem beschreibt dann die Aufgabe diese Funktion zu evaluieren.
+		\end{definition}
+
+		\begin{figure}[h]
+			\center
+			\includegraphics{gg_fig/ray_tracing_1.pdf}
+			\caption{Die Abbildung zeigt eine Skizze, welche das Sichtbarkeitsproblem und den Raytracing-Algorithmus verdeutlicht. Der ausgesendete Strahl trifft in der Szene genau zwei Punkte. Dabei wird der Zweite durch den ersten verdeckt. Für den ersten Punkt ergibt die Sichtbarkeitsfunktion also 1 und für den Zweiten gerade 0.}
+			\label{fig:ray_tracing-1}
+		\end{figure}
+
+		Die Sichtbarkeitsfunktion gibt gerade an, ob der Oberflächenpunkt $x$ vom Beobachtungspunkt $o$ aus in gerader Linie gesehen werden kann oder ob zwischen diesen Punkten ein Primitiv den Punkt $x$ verdeckt.
+		Das ist auch der Grund, weshalb Raytracing eine effektive Lösung für diese Aufgabe darstellt.
+		Die Basis des Verfahrens bildet das Aussenden von \enquote{Strahlen} (engl.: \textit{ray}) bezüglich eines Ursprungspunktes.
+		Diese werden verfolgt und auf Schnittpunkte mit der Szene getestet.
+		Abbildung \ref{fig:ray_tracing-1} zeigt das Verfahren anhand einer Skizze.
+		Mathematisch wollen wir unter einem Strahl Folgendes verstehen.
+		\begin{definition}[Strahl]
+			Ein Strahl $r$ sei gerade durch ein Tupel $(r_\m{o},r_\m{d})$ mit einem Ursprungspunkt $r_\m{o}\in\SR^3$ und einer Richtung $r_\m{d}\in\SR^3\setminus\set{0}$ charakterisiert. Die Menge $S(r)$ der Punkte des Strahls ist gegeben durch das Bild der Parametrisierung $([0,\infty),\varphi_r)$
+			\[
+				S(r) \define \im{\varphi_r},\qquad \func{\varphi_r}{[0,\infty)}{\SR^3},\qquad \varphi_r(t)\define r_\m{o} + tr_\m{d}
+			\]
+		\end{definition}
+
+		\begin{definition}[Raytracing-Funktion]
+			Seien $\s{S}$ eine Szene und $r$ ein gegebener Strahl.
+			Dann definiert die Abbildung $\func{\m{rt}_\s{S}}{R}{(0,\infty]}$ mit der folgenden Definition die Raytracing-Funktion der Szene $\s{S}$.
+			\[
+				\m{rt}_\s{S}(r) \define
+				\begin{cases}
+					\min\set[r(t)\in S(\s{S})]{t\in(0,\infty)} &: S(\s{S})\cap \varphi_r((0,\infty)) \neq \emptyset \\
+					\infty &: \m{sonst}
+				\end{cases}
+			\]
+		\end{definition}
+
+		Häufig erweitert man diesen Algorithmus um die Berechnung eines gesamten Bildes, indem man für jeden Pixel des Bildes einen oder mehrere Strahlen durch einen analogen virtuellen Pixel im Szenenraum schießt und die Sichtbarkeitsfunktion für diese evaluiert.
+		Abbildung \ref{fig:ray_tracing-2} zeigt dieses Verfahren anhand einer Skizze.
+		Um gleichzeitig das Shading zu ermöglichen, ermittelt man nicht nur den Schnittpunkt, sondern auch in welchem Primitiv sich dieser befindet und welche baryzentrischen Koordinaten er besitzt.
+		Die Implementierung des Raytracing-Verfahrens soll hier nicht gezeigt werden, da eine einfache naive Implementierung meistens einen zu großen Rechenaufwand darstellt und die hier optimierte Variante weit über das Thema dieser Arbeit hinausgeht.
+
+		\begin{figure}[h]
+			\center
+			\includegraphics{gg_fig/ray_tracing_2.pdf}
+			\caption{}
+			\label{fig:ray_tracing-2}
+		\end{figure}
+
+	% subsection raytracing (end)
+
+% section grundlagen_und_methoden (end)
