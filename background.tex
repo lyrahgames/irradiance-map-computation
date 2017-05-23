@@ -2,7 +2,8 @@
 \label{sec:grundlagen_und_methoden}
 
 	In den folgenden Kapiteln wird eine grundlegende Einführung und Definition der Verfahren gegeben, die für den weiteren Verlauf dieser Arbeit von Belang sind.
-	Viele dieser Themen können hier nur angerissen werden, da ihre komplette Behandlung den Rahmen und das Ziel des Themas verfehlen würden.
+	Viele dieser Themen können hier nur angerissen werden, da ihre komplette Behandlung den Rahmen und das Ziel des Themas verfehlen würde.
+	Für eine genauere Einführung in die einzelnen Themengebiete, wird dem Leser geraten sich mit den genannten Quellen auseinander zu setzen.
 
 	\subsection{Szenenrepresentation} % (fold)
 	\label{sec:szenenrepresentation}
@@ -25,7 +26,7 @@
 			\]
 			Dabei stellt $(M,\varphi_\triangle)$ mit den folgenden Definitionen die Standardparametrisierung der Menge $S(\triangle)$ dar.
 			\[
-				1 \define \set[u+v\leq 1]{(u,v)\in[0,1]^2}
+				M \define \set[u+v\leq 1]{(u,v)\in[0,1]^2}
 			\]
 			\[
 				\func{\varphi_\triangle}{M}{S(\triangle)},\qquad \varphi_\triangle(u,v) \define (1-u-v)A_\triangle + uB_\triangle + vC_\triangle
@@ -34,7 +35,7 @@
 			\[
 				(u,v)\in M,\qquad w = 1-u-v,\qquad \varphi_\triangle(u,v) = x
 			\]
-			Die analytische äußere Normale $\mu(\triangle)$ ist gegeben durch den Ausdruck
+			Die analytische äußere Normale $\mu_\triangle$ ist gegeben durch den Ausdruck
 			\[
 				\mu_\triangle \define \frac{\crossp{(B_\triangle-A_\triangle)}{(C_\triangle-A_\triangle)}}{\norm{\crossp{(B_\triangle-A_\triangle)}{(C_\triangle-A_\triangle)}}}
 			\]
@@ -42,15 +43,15 @@
 
 		Jedes Dreieck besitzt auf seiner gesamten Fläche eine eindeutige konstante äußere analytische Normale.
 		Für die Simulation von globalen Beleuchtungseffekten ist diese Eigenschaft jedoch ein Nachteil, weil die Beleuchtung eines Objektes stark vom Verlauf seiner Normalen abhängt.
-		Nähern wir ein Objekt nun durch $n\in\SN$ Dreiecke an, so nähern wir den Normalenverlauf des Objektes durch die stückweise konstanten Normalenverläufe der Dreiecke an.
-		Diese Tatsache tritt in Form eines facettenhaften Musters auf.
-		In den Bildern der Abbildung \ref{fig:facette} wird dies genauer an einem Beispiel demonstriert.
-		Dieses Problem kann durch eine Interpolation, die die Stetigkeit der Normalen erhält, gelöst werden.
+		Nähern wir ein Objekt nun durch $n\in\SN$ Dreiecke an, so nähern wir zur Zeit auch den Normalenverlauf des Objektes durch die stückweise konstanten äußeren Normalen der Dreiecke an.
+		Der Fehler dieser Approximation tritt in Form eines facettenhaften Musters auf, welcher für das menschliche Auge gut erkennbar ist.
+		In Abbildung \ref{fig:facette} wird dieser Effekt genauer an einem Beispiel demonstriert.
+		Das Problem kann im Allgemeinen durch eine Interpolation, die die Stetigkeit der Normalen erhält, gelöst werden.
 		\begin{definition}[Normalen-Funktion]
 			Seien $\triangle$ ein Dreieck und $\func{\nu}{S(\triangle)}{\SR^3}$.
 			Dann wird $\nu$ eine äußere Normalen-Funktion auf $\triangle$ genannt, wenn für alle $x\in S(\triangle)$ die folgenden Eigenschaften gelten.
 			\[
-				\norm{\nu(x)} = 1,\qquad \dotp{\mu(\triangle)}{\nu(x)} > 0
+				\norm{\nu(x)} = 1,\qquad \dotp{\mu_\triangle}{\nu(x)} > 0
 			\]
 		\end{definition}
 
@@ -65,7 +66,7 @@
 				\includegraphics[scale=0.2]{pic/normal_facette-zoom.png}
 				\caption{}
 			\end{subfigure}
-			\caption{Die Abbildungen zeigen das gerenderte Bild der \enquote{Dragon}-Szene. Das zweite Bild entspricht dem roten Bereich im ersten Bild. In dieser Szene werden die Normalen des Drachenmodells durch die analytischen Normalen der Dreiecke angenähert. Da das Modell sehr fein trianguliert ist, fällt dies im ersten Bild nicht auf. Zoomt man jedoch mit der Kamera heran werden die Fehler durch die Approximation deutlich.}
+			\caption{Die Bilder zeigen die gerenderte \enquote{Dragon}-Szene. Das rechte Bild entspricht dem roten Bereich des Linken. In dieser Szene werden die Normalen des Objektmodells durch die analytischen Normalen der Dreiecke angenähert. Da das Modell sehr fein trianguliert ist, fällt dies im ersten Bild nicht auf. Zoomt man jedoch mit der Kamera heran werden die Fehler durch die Approximation deutlich und die einzelnen Dreiecke sind mit dem menschlichen Auge auszumachen.}
 			\label{fig:facette}
 		\end{figure}
 
@@ -74,7 +75,7 @@
 			\[
 				\norm{\mu_X} = 1,\qquad \dotp{\mu_X}{\mu_\triangle} > 0
 			\]
-			Dann definiert die Abbildung $\func{\nu}{S(\triangle)}{\SR^3}$ eine stetige Normalen-Funktion auf $\triangle$.
+			Dann definiert die Abbildung $\func{\nu}{S(\triangle)}{\SR^3}$ eine stetige Normalen-Funktion auf $\triangle$, wenn für alle $x\in S(\triangle)$ mit den baryzentrischen Koordinaten $(u,v,w)$ die folgende Aussage gilt.
 			\[
 				\nu(x) = \nu\circ\varphi_\triangle(u,v) \define \frac{w\mu_A + u\mu_B + v\mu_C}{\norm{w\mu_A + u\mu_B + v\mu_C}}
 			\]
@@ -83,8 +84,8 @@
 
 		Durch das Setzen der Normalen an den Eckpunkten eines Dreiecks können wir sicher gehen, dass der Verlauf der Normalen stetig von einem Dreieck zu einem anderen übergeht.
 		Ein beipielhafter Verlauf einer Vertex-Normalen-Funktion wird in Abbildung \ref{fig:normal-function} gezeigt.
-		Für die in dieser Arbeit betrachteten Effekte und Verfahren reicht diese Interpolation aus.
-		Dennoch gibt es auch hier weitere Möglichkeiten, wie zum Beispiel \enquote{Normal Maps}, die eine noch genauere Approximation bieten.
+		Für die in dieser Arbeit betrachteten Effekte und Verfahren reicht diese Art der Normalen-Interpolation aus.
+		Dennoch gibt es hier weitere Möglichkeiten, wie zum Beispiel \enquote{Normal Maps}, die eine noch genauere Approximation zu Lasten des Speicherverbrauchs ermöglichen.
 
 		\begin{figure}
 			\begin{subfigure}[b]{0.5\textwidth}
@@ -97,47 +98,45 @@
 				\includegraphics{gg_fig/scheme_normal-function_2.pdf}
 				% \caption{approximierte Fläche}
 			\end{subfigure}
-			\caption{Die erste Skizze auf der linken Seite zeigt den Verlauf einer Vertex-Normalen-Funktion $\nu$ anhand eines Beispiels. $A_\triangle$ und $B_\triangle$ sind dabei die Eckpunkte eines Dreiecks $\triangle$. $\mu_A$ und $\mu_B$ sind die jeweilig gegebenen Vertex-Normalen an den Eckpunkten. Im rechten Bereich der Abbildung ist die durch $\nu$ approximierte gekrümmte Fläche $\tilde{S}(\triangle)$, für die Normalen $\nu(x)$ äußere Normalen bezeichnet, eingezeichnet.}
+			\caption{Die erste Skizze auf der linken Seite zeigt den Verlauf einer Vertex-Normalen-Funktion $\nu$ anhand eines Beispiels. $A_\triangle$ und $B_\triangle$ sind dabei die Eckpunkte eines Dreiecks $\triangle$. $\mu_A$ und $\mu_B$ sind die jeweilig gegebenen Vertex-Normalen an den Eckpunkten. Im rechten Bereich der Abbildung ist die durch $\nu$ approximierte gekrümmte Fläche $\tilde{S}(\triangle)$, auf der die Normalen $\nu(x)$ senkrecht stehen, eingezeichnet.}
 			\label{fig:normal-function}
 		\end{figure}
 
 		Die kleinste Hyperfläche, die wir durch geschlossene Gleichungen beschreiben können und aus derer wir alle weiteren Objekte zusammensetzen, nennen wir \enquote{Primitiv} (engl.: \textit{primitive}).
 		Es soll in unserem Falle nicht nur die Informationen des Dreiecks beinhalten, sondern auch Aussagen über dessen Material oder Oberflächenstruktur treffen können.
 		Insbesondere muss das Primitiv oder dessen Material also die Reflexion, Absorbtion, Transmission und Emission des Lichts an der Oberfläche beschreiben.
-		Für physikalische Materialien gibt es je nach den betrachteten Effekten verschiedene verallgemeinerte Varianten.
+		Für physikalische Materialien gibt es aber je nach den betrachteten Effekten verschiedene verallgemeinerte Varianten der mathematischen Beschreibung.
 		Um keine dieser Varianten auszuschließen, soll hier das Primitiv in einer abstrakteren Form definiert werden.
 		\begin{definition}[Primitiv]
-			Sei $M$ die Menge der Elemente, die Materialien von Objekten charakterisieren.
-			Dann ist ein Primitiv $p$ gerade ein Tupel $(\triangle_p, \nu_p, m_p)$, bestehend aus einem Dreieck $\triangle_p$, einer Normalen-Funktion $\nu_p$ auf $\triangle_p$ und einem Material $m_p\in M$.
+			Sei $\s{M}$ die Menge der Elemente, die Materialien von Objekten charakterisieren.
+			Dann ist ein Primitiv $p$ gerade ein Tupel $(\triangle_p, \nu_p, m_p)$, bestehend aus einem Dreieck $\triangle_p$, einer Normalen-Funktion $\nu_p$ auf $\triangle_p$ und einem Material $m_p\in \s{M}$.
 		\end{definition}
 
 
-		Für die eigentliche Bildgenerierung werden als Eingabe alle verwendeten Primitive benötigt.
-		Diese Eingabe wollen wir auch \enquote{Szene} (engl.: \textit{scene}) nennen.
-		\begin{definition}[Szene]
-			Eine Szene $\s{S}$ bezeichnet eine endliche Menge von Primitiven.
-			Die Menge $S(\s{S})$ der Punkte der Szene ist definiert durch
-			\[
-				S(\s{S}) \define \bigcup_{(\triangle,\nu,f)\in\s{S}} S(\triangle)
-			\]
-			% \[
-			% 	S(\s{S}) \define \cup \set[(\triangle,\nu,f)\in\s{S}]{S(\triangle)}
-			% \]
+		Für die eigentliche Approximation der Oberfläche eines Objektes benötigt man jetzt eine Menge von Primitiven.
+		Solch eine Menge wollen wir auch eine \enquote{Szene} (engl.: \textit{scene}) nennen.
+		Häufig benötigt man jedoch neben den Lichtquellen, die durch die Materialien der Primitive gegeben sind, noch weitere anders geartete Lichtquellen, die unabhängig von den eigentlichen Primitven der Szene bestehen.
+		In unserem Falle wollen wir uns speziell auf die Umgebungsbeleuchtungs-Funktion (engl.: \textit{HDR environment map}) beziehen.
+		\begin{definition}[Umgebungsbeleuchtungs-Funktion]
+			Sei $n\in\SN$.
+			Dann ist eine Umgebungsbeleuchtungs-Funktion definiert als eine auf $\Omega$ integrierbare Abbildung $\func{f}{\Omega}{[0,\infty)^n}$.
 		\end{definition}
 
-		Diese Definition zeigt diverse Probleme auf, die bei der Modellierung von Objekten entstehen können.
-		Dreiecke der Primitive in einer Szene dürfen sich im Allgemeinen beliebig schneiden.
-		Dadurch ist es im Allgemeinen nicht möglich jedem Oberflächenpunkt eine eindeutige äußere Normale zuzuordnen.
-		Bei der Generierung der Irradiance Maps werden sich diese Punkte als Fehler äußern.
+		Diese Funktion beschreibt das Licht durch $n\in\SN$ ausgewählte Koeffizienten, welches von einer Kugeloberfläche mit quasi unendlich großem Radius in die Szene ausgesandt wird.
+		Für einen Punkt der Szene, ist dessen Beleuchtung durch diese Funktion also unabhängig von dessen Position.
+		Diese Tatsache wird in Abbildung \ref{fig:hdr_environment_map} wieder an einem Beispiel gezeigt.
+		Die eigentliche Definition soll nun durch eine solche Umgebungsbeleuchtungs-Funktion erweitert werden.
 
-		Die abstrakte Definition ist für die Implementierung leider noch nicht ausreichend.
-
-		\begin{figure}[h]
+		\begin{figure}
 			\center
-			\includegraphics{gg_fig/triangle_mesh_1.pdf}
-			\caption{Die Abbildung zeigt eine beispielhafte Menge von Dreiecken $\set[i\in\SN,i\leq 7]{\triangle^{(i)}}$. Verschiedene Gruppen von Dreiecken bilden eine Approximation einer Oberfläche im Raum. Dabei werden die Eckpunkte der Dreiecke geteilt und es gilt zum Beispiel $\triangle^{(1)}_B=\triangle^{(3)}_A$ und $\triangle^{(1)}_C = \triangle^{(3)}_C$.}
-			\label{fig:triangle_mesh}
+			\includegraphics{gg_fig/hdr_environment_map_1.pdf}
+			\caption{Die Darstellung zeigt, dass die Beleuchtung zweier Punkte $x_1$ und $x_2$ einer Oberfläche $S$ mit den Normalen $\nu(x_1)$ und $\nu(x_2)$ durch eine Umgebungsbeleuchtungs-Funktion $f$ nur abhängig von der Verdeckung der Punkte und nicht von deren Position ist. Bei $x_1$ und $x_2$ sind also in diesem Falle die gleichen Lichtintensitäten zu messen.}
+			\label{fig:hdr_environment_map}
 		\end{figure}
+
+		\begin{definition}[Szene]
+			Eine Szene $\s{S}$ bezeichnet ein Tupel $(P_\s{S},E_\s{S})$ mit einer endlichen Menge $P_\s{S}$ von Primitiven und einer Umgebungsbeleuchtungs-Funktion $E_\s{S}$.
+		\end{definition}
 
 	% subsection szenenrepresentation (end)
 

@@ -35,5 +35,20 @@
 		\caption{}
 	\end{figure}
 
+	Diese Definition zeigt diverse Probleme auf, die bei der Modellierung von Objekten entstehen können.
+	Dreiecke der Primitive in einer Szene dürfen sich im Allgemeinen beliebig schneiden.
+	Dadurch ist es im Allgemeinen nicht möglich jedem Oberflächenpunkt eine eindeutige äußere Normale zuzuordnen.
+	Bei der Generierung der Irradiance Maps werden sich diese Punkte als Fehler äußern.
+
+	Die abstrakte Definition ist für die Implementierung leider noch nicht ausreichend.
+
+	\begin{figure}[h]
+		\center
+		\includegraphics{gg_fig/triangle_mesh_1.pdf}
+		\caption{Die Abbildung zeigt eine beispielhafte Menge von Dreiecken $\set[i\in\SN,i\leq 7]{\triangle^{(i)}}$. Verschiedene Gruppen von Dreiecken bilden eine Approximation einer Oberfläche im Raum. Dabei werden die Eckpunkte der Dreiecke geteilt und es gilt zum Beispiel $\triangle^{(1)}_B=\triangle^{(3)}_A$ und $\triangle^{(1)}_C = \triangle^{(3)}_C$.}
+		\label{fig:triangle_mesh}
+	\end{figure}
+
+
 
 \end{document}
