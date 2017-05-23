@@ -102,17 +102,17 @@
 		\end{figure}
 
 		Die kleinste Hyperfläche, die wir durch geschlossene Gleichungen beschreiben können und aus derer wir alle weiteren Objekte zusammensetzen, nennen wir \enquote{Primitiv} (engl.: \textit{primitive}).
-		Es soll in unserem Falle nicht nur die Informationen des Dreiecks beinhalten, sondern auch Aussagen über das Material oder die Oberflächenstruktur treffen können.
-		Dazu gehört vor allem auch, ob und wie das Primitiv Licht aussendet.
-		Für physikalische Materialien gibt es nun je nach den betrachteten Effekten verschiedene verallgemeinerte Varianten.
+		Es soll in unserem Falle nicht nur die Informationen des Dreiecks beinhalten, sondern auch Aussagen über dessen Material oder Oberflächenstruktur treffen können.
+		Insbesondere muss das Primitiv oder dessen Material also die Reflexion, Absorbtion, Transmission und Emission des Lichts an der Oberfläche beschreiben.
+		Für physikalische Materialien gibt es je nach den betrachteten Effekten verschiedene verallgemeinerte Varianten.
 		Um keine dieser Varianten auszuschließen, soll hier das Primitiv in einer abstrakteren Form definiert werden.
 		\begin{definition}[Primitiv]
-			Sei $X$ die Menge der Elemente, die Materialien von Objekten charakterisieren.
-			Dann ist ein Primitiv $P$ gerade ein Tupel $(\triangle_P, \nu_P, x_P)$, bestehend aus einem Dreieck $\triangle_P$, einer Normalen-Funktion $\nu_P$ auf $\triangle_P$ und einem Material $x\in X$.
+			Sei $M$ die Menge der Elemente, die Materialien von Objekten charakterisieren.
+			Dann ist ein Primitiv $p$ gerade ein Tupel $(\triangle_p, \nu_p, m_p)$, bestehend aus einem Dreieck $\triangle_p$, einer Normalen-Funktion $\nu_p$ auf $\triangle_p$ und einem Material $m_p\in M$.
 		\end{definition}
 
+
 		Für die eigentliche Bildgenerierung werden als Eingabe alle verwendeten Primitive benötigt.
-		Häufig werden auch verschiedene
 		Diese Eingabe wollen wir auch \enquote{Szene} (engl.: \textit{scene}) nennen.
 		\begin{definition}[Szene]
 			Eine Szene $\s{S}$ bezeichnet eine endliche Menge von Primitiven.
@@ -124,6 +124,20 @@
 			% 	S(\s{S}) \define \cup \set[(\triangle,\nu,f)\in\s{S}]{S(\triangle)}
 			% \]
 		\end{definition}
+
+		Diese Definition zeigt diverse Probleme auf, die bei der Modellierung von Objekten entstehen können.
+		Dreiecke der Primitive in einer Szene dürfen sich im Allgemeinen beliebig schneiden.
+		Dadurch ist es im Allgemeinen nicht möglich jedem Oberflächenpunkt eine eindeutige äußere Normale zuzuordnen.
+		Bei der Generierung der Irradiance Maps werden sich diese Punkte als Fehler äußern.
+
+		Die abstrakte Definition ist für die Implementierung leider noch nicht ausreichend.
+
+		\begin{figure}[h]
+			\center
+			\includegraphics{gg_fig/triangle_mesh_1.pdf}
+			\caption{Die Abbildung zeigt eine beispielhafte Menge von Dreiecken $\set[i\in\SN,i\leq 7]{\triangle^{(i)}}$. Verschiedene Gruppen von Dreiecken bilden eine Approximation einer Oberfläche im Raum. Dabei werden die Eckpunkte der Dreiecke geteilt und es gilt zum Beispiel $\triangle^{(1)}_B=\triangle^{(3)}_A$ und $\triangle^{(1)}_C = \triangle^{(3)}_C$.}
+			\label{fig:triangle_mesh}
+		\end{figure}
 
 	% subsection szenenrepresentation (end)
 
