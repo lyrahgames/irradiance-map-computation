@@ -223,6 +223,45 @@
 
 	% subsection raytracing (end)
 
+	\subsection{Photometrie} % (fold)
+	\label{sub:photometrie}
 
+		Ein physikalischer Körper $K$ mit der Oberfläche $\partial K$ und äußerer Normalen-Funktion $\mu$ sendet aufgrund verschiedener physikalischer Effekte, wie zum Beispiel Reflexion, elektromagnetische Wellen aus.
+		Für die Simulation von Beleuchtungseffekten ist es nun nötig die Abhängigkeit der Abstrahlung für verschiedene Wellenlängen $\lambda\in(0,\infty)$, verschiedene Punkte $x\in\partial K$ und verschiedene Richtungen $\omega\in\Omega$ zu betrachten.
+		Dafür führen wir die sogenannte \enquote{spektrale Strahldichte} (engl.: \textit{spectral radiance}) ein.
+		Sie gibt an, wie viel Energie pro Zeit, pro Wellenlängenänderung, pro Flächenelement und pro Raumwinkel abgestrahlt wird.
+		Sind also messbare Teilmengen $\Lambda\subset (0,\infty)$, $U\subset \partial K$ und $S\subset\Omega$ gegeben, so kann man die spektrale Strahldichte über die abgegebene Strahlungsleistung der Oberfläche $U$ in den Raumwinkelbereich $S$ definieren.
+		Die zugehörige Abbildung ist dann wie folgt gegeben.
+		\[
+			\func{\s{L}}{(0,\infty)\times\partial K\times \Omega}{[0,\infty)}
+		\]
+		\[
+			\Phi(\Lambda,U,S) \definedby \integral{\Lambda}{}{ \integral{U}{}{ \integral{S}{}{ \s{L}(\lambda,x,\omega)\abs{\dotp{\mu(x)}{\omega}} }{\omega} }{\sigma(x)} }{\lambda}
+		\]
+		Abbildung \ref{fig:radiance} zeigt noch einmal eine Skizze, welche die Struktur dieser Abbildung verdeutlicht.
+		Der Erfahrung nach stellt die spektrale Strahldichte für das menschliche Auge die sinnvollste messbare Größe für die empfundene Helligkeit einer Oberfläche bezüglich eines Beobachtungspunktes dar.
+
+		\begin{figure}[h]
+			\center
+			\includegraphics{gg_fig/radiance_1.pdf}
+			\caption{Die Skizze stellt ein qualitatives Beispiel einer spektralen Strahldichte $\s{L}$ dar, die an einem Punkt $x$ auf der Oberfläche $\partial K$ und für eine Wellenlänge $\lambda$ eine Verteilung in Abhängigkeit von $\omega$ auf der Einheitskugel besitzt. In der Abbildung ist dabei die Abstrahlung nur erlaubt, wenn $\dotp{\omega}{\mu}>0$, wobei $\mu$ die äußere Normale im Punkt $x$ beschreibt.}
+			\label{fig:radiance}
+		\end{figure}
+
+		Eine weitere Größe, die wir hier einführen möchten, ist die sogenannte \enquote{Bestrahlungsstärke} (engl.: \textit{irradiance}).
+		Sie wird vor allem bei der noch folgenden Konstruktion der Irradiance Maps benötigt werden.
+		\[
+			\func{\s{E}}{(0,\infty)\times\partial K}{[0,\infty)},\qquad \s{E}(\lambda,x) \define \integral{\Omega}{}{ \s{L}(\lambda,x,\omega)\abs{\dotp{\mu(x)}{\omega}} }{\sigma(\omega)}
+		\]
+		Die Bestrahlungsstärke quantifiziert die Energie pro Zeit, pro Wellenlänge und pro Flächenelement an einem Punkt auf der Oberfläche des Objektes.
+
+		Für die weiteren Algorithmen und Implementierungen reicht es eine entkoppelte Abbildung zu betrachten, welche für jeden Punkt einer Szene und jede gegebene Richtung die Strahldichte bestimmt.
+		Später wird dies die Funktion sein, die wir durch Radiance Maps annähern wollen.
+		\begin{definition}[Strahldichte-Funktion]
+			Sei $\s{S}$ eine Szene.
+			Dann ist die Abbildung $\func{L_\s{S}}{S(\s{S})\times \Omega}{[0,\infty)}$ eine Strahldichte-Funktion von $\s{S}$.
+		\end{definition}
+
+	% subsection photometrie (end)
 
 % section grundlagen_und_methoden (end)
