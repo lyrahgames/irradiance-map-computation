@@ -136,6 +136,10 @@
 
 		\begin{definition}[Szene]
 			Eine Szene $\s{S}$ bezeichnet ein Tupel $(P_\s{S},E_\s{S})$ mit einer endlichen Menge $P_\s{S}$ von Primitiven und einer Umgebungsbeleuchtungs-Funktion $E_\s{S}$.
+			Die Menge $S(\s{S})$ der Punkte in der Szene $\s{S}$ sei definiert durch
+			\[
+				S(\s{S}) \define \bigcup_{p\in P_\s{S}} S(\triangle_p)
+			\]
 		\end{definition}
 
 	% subsection szenenrepresentation (end)
@@ -148,10 +152,13 @@
 
 		Grundsätzlich gibt es viele Verfahren, um ein Szene auf ein Bild zu rendern.
 		Die Erfahrung zeigt aber, dass vor allem in Bereichen, in denen die globalen Beleuchtungseffekte realistisch simuliert werden sollen, Raytracing eine wichtige Grundlage darstellt.
-		Der Grund dafür besteht in der Tatsache, dass Raytracing das Sichtbarkeitsproblem löst und durch die Verwendung von Strahlen eine Basis für die Lichtberechnung im Sinne der geometrischen Optik darstellt.
+		Der Grund dafür besteht in der Tatsache, dass Raytracing das Sichtbarkeitsproblem löst und durch die Verwendung von Strahlen eine Basis für die Lichtberechnung im Sinne der geometrischen Optik bereitstellt.
 		\begin{definition}[Sichtbarkeitsproblem]
-			Seien $\s{S}$ eine Szene, $o\in\SR^3$ und $x\in S(\s{S})$ gegeben.
-			Dann ist die Sichtbarkeitsfunktion die Abbildung $\func{V_\s{S}}{\SR^3\times S(\s{S})}{\set{0,1}}$ mit der Eigenschaft.
+			Sei $\s{S}$ eine Szene.
+			Dann ist die Sichtbarkeitsfunktion von $\s{S}$ die folgende Abbildung.
+			\[
+				\func{V_\s{S}}{\SR^3\times S(\s{S})}{\set{0,1}}
+			\]
 			\[
 				V_\s{S}(o,x)=
 				\begin{cases}
@@ -159,32 +166,40 @@
 					0 &: \m{sonst}
 				\end{cases}
 			\]
-			Das Sichtbarkeitsproblem beschreibt dann die Aufgabe diese Funktion zu evaluieren.
+			Das Sichtbarkeitsproblem beschreibt dann die Aufgabe diese Funktion für gegebene Szenen und Parameter zu evaluieren.
 		\end{definition}
 
 		\begin{figure}[h]
 			\center
 			\includegraphics{gg_fig/ray_tracing_1.pdf}
-			\caption{Die Abbildung zeigt eine Skizze, welche das Sichtbarkeitsproblem und den Raytracing-Algorithmus verdeutlicht. Der ausgesendete Strahl trifft in der Szene genau zwei Punkte. Dabei wird der Zweite durch den ersten verdeckt. Für den ersten Punkt ergibt die Sichtbarkeitsfunktion also 1 und für den Zweiten gerade 0.}
+			\caption{Die Abbildung zeigt eine Skizze, welche das Sichtbarkeitsproblem und den Raytracing-Algorithmus verdeutlicht. Die grau melierten Dreiecke sollen die gegebene Szene $\s{S}$ darstellen. Der ausgesendete Strahl $r=(r_\m{o},r_\m{d})$ trifft in der Szene genau zwei Punkte $x_1$ und $x_2$. Dabei wird $x_2$ durch $x_1$ verdeckt. Es gilt also $V_\s{S}(r_\m{o},x_1)=1$ und $V_\s{S}(r_\m{o},x_2)=0$.}
 			\label{fig:ray_tracing-1}
 		\end{figure}
 
-		Die Sichtbarkeitsfunktion gibt gerade an, ob der Oberflächenpunkt $x$ vom Beobachtungspunkt $o$ aus in gerader Linie gesehen werden kann oder ob zwischen diesen Punkten ein Primitiv den Punkt $x$ verdeckt.
-		Das ist auch der Grund, weshalb Raytracing eine effektive Lösung für diese Aufgabe darstellt.
-		Die Basis des Verfahrens bildet das Aussenden von \enquote{Strahlen} (engl.: \textit{ray}) bezüglich eines Ursprungspunktes.
-		Diese werden verfolgt und auf Schnittpunkte mit der Szene getestet.
-		Abbildung \ref{fig:ray_tracing-1} zeigt das Verfahren anhand einer Skizze.
-		Mathematisch wollen wir unter einem Strahl Folgendes verstehen.
+		Die Sichtbarkeitsfunktion gibt an, ob der Oberflächenpunkt $x$ vom Beobachtungspunkt $o$ aus in gerader Linie gesehen werden kann oder ob zwischen diesen Punkten ein Primitiv den Punkt $x$ verdeckt.
+		Daran anknüpfend besteht die Basis des Raytracing-Verfahrens auf dem Aussenden von \enquote{Strahlen} (engl.: \textit{ray}) bezüglich eines Ursprungspunktes.
+		Für diese Strahlen kann der Schnittpunkt mit der Szene ermittelt werden.
+		Liegt der Schnittpunkt zwischen $o$ und $x$, so beträgt der Wert der Sichtbarkeitsfunktion $0$ ansonsten $1$.
+		Die Sichtbarkeitsfunktion kann somit für alle gegebenen Parameter durch Raytracing berechnet werden.
+		Abbildung \ref{fig:ray_tracing-1} zeigt diese Methode anhand einer Skizze.
 		\begin{definition}[Strahl]
 			Ein Strahl $r$ sei gerade durch ein Tupel $(r_\m{o},r_\m{d})$ mit einem Ursprungspunkt $r_\m{o}\in\SR^3$ und einer Richtung $r_\m{d}\in\SR^3\setminus\set{0}$ charakterisiert. Die Menge $S(r)$ der Punkte des Strahls ist gegeben durch das Bild der Parametrisierung $([0,\infty),\varphi_r)$
 			\[
 				S(r) \define \im{\varphi_r},\qquad \func{\varphi_r}{[0,\infty)}{\SR^3},\qquad \varphi_r(t)\define r_\m{o} + tr_\m{d}
 			\]
+			Die Menge aller Strahlen sei mit $R$ bezeichnet.
 		\end{definition}
 
+		Die vollständige Evaluierung von $V_\s{S}$ ist jedoch häufig nicht nötig.
+		In Abbildung \ref{fig:ray_tracing-1} ist klar, dass alle Punkte von $r$, die hinter $x_1$ liegen von dem Beobachtungspunkt $r_\m{o}$ aus nicht sichtbar sind.
+		Beim eigentlichen Raytracing-Algorithmus macht man sich dies zu Nutze und berechnet für eine vorgegebene Richtung nur den nächsten Schnittpunkt.
+		Alle weiteren Schnittpunkte können ignoriert werden, da sie vom Strahl aus nicht erreicht werden.
 		\begin{definition}[Raytracing-Funktion]
-			Seien $\s{S}$ eine Szene und $r$ ein gegebener Strahl.
-			Dann definiert die Abbildung $\func{\m{rt}_\s{S}}{R}{(0,\infty]}$ mit der folgenden Definition die Raytracing-Funktion der Szene $\s{S}$.
+			Sei $\s{S}$ eine Szene.
+			Dann ist die Raytracing-Funktion der Szene $\s{S}$ gegeben durch die folgende Abbildung.
+			\[
+				\func{\m{rt}_\s{S}}{R}{(0,\infty]}
+			\]
 			\[
 				\m{rt}_\s{S}(r) \define
 				\begin{cases}
@@ -194,18 +209,20 @@
 			\]
 		\end{definition}
 
-		Häufig erweitert man diesen Algorithmus um die Berechnung eines gesamten Bildes, indem man für jeden Pixel des Bildes einen oder mehrere Strahlen durch einen analogen virtuellen Pixel im Szenenraum schießt und die Sichtbarkeitsfunktion für diese evaluiert.
+		Wie bereits erwähnt, erweitert man diesen Algorithmus häufig mit der Berechnung eines gesamten Bildes, indem man für jeden Pixel des Bildes einen oder mehrere Strahlen durch einen analogen virtuellen Pixel im Szenenraum schießt und die Raytracing-Funktion für diese evaluiert.
 		Abbildung \ref{fig:ray_tracing-2} zeigt dieses Verfahren anhand einer Skizze.
 		Um gleichzeitig das Shading zu ermöglichen, ermittelt man nicht nur den Schnittpunkt, sondern auch in welchem Primitiv sich dieser befindet und welche baryzentrischen Koordinaten er besitzt.
-		Die Implementierung des Raytracing-Verfahrens soll hier nicht gezeigt werden, da eine einfache naive Implementierung meistens einen zu großen Rechenaufwand darstellt und die hier optimierte Variante weit über das Thema dieser Arbeit hinausgeht.
+		Die Implementierung des Raytracing-Verfahrens soll hier nicht gezeigt werden, da eine einfache naive Implementierung meistens einen zu großen Rechenaufwand darstellt und die hier verwendete optimierte Variante weit über das Thema dieser Arbeit hinausgeht.
 
-		\begin{figure}[h]
+		\begin{figure}
 			\center
 			\includegraphics{gg_fig/ray_tracing_2.pdf}
-			\caption{}
+			\caption{In der Skizze ist ein typisches Render-Verfahren auf der Basis des Raytracing-Algorithmus dargestellt. Bezüglich eines Beobachtungspunktes $o$ wird durch jeden Pixel eines virtuellen Bildschirms $\m{VS}$ ein Strahl geschossen und dessen Raytracing-Funktion evaluiert. Gibt es keinen Schnittpunkt, so wird der Pixel meistens schwarz gefärbt. Ansonsten kann zum Beispiel die Farbe des getroffenen Objektes angezeigt werden. Der Übersicht wegen sind im Bild nur vier der eigentlich acht Strahlen sichtbar.}
 			\label{fig:ray_tracing-2}
 		\end{figure}
 
 	% subsection raytracing (end)
+
+
 
 % section grundlagen_und_methoden (end)
