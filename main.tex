@@ -17,11 +17,7 @@
 
 	\newpage
 
-	\begin{figure}[h]
-		\center
-		\includegraphics{gg_fig/brdf_1.pdf}
-		\caption{}
-	\end{figure}
+
 
 	Diese Definition zeigt diverse Probleme auf, die bei der Modellierung von Objekten entstehen können.
 	Dreiecke der Primitive in einer Szene dürfen sich im Allgemeinen beliebig schneiden.
@@ -37,6 +33,17 @@
 		\label{fig:triangle_mesh}
 	\end{figure}
 
+
+	Aufgrund der Definition von physikalischer BRDFs muss bei Linearkombination eine weitere Bedingung beachtet werden.
+	Das folgende Theorem klärt dies genauer.
+	\begin{theorem}[Linearkombination von BRDFs bildet wieder eine BRDF]
+		Seien $\triangle$ ein Dreieck und $\nu$ eine äußere Normalen-Funktion auf $\triangle$.
+		Seien weiterhin $n\in\SN$ und für alle $i\in\SN$ mit $i\leq n$ ideale BRDFs $f_i$ und Koeffizienten $\alpha_i\in[0,1]$ mit $\sum_{i=1}^n\alpha_i \leq 1$ gegeben.
+		Dann ist die folgende Funktion wieder eine physikalische BRDF.
+		\[
+			f \define \sum_{i=1}^n \alpha_i f_i
+		\]
+	\end{theorem}
 
 
 \end{document}

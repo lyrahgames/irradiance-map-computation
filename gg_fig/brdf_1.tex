@@ -5,23 +5,11 @@
 \usetikzlibrary{arrows}
 \usetikzlibrary{arrows.meta}
 \pagestyle{empty}
-
-%<<<<<<<WARNING>>>>>>>
-% PGF/Tikz doesn't support the following mathematical functions:
-% cosh, acosh, sinh, asinh, tanh, atanh,
-% x^r with r not integer
-
-% Plotting will be done using GNUPLOT
-% GNUPLOT must be installed and you must allow Latex to call external programs by
-% Adding the following option to your compiler
-% shell-escape    OR    enable-write18
-% Example: pdflatex --shell-escape file.tex
-
 \begin{document}
 \definecolor{ccqqqq}{rgb}{0.8,0.,0.}
 \definecolor{ttttff}{rgb}{0.2,0.2,1.}
 \begin{tikzpicture}[line cap=round,line join=round,>={Stealth},x=1.6cm,y=1.6cm]
-\clip(-2.1500052067212176,-0.09185918555345296) rectangle (2.347368371636643,1.8723875085742003);
+\clip(-2.1500052067212176,-0.4460676058059803) rectangle (2.347368371636643,1.8723875085742006);
 \draw[line width=0.4pt,color=ttttff, smooth,samples=100,domain=-1.5707963267948966:1.5707963267948966] plot[parametric] function{sin((t))+sin((t))*(1.0-(3.0*(t-3.1415926535/4.0)/(4.0*3.1415926535))**(2.0))**(500.0),cos((t))+cos((t))*(1.0-(3.0*(t-3.1415926535/4.0)/(4.0*3.1415926535))**(2.0))**(500.0)};
 \draw [line width=0.4pt,domain=-2.1500052067212176:2.347368371636643] plot(\x,{(-0.-0.*\x)/4.});
 \draw [->,line width=0.4pt,dash pattern=on 2pt off 2pt,color=ttttff] (0.,0.) -- (1.8,1.8);
@@ -39,10 +27,12 @@
 \draw [->,line width=0.4pt,color=ccqqqq] (0.,0.) -- (0.,1.5);
 \draw [->,line width=0.4pt] (0.,0.) -- (-1.2,1.2);
 \begin{scriptsize}
-\draw[color=black] (-1.3879204237536569,0.09597861306531169) node {$\partial K$};
+\draw[color=black] (-1.1625150654111387,-0.1938282762322109) node {$S(\triangle)$};
 \draw[color=ttttff] (1.7516542103028456,0.573623300981599) node {$f(x,\omega_0,\omega)$};
-\draw[color=ccqqqq] (0.265052204091476,1.534279471060424) node {$\mu$};
-\draw[color=black] (-0.8888085588523666,1.367908849426661) node {$\omega_0$};
+\draw[color=ccqqqq] (0.3616545005239838,1.534279471060424) node {$\nu(x)$};
+\draw[color=black] (-0.9532100898073717,1.303507318471656) node {$\omega_0$};
+\draw [fill=black] (-0.004015309550050205,0.004015309550050205) circle (1.5pt);
+\draw[color=black] (-0.0032875082210455098,-0.258229807187216) node {$x$};
 \end{scriptsize}
 \end{tikzpicture}
 \end{document}

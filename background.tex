@@ -273,4 +273,55 @@
 
 	% subsection radiometrie (end)
 
+	\subsection{Reflexionen an Oberflächen} % (fold)
+	\label{sub:reflexionen_an_oberflächen}
+
+		Um Primitive zu definieren nutzten wir eine abstrakte Menge $\s{M}$, welche die Elemente enthielt, die die Materialien unserer Szene charakterisierten.
+		Der Grund dafür war, dass die Beschreibung von Materialien ein komplexes Thema ist, dessen vollständige Behandlung hier nicht möglich ist.
+		Wir wollen uns hier auf eine spezielle Kategorie von Materialen beschränken.
+		Dabei beachten wir nur die Reflexion und Absorbtion, nicht aber die Transmission von Licht.
+		Die Idee besteht darin, ein Material durch eine geeignete Funktion auf der Oberfläche zu charakterisieren.
+		Diese Funktionen nennt man \enquote{Bidirektionale Reflektanzverteilungsfunktionen} (engl.: \textit{bidirectional reflectance distribution function}, BRDF).
+		Sie beschreiben den Anteil des reflektierten Lichtes in Abhängigkeit des Ein- und Ausfallwinkels.
+		In Abbildung \ref{fig:brdf} wird anhand einer Skizze die folgende Definition Dieser verdeutlicht.
+		\begin{definition}[BRDF]
+			Sei $\mu\in\Omega$ eine Normale.
+			Dann ist eine BRDF bezüglich $\mu$ gegeben durch eine integrierbare Abbildung
+			\[
+				\func{f}{\Theta_\mu\times\Theta_\mu}{[0,\infty)}
+			\]
+			Es handelt sich bei $f$ um eine physikalische BRDF, wenn die folgenden Eigenschaften für alle $\omega_\m{i},\omega_\m{o}\in\Theta_\mu$ erfüllt sind.
+			\begin{enumerate}[label = \normalfont{(\roman*)}]
+				\item $f(\omega_\m{i},\omega_\m{o}) = f(\omega_\m{o},\omega_\m{i}) \hfill \text{(Helmholtz-Reziprozität)}$
+				\item \label{item:brdf_energy_conservation} $\integral{\Theta_\mu}{}{f(\omega_\m{i},\omega) \abs{\dotp{\mu}{\omega}}}{\sigma(\omega)} \leq 1 \hfill \text{(Energieerhaltung)}$
+			\end{enumerate}
+			Gilt in \ref{item:brdf_energy_conservation} die Gleichheit, so nennt man $f$ auch eine ideale physikalische BRDF.
+		\end{definition}
+
+		\begin{figure}
+			\center
+			\includegraphics{gg_fig/brdf_1.pdf}
+			\caption{Die Abbildung zeigt die typische Verteilung des reflektierten Lichtes über der Hemisphere einer häufig verwendeten BRDF $f$ bezüglich einer konstanten Einfallsrichtung $\omega_0$ an einem Punkt $x\in S(\triangle)$. Auch hier sind $\triangle$ ein Dreieck und $\nu$ eine Normalen-Funktion auf $\triangle$.}
+			\label{fig:brdf}
+		\end{figure}
+
+		BRDFs sind im Allgemeinen nicht in geschlossener Form notierbar.
+		Aus diesem Grund wollen wir für die Konstruktion realistischer BRDFs verschiedene einzelne Reflexionsmodelle zu Grunde legen.
+		Die daraus entstehenden idealen BRDFs können dann durch eine Linearkombination miteinander verbunden werden, um so reale Materialien nachzuahmen.
+		Zu beachten ist, dass die beiden folgenden eingeführten Beispiele solcher Modelle gewisse auftretende physikalische Effekte, wie zum Beispiel die Fresnel-Reflexion, nicht berücksichtigen.
+		\begin{definition}[spezielle BRDFs]
+			Sei $\mu\in\Omega$ eine Normale.
+			Dann definiert man die folgenden BRDFs bezüglich $\mu$ für alle $\omega_\m{i},\omega_\m{o}\in\Theta_\mu$.
+			\begin{enumerate}[label = \normalfont{(\roman*)}]
+				\item $\m{ldr}(\omega_\m{i},\omega_\m{o}) \define \frac{1}{\pi} \hfill \text{(lambertsch diffus)}$
+				\item $\m{psr}(\omega_\m{i},\omega_\m{o}) \define \frac{1}{\abs{\dotp{\mu}{\omega_\m{i}}}} \delta_{\omega_\m{o}}(2\dotp{\mu}{\omega_\m{i}}\mu - \omega_\m{i}) \hfill \text{(perfekt spiegelnd)}$
+			\end{enumerate}
+		\end{definition}
+
+		Möchte man zusätzlich die Transmission von Licht an einem Punkt mit Normaler $\mu\in\Omega$ betrachten, so lässt sich analog zur Menge der BRDFs bezüglich $\mu$ eine Menge von Funktionen auf $\Theta_{-\mu}\times\Theta_{-\mu}$ definieren.
+		Die Funktionen dieser Klasse werden Bidirektionale Transmissionsverteilungsfunktionen (engl.: \textit{bidirectional transmittance distribution function}, BTDF) genannt.
+		Die Zusammenführung einer BRDF und einer BTDF auf $\Omega$ führt zur verallgemeinerten Bidirektionalen Streuungsverteilungsfunktion (engl.: \textit{bidirectional scattering distribution function}, BSDF).
+
+	% subsection reflexionen_an_oberflächen (end)
+
 % section grundlagen_und_methoden (end)
