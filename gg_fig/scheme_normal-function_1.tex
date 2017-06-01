@@ -1,28 +1,43 @@
 \documentclass{standalone}
 \usepackage[utf8]{inputenc}
-\usepackage{pstricks-add}
+\usepackage{pgf,tikz}
+\usepackage{mathrsfs}
+\usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
 \pagestyle{empty}
+ 
+%<<<<<<<WARNING>>>>>>>
+% PGF/Tikz doesn't support the following mathematical functions:
+% cosh, acosh, sinh, asinh, tanh, atanh,
+% x^r with r not integer
+
+% Plotting will be done using GNUPLOT
+% GNUPLOT must be installed and you must allow Latex to call external programs by
+% Adding the following option to your compiler
+% shell-escape    OR    enable-write18 
+% Example: pdflatex --shell-escape file.tex 
+
 \begin{document}
-\newrgbcolor{ttttff}{0.2 0.2 1.}
-\newrgbcolor{ccqqqq}{0.8 0. 0.}
-\psset{xunit=2.0cm,yunit=2.0cm,algebraic=true,dimen=middle,dotstyle=o,dotsize=5pt 0,linewidth=0.8pt,arrowsize=3pt 2,arrowinset=0.25}
-\begin{pspicture*}(-0.8099162960879485,-0.2224721394077049)(1.8433166768033153,1.1659580184493663)
-\parametricplot[linewidth=0.4pt,linecolor=ttttff]{0.0}{1.0}{t+(2.0*t-1.0)/sqrt(2.0*(1.0+2.0*t*(t-1.0)))|1.0/sqrt(2.0*(1.0+2.0*t*(t-1.0)))}
-\psline[linewidth=0.4pt,linecolor=ccqqqq]{->}(1.,0.)(1.7071067811865475,0.7071067811865475)
-\psline[linewidth=0.4pt,linecolor=ccqqqq]{->}(0.,0.)(-0.7071067811865475,0.7071067811865475)
-\psline[linewidth=0.4pt,linestyle=dashed,dash=2pt 2pt,linecolor=ttttff]{->}(0.5,0.)(0.5,1.)
-\psline[linewidth=0.4pt,linestyle=dashed,dash=2pt 2pt,linecolor=ttttff]{->}(0.75,0.)(1.1972135954999579,0.8944271909999159)
-\psline[linewidth=0.4pt,linestyle=dashed,dash=2pt 2pt,linecolor=ttttff]{->}(0.25,0.)(-0.19721359549995793,0.8944271909999159)
-\psline[linewidth=0.4pt](0.,0.)(1.,0.)
+\definecolor{ccqqqq}{rgb}{0.8,0.,0.}
+\definecolor{ttttff}{rgb}{0.2,0.2,1.}
+\begin{tikzpicture}[line cap=round,line join=round,>={Stealth},x=1.8cm,y=1.8cm]
+\clip(-0.8099162960879485,-0.2224721394077049) rectangle (1.8433166768033153,1.1659580184493663);
+\draw[line width=0.4pt,color=ttttff, smooth,samples=100,domain=0.0:1.0] plot[parametric] function{t+(2.0*t-1.0)/sqrt(2.0*(1.0+2.0*t*(t-1.0))),1.0/sqrt(2.0*(1.0+2.0*t*(t-1.0)))};
+\draw [->,line width=0.4pt,color=ccqqqq] (1.,0.) -- (1.7071067811865475,0.7071067811865475);
+\draw [->,line width=0.4pt,color=ccqqqq] (0.,0.) -- (-0.7071067811865475,0.7071067811865475);
+\draw [->,line width=0.4pt,dash pattern=on 2pt off 2pt,color=ttttff] (0.5,0.) -- (0.5,1.);
+\draw [->,line width=0.4pt,dash pattern=on 2pt off 2pt,color=ttttff] (0.75,0.) -- (1.1972135954999579,0.8944271909999159);
+\draw [->,line width=0.4pt,dash pattern=on 2pt off 2pt,color=ttttff] (0.25,0.) -- (-0.19721359549995793,0.8944271909999159);
+\draw [line width=0.4pt] (0.,0.)-- (1.,0.);
 \begin{scriptsize}
-\rput[bl](-0.5008479390307223,0.9091935372018258){\ttttff{$\nu(x)$}}
-\rput[bl](1.3488073055117538,0.21022356047240978){\ccqqqq{$\mu_B$}}
-\rput[bl](-0.4865832456280812,0.21973335607417052){\ccqqqq{$\mu_A$}}
-\rput[bl](0.39307284753479305,-0.1511486723944992){$S(\triangle)$}
-\psdots[dotsize=3pt 0,dotstyle=*](0.,0.)
-\rput[bl](-0.11570121715940988,-0.1796780591997815){$A_\triangle$}
-\psdots[dotsize=3pt 0,dotstyle=*](1.,0.)
-\rput[bl](1.0016997660474845,-0.18443295700066187){$B_\triangle$}
+\draw[color=ttttff] (-0.5388871214377656,0.8735318036952229) node {$\nu$};
+\draw[color=ccqqqq] (1.4320180170271608,0.26252743628209396) node {$\mu_B$};
+\draw[color=ccqqqq] (-0.40337253411267415,0.2720372318838547) node {$\mu_A$};
+\draw[color=black] (0.5309648837603247,-0.11073204108701595) node {$\triangle$};
+\draw [fill=black] (0.,0.) circle (1.5pt);
+\draw[color=black] (-0.07766203475236669,-0.11073204108701595) node {$A$};
+\draw [fill=black] (1.,0.) circle (1.5pt);
+\draw[color=black] (1.044493846255408,-0.12024183668877672) node {$B$};
 \end{scriptsize}
-\end{pspicture*}
+\end{tikzpicture}
 \end{document}

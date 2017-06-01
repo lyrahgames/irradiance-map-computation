@@ -3,14 +3,15 @@
 \newlistof{math}{mathlist}{\listofmathcall}
 % add parentheses around argument
 \newcommand{\parent}[1]{ \ifx&#1&\else (#1) \fi }
-\definecolor{mathdefback}{rgb}{0.95,0.95,0.98}
+% \definecolor{mathdefback}{rgb}{0.95,0.95,0.98}
+\definecolor{mathdefback}{rgb}{1,1,1}
 % unnumerated mathematical definition environment definiton
 \newenvironment{mathdef*}[2]{
 	\medskip
 	\begin{tcolorbox}[colback=mathdefback, boxrule=0.5pt, colframe=black, boxsep=0pt, enhanced jigsaw, breakable, arc=3pt]
 	\noindent
-	{ \fontfamily{ppl}\selectfont \textbf{\textsc{#1:}} } ~ #2 
-	\par \hfill\\ 
+	{ \fontfamily{ppl}\selectfont \textbf{\textsc{#1:}} } ~ #2
+	\par \hfill\\
 	\fontfamily{lmr}\selectfont \itshape
 }{
 	\end{tcolorbox}
@@ -40,9 +41,9 @@
 	\begin{tcolorbox}[boxrule=0pt, leftrule=2.5pt, arc=2pt, colback=white, colframe=maththeoremframe, enhanced jigsaw, breakable, vfill before first, top=0mm, bottom=0mm, left=2mm, right=0mm, boxsep=1mm]
 	\noindent
 	{ \fontfamily{ppl}\selectfont \textbf{\textsc{#1:}} } ~ #2
-	\par \hfill\\ 
+	\par \hfill\\
 	\fontfamily{lmr} \fontshape{it} \selectfont
-}{ 
+}{
 	\end{tcolorbox}
 	\medskip
 }
@@ -84,9 +85,9 @@
 	\begin{tcolorbox}[title= { \fontfamily{ppl}\selectfont \small \textsc{#1:} } ~ \parent{#2}, boxrule=0pt, colback=white, colframe=white, coltitle=black, breakable, boxsep=0mm, top=2mm, bottom=0mm, right=0mm, left=0mm, before upper={\parindent1em}]%
 	\normalfont
 	\small
-}{ 
+}{
 	\end{tcolorbox}
-	% \end{adjustwidth} 
+	% \end{adjustwidth}
 	% \qedbox
 	\medskip
 }

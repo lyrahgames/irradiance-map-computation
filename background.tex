@@ -5,89 +5,73 @@
 	Viele dieser Themen können hier nur angerissen werden, da ihre komplette Behandlung den Rahmen und das Ziel des Themas verfehlen würde.
 	Für eine genauere Einführung in die einzelnen Themengebiete, wird dem Leser geraten sich mit den genannten Quellen auseinander zu setzen.
 
-	\subsection{Szenenrepresentation} % (fold)
-	\label{sec:szenenrepresentation}
+	\subsection{Szenengeometrie} % (fold)
+	\label{sub:szenengeometrie}
 
-		Um realistische Bilder zu generieren, benötigen wir als Eingabe gewisse Daten der physikalischen Objekte, die durch den Beobachter oder auch die Kamera betrachtet werden.
-		Für die später betrachteten Algorithmen ist dabei vor allem das Verhalten von Licht auf den Oberflächen dieser Objekte wichtig.
-		Der Einfachheit halber wollen wir davon ausgehen, dass das Licht nur in den oberen Schichten eines Körpers mit dessen Material wechselwirkt.
-		Für uns ist es also ausreichend, nur die Oberflächen der gegebenen Objekte und nicht deren Inneres zu beschreiben.
+		Um in einem Computer ein zweidimensionales Bild einer dreidimensionalen Umwelt oder auch \enquote{Szene} (engl.: \textit{scene}) zu generieren, benötigen wir ein mathematisches Modell, welches diese hinreichend gut beschreibt.
+		Wir wollen uns einen Beobachter vorstellen, der die Umwelt und die Objekte in ihr von einem bestimmten Punkt im Raum aus betrachtet.
+		Für viele Algorithmen, die diese Aufgabe lösen, ist dabei vor allem das Verhalten von Licht auf den Oberflächen dieser Objekte wichtig \cite{pbrt3, kajiya-lte, veach-thesis}.
+		Der Einfachheit halber wollen wir davon ausgehen, dass Licht nur in den oberen Schichten eines Körpers mit dessen Material wechselwirkt.
+		Diese Annahme reduziert die Komplexität des mathematischen Modells, die dann noch aus der Charakterisierung der Oberflächen besteht.
 
-		Die Oberflächen realer physikalischer Objekte sind im Allgemeinen beliebig geformt und können nicht in geschlossener Form durch eine Gleichung beschrieben werden.
-		Dennoch lassen sie sich im analytischen Sinne durch einfachere Hyperflächen im Raum approximieren.
+		Die Oberflächen realer physikalischer Körper sind im Allgemeinen beliebig geformt und können nicht in geschlossener Form durch eine Gleichung beschrieben werden.
+		Dennoch lassen sie sich im analytischen Sinne durch einfachere Hyperflächen (engl.: \textit{shape} \cite[S.~123~ff]{pbrt3}) im Raum approximieren \cite{diffgeo}.
 		Für die Bildgenerierung wählt man für solch eine Fläche meist ein Dreieck.
-		Es ist einfach zu beschreiben und flexibel genug um die meisten Objekte beliebig genau zu approximieren.
+		Es ist einfach zu beschreiben und flexibel genug um die meisten Objekte beliebig genau zu approximieren \cite{course-triangle-mesh, surface-triangle-mesh}.
 		Dabei wollen wir entartete Dreiecke, die nur aus einem Punkt oder einer Strecke bestehen, ausschließen, da sie für die betrachteten Render-Verfahren nicht darstellbar sind.
 		\begin{definition}[Dreieck]
-			Ein Dreieck $\triangle$ wird durch eine Sequenz $(A_\triangle,B_\triangle,C_\triangle)$ von Punkten in $\SR^3$, für die die Menge $\set{B_\triangle-A_\triangle, C_\triangle-A_\triangle}$ linear unabhängig ist, charakterisiert.
-			Die Menge $S(\triangle)$ der Punkte des Dreiecks ist definiert durch
-			\[
-				S(\triangle) \define \im{\varphi_\triangle}
-			\]
-			Dabei stellt $(M,\varphi_\triangle)$ mit den folgenden Definitionen die Standardparametrisierung der Menge $S(\triangle)$ dar.
+			Ein Dreieck $\triangle$ wird durch eine Sequenz $(A,B,C)$ von Eckpunkten in $\SR^3$, für die die Menge $\set{B-A, C-A}$ linear unabhängig ist, charakterisiert.
+			Seien weiterhin
 			\[
 				M \define \set[u+v\leq 1]{(u,v)\in[0,1]^2}
 			\]
 			\[
-				\func{\varphi_\triangle}{M}{S(\triangle)},\qquad \varphi_\triangle(u,v) \define (1-u-v)A_\triangle + uB_\triangle + vC_\triangle
+				\func{\varphi}{M}{\SR^3},\qquad \varphi(u,v) \define (1-u-v)A + uB + vC
 			\]
-			Die baryzentrischen Koordinaten $(u,v,w)$ eines Punktes $x\in S(\triangle)$ sind durch die folgenden Eigenschaften gegeben.
+			Dann ist die Menge der Punkte $S$ des Dreiecks gegeben durch $\im\varphi$ und $(M,\varphi)$ stellt deren Standardparametrisierung dar.
+			Der Notation wegen, identifizieren wir $\triangle$ mit $S$ und definieren für alle $(u,v)\in M$
 			\[
-				(u,v)\in M,\qquad w = 1-u-v,\qquad \varphi_\triangle(u,v) = x
+				\triangle(u,v) \define \varphi(u,v)
 			\]
-			Die analytische äußere Normale $\mu_\triangle$ ist gegeben durch den Ausdruck
+			Die baryzentrischen Koordinaten $(u,v,w)$ eines Punktes $x\in \triangle$ sind weiterhin durch die folgenden Eigenschaften gegeben.
 			\[
-				\mu_\triangle \define \frac{\crossp{(B_\triangle-A_\triangle)}{(C_\triangle-A_\triangle)}}{\norm{\crossp{(B_\triangle-A_\triangle)}{(C_\triangle-A_\triangle)}}}
+				(u,v)\in M,\qquad w = 1-u-v,\qquad \triangle(u,v) = x
+			\]
+			Die analytische äußere Normale oder auch Normale ist definiert durch
+			\[
+				\mu \define \frac{\crossp{(B-A)}{(C-A)}}{\norm{\crossp{(B-A)}{(C-A)}}}
 			\]
 		\end{definition}
 
 		Jedes Dreieck besitzt auf seiner gesamten Fläche eine eindeutige konstante äußere analytische Normale.
-		Für die Simulation von globalen Beleuchtungseffekten ist diese Eigenschaft jedoch ein Nachteil, weil die Beleuchtung eines Objektes stark vom Verlauf seiner Normalen abhängt.
-		Nähern wir ein Objekt nun durch $n\in\SN$ Dreiecke an, so nähern wir zur Zeit auch den Normalenverlauf des Objektes durch die stückweise konstanten äußeren Normalen der Dreiecke an.
-		Der Fehler dieser Approximation tritt in Form eines facettenhaften Musters auf, welcher für das menschliche Auge gut erkennbar ist.
+		Für die Simulation von globalen Beleuchtungseffekten ist diese Eigenschaft jedoch ein Nachteil, weil die Beleuchtung eines Objektes stark vom Verlauf seiner Normalen abhängt .
+		Nähern wir ein Objekt durch $n\in\SN$ Dreiecke an, so nähern wir auch den Normalenverlauf des Objektes durch die stückweise konstanten Normalen der Dreiecke an.
+		Der Fehler dieser Approximation tritt in Form eines facettenhaften Musters auf, welcher für das menschliche Auge gut erkennbar ist \cite[S.~166]{pbrt3}.
 		In Abbildung \ref{fig:facette} wird dieser Effekt genauer an einem Beispiel demonstriert.
-		Das Problem kann im Allgemeinen durch eine Interpolation, die die Stetigkeit der Normalen erhält, gelöst werden.
-		\begin{definition}[Normalen-Funktion]
-			Seien $\triangle$ ein Dreieck und $\func{\nu}{S(\triangle)}{\SR^3}$.
-			Dann wird $\nu$ eine äußere Normalen-Funktion auf $\triangle$ genannt, wenn für alle $x\in S(\triangle)$ die folgenden Eigenschaften gelten.
-			\[
-				\norm{\nu(x)} = 1,\qquad \dotp{\mu_\triangle}{\nu(x)} > 0
-			\]
+		Folglich muss darauf geachtet werden, dass bei stetig differenzierbaren Oberflächen, die Stetigkeit der Normalen erhalten bleibt \cite[S.~39~ff]{diffgeo}.
+		\begin{definition}[Normalen-Funktion / Shading-Normale]
+			Sei $\triangle$ ein Dreieck mit der Normalen $\mu$.
+			Dann wird $\func{\nu}{\triangle}{\shs{\mu}}$ als Normalen-Funktion oder auch Shading-Normale von $\triangle$ bezeichnet.
 		\end{definition}
 
-		\begin{figure}
+		\begin{figure}[h]
 			\begin{subfigure}[b]{0.5\textwidth}
 				\center
-				\includegraphics[scale=0.2]{pic/normal_facette-mark.png}
-				\caption{}
+				\includegraphics[scale=0.15]{pic/normal_facette-mark.png}
+				% \caption{}
 			\end{subfigure}
 			\begin{subfigure}[b]{0.5\textwidth}
 				\center
-				\includegraphics[scale=0.2]{pic/normal_facette-zoom.png}
-				\caption{}
+				\includegraphics[scale=0.15]{pic/normal_facette-zoom.png}
+				% \caption{}
 			\end{subfigure}
 			\caption{Die Bilder zeigen die gerenderte \enquote{Dragon}-Szene. Das rechte Bild entspricht dem roten Bereich des Linken. In dieser Szene werden die Normalen des Objektmodells durch die analytischen Normalen der Dreiecke angenähert. Da das Modell sehr fein trianguliert ist, fällt dies im ersten Bild nicht auf. Zoomt man jedoch mit der Kamera heran werden die Fehler durch die Approximation deutlich und die einzelnen Dreiecke sind mit dem menschlichen Auge auszumachen.}
 			\label{fig:facette}
 		\end{figure}
 
-		\begin{theorem}[Vertex-Normalen-Funktion]
-			Sei $\triangle$ ein Dreieck und seien Normalen $\mu_A, \mu_B, \mu_C \in \SR^3$ an den Punkten des Dreiecks mit den folgenden Eigenschaften für alle $X\in\set{A,B,C}$ gegeben.
-			\[
-				\norm{\mu_X} = 1,\qquad \dotp{\mu_X}{\mu_\triangle} > 0
-			\]
-			Dann definiert die Abbildung $\func{\nu}{S(\triangle)}{\SR^3}$ eine stetige Normalen-Funktion auf $\triangle$, wenn für alle $x\in S(\triangle)$ mit den baryzentrischen Koordinaten $(u,v,w)$ die folgende Aussage gilt.
-			\[
-				\nu(x) = \nu\circ\varphi_\triangle(u,v) \define \frac{w\mu_A + u\mu_B + v\mu_C}{\norm{w\mu_A + u\mu_B + v\mu_C}}
-			\]
-			Wir nennen $\nu$ in diesem Falle eine Vertex-Normalen-Funktion.
-		\end{theorem}
-
-		Durch das Setzen der Normalen an den Eckpunkten eines Dreiecks können wir sicher gehen, dass der Verlauf der Normalen stetig von einem Dreieck zu einem anderen übergeht.
-		Ein beipielhafter Verlauf einer Vertex-Normalen-Funktion wird in Abbildung \ref{fig:normal-function} gezeigt.
-		Für die in dieser Arbeit betrachteten Effekte und Verfahren reicht diese Art der Normalen-Interpolation aus.
-		Dennoch gibt es hier weitere Möglichkeiten, wie zum Beispiel \enquote{Normal Maps}, die eine noch genauere Approximation zu Lasten des Speicherverbrauchs ermöglichen.
-
-		\begin{figure}
+		Nach \cite[S.~166,~584~ff]{pbrt3} und \cite[S.~38~ff,~183~ff]{real-time-render} sind die typischen Verfahren für eine genauere Interpolation die \enquote{Vertex-Shading-Normalen} und das \enquote{Bump Mapping} (engl.: \textit{bumb mapping}).
+		Formal gesehen werden bei beiden Verfahren die Normalen der vorhandenen Geometrie durch eine Normalen-Funktion ersetzt.
+		\begin{figure}[h]
 			\begin{subfigure}[b]{0.5\textwidth}
 				\center
 				\includegraphics{gg_fig/scheme_normal-function_1.pdf}
@@ -98,61 +82,315 @@
 				\includegraphics{gg_fig/scheme_normal-function_2.pdf}
 				% \caption{approximierte Fläche}
 			\end{subfigure}
-			\caption{Die erste Skizze auf der linken Seite zeigt den Verlauf einer Vertex-Normalen-Funktion $\nu$ anhand eines Beispiels. $A_\triangle$ und $B_\triangle$ sind dabei die Eckpunkte eines Dreiecks $\triangle$. $\mu_A$ und $\mu_B$ sind die jeweilig gegebenen Vertex-Normalen an den Eckpunkten. Im rechten Bereich der Abbildung ist die durch $\nu$ approximierte gekrümmte Fläche $\tilde{S}(\triangle)$, auf der die Normalen $\nu(x)$ senkrecht stehen, eingezeichnet.}
+			\caption{Die erste Skizze auf der linken Seite zeigt den Verlauf einer Vertex-Shading-Normalen $\nu$ anhand eines Beispiels. $A$ und $B$ sind dabei zwei Eckpunkte eines Dreiecks $\triangle$. $\mu_A$ und $\mu_B$ sind die jeweilig gegebenen Vertex-Normalen an den Eckpunkten. Im rechten Bereich der Abbildung ist die durch $\nu$ approximierte gekrümmte Fläche $\tilde{\triangle}$, auf der die Shading-Normale $\nu$ senkrecht steht, eingezeichnet.}
 			\label{fig:normal-function}
 		\end{figure}
 
-		Die kleinste Hyperfläche, die wir durch geschlossene Gleichungen beschreiben können und aus derer wir alle weiteren Objekte zusammensetzen, nennen wir \enquote{Primitiv} (engl.: \textit{primitive}).
-		Es soll in unserem Falle nicht nur die Informationen des Dreiecks beinhalten, sondern auch Aussagen über dessen Material oder Oberflächenstruktur treffen können.
-		Insbesondere muss das Primitiv oder dessen Material also die Reflexion, Absorbtion, Transmission und Emission des Lichts an der Oberfläche beschreiben.
-		Für physikalische Materialien gibt es aber je nach den betrachteten Effekten verschiedene verallgemeinerte Varianten der mathematischen Beschreibung.
-		Um keine dieser Varianten auszuschließen, soll hier das Primitiv in einer abstrakteren Form definiert werden.
-		\begin{definition}[Primitiv]
-			Sei $\s{M}$ die Menge der Elemente, die Materialien von Objekten charakterisieren.
-			Dann ist ein Primitiv $p$ gerade ein Tupel $(\triangle_p, \nu_p, m_p)$, bestehend aus einem Dreieck $\triangle_p$, einer Normalen-Funktion $\nu_p$ auf $\triangle_p$ und einem Material $m_p\in \s{M}$.
+		\begin{definition}[Vertex-Shading-Normale]
+			Seien $\triangle$ ein Dreieck mit der Normalen $\mu$ und $\mu_A, \mu_B, \mu_C \in \shs{\mu}$ Normalen an den Eckpunkten des Dreiecks.
+			Sei weiterhin $\nu$ eine Shading-Normale auf $\triangle$, sodass für alle $x\in \triangle$ mit den baryzentrischen Koordinaten $(u,v,w)$ gilt
+			\[
+				\nu(x) \define \frac{w\mu_A + u\mu_B + v\mu_C}{\norm{w\mu_A + u\mu_B + v\mu_C}}
+			\]
+			Dann ist $\nu$ stetig und man nennt es eine Vertex-Shading-Normale von $\triangle$.
 		\end{definition}
 
+		Durch das Setzen der Normalen an den Eckpunkten (engl.: \textit{vertex}) eines Dreiecks können wir sicher gehen, dass der Verlauf der Normalen stetig von einem Dreieck zu einem anderen übergeht.
+		Ein beipielhafter Verlauf einer Vertex-Shading-Normalen wird in Abbildung \ref{fig:normal-function} gezeigt.
+		Zu beachten ist, dass die Vektoren der Shading-Normale im Allgemeinen nicht mehr senkrecht auf der Geometrie stehen.
+		Dadurch kann es, wie in \cite[S.~574~ff]{pbrt3} und \cite[S.~150~ff]{veach-thesis} gezeigt, zu Artefakten bei der Generierung des Bildes kommen.
 
-		Für die eigentliche Approximation der Oberfläche eines Objektes benötigt man jetzt eine Menge von Primitiven.
-		Solch eine Menge wollen wir auch eine \enquote{Szene} (engl.: \textit{scene}) nennen.
-		Häufig benötigt man jedoch neben den Lichtquellen, die durch die Materialien der Primitive gegeben sind, noch weitere anders geartete Lichtquellen, die unabhängig von den eigentlichen Primitven der Szene bestehen.
-		In unserem Falle wollen wir uns speziell auf die Umgebungsbeleuchtungs-Funktion (engl.: \textit{HDR environment map}) beziehen.
-		\begin{definition}[Umgebungsbeleuchtungs-Funktion]
-			Sei $n\in\SN$.
-			Dann ist eine Umgebungsbeleuchtungs-Funktion definiert als eine auf $\Omega$ integrierbare Abbildung $\func{f}{\Omega}{[0,\infty)^n}$.
+		Der letzte Schritt zur vollständigen Beschreibung der Szenengeometrie, besteht darin, eine Menge von Dreiecken zu bilden, sodass diese ein physikalisches Objekt gut genug approximieren.
+		In \cite{pbrt3} und \cite{course-triangle-mesh} werden solche Mengen auch \enquote{Meshs} (engl.: \textit{triangle mesh}) genannt.
+		Wir wollen hier eine unübliche Definition geben.
+		\begin{definition}[Mesh]
+			Seien $n\in\SN$ und Dreiecke $\triangle_i$ mit Shading-Normalen $\nu_i$ für alle $i\in\SN,i\leq n$.
+			Weiterhin definieren wir
+			\[
+				\e{T}\define \bigcup_{i=1}^n \triangle_i \qquad \e{A}\define \set[{ \text{es gibt genau ein $i\in\SN,i\leq n$, sodass $x\in\triangle_i$} }]{x\in\e{T}}
+			\]
+			\[
+				\func{\nu}{\e{T}}{\ssp\cup\set{0}},\qquad \nu(x)\define
+				\begin{cases}
+					\nu_i(x) & :x\in\e{A} \text{ mit } x\in\triangle_i \text{ für } i\in\SN,i\leq n \\
+					0 & :\text{sonst}
+				\end{cases}
+			\]
+			Dann nennen wir $\e{T}$ eine Mesh mit Shading-Normaler $\nu$, wenn für $\sigma$-fast-alle $x\in\e{T}$ auch $x\in\e{A}$ gilt.
 		\end{definition}
 
-		Diese Funktion beschreibt das Licht durch $n\in\SN$ ausgewählte Koeffizienten, welches von einer Kugeloberfläche mit quasi unendlich großem Radius in die Szene ausgesandt wird.
+		Die Definition der Mesh verbietet, dass die Schnittpunkte der Dreiecke eine eigene Fläche im Raum bilden.
+		So können wir sicher gehen, dass die Integration über die Punkte der Mesh eine eindeutige Lösung ergibt.
+		Es ist jedoch erlaubt, dass sich Dreiecke in einem Punkt oder einer Strecke schneiden dürfen.
+		Dies ist auch nötig, um komplexere Objekte formen zu können.
+		In der Praxis ist die genannte Bedingung im Allgemeinen erfüllt und folglich auch keine fundamentale Einschränkung \cite{pbrt3,course-triangle-mesh,surface-triangle-mesh,veach-thesis}.
+
+	% subsection szenengeometrie (end)
+
+	\subsection{Streuung von Licht an Oberflächen} % (fold)
+	\label{sub:bsdf}
+
+		Im letzten Abschnitt wurden die Grundbausteine einer Szene eingeführt, die deren Geometrie beschreiben.
+		Wie bereits erwähnt, benötigen wir jedoch zusätzlich die Informationen, auf welche Art und Weise Licht mit den Oberflächen der Objekte interagiert.
+		Dieses Verhalten wird durch die sogenannte \enquote{Bidirektionale Streuungsverteilungsfunktion} (engl.: \textit{bidirectional scattering distribution function}, BSDF), die sich aus einer \enquote{Bidirektionalen Reflektanzverteilungsfunktion} (engl.: \textit{bidirectional reflectance distribution function}, BRDF) und einer \enquote{Bidirektionalen Transmissionsverteilungsfunktion} (engl.: \textit{bidirectional transmittance distribution function}, BTDF) zusammensetzt, geklärt.
+		Strukturierte Einführungen zu diesem Thema erhält man in \cite{pbrt3,veach-thesis,real-time-render,intro-brdf,radiosity}.
+		\begin{definition}
+			Sei $\mu\in\ssp$ die Normale am Punkt einer Oberfläche.
+			Dann ist eine BSDF bezüglich $\mu$ gegeben durch eine integrierbare Abbildung $\func{f}{\ssp\times\ssp}{[0,\infty)}$ mit den folgenden Eigenschaften.
+
+			\begin{enumerate}[label = \normalfont{(\roman*)}]
+				\item
+				Für alle $\omega_\m{i}\in\ssp$ und alle $\omega_\m{o}\in\shs{\nu}$ mit $\nu\define\sign(\dotp{\mu}{\omega_\m{i}})\cdot\mu$ gilt
+				\[
+					f(\omega_\m{i},\omega_\m{o}) = f(\omega_\m{o},\omega_\m{i}) \hfill \text{(Helmholtz-Reziprozität)}
+				\]
+
+				\item
+				Für alle $\omega_\m{i}\in\ssp$ gilt
+				\[
+					\integral{\ssp}{}{f(\omega_\m{i},\omega) \abs{\dotp{\mu}{\omega}}}{\sigma(\omega)} \leq 1 \hfill \text{(Energieerhaltung)}
+				\]
+			\end{enumerate}
+		\end{definition}
+
+		Eine BSDF $f$ gibt an, welcher Anteil des einfallenden Lichtes aus der Richtung $\omega_\m{i}\in\ssp$ in die Richtung $\omega_\m{o}\in\ssp$ gestreut wird.
+		Gilt dabei $\omega_\m{o}\in\shs{\nu}$, so befindet sich $\omega_\m{o}$ in der gleichen Hemisphere bezüglich $\mu$ wie $\omega_\m{i}$ und es handelt sich um eine Reflexion des Lichtes.
+		Der verbleibende Fall beschreibt die Transmission.
+		Die BSDF stellt damit eine Verallgemeinerung der idealen Reflexion und Brechung an Oberflächen dar.
+		\cite[S.~571~ff]{pbrt3} und \cite[S.~135~ff]{veach-thesis} weisen zudem nach, dass die Helmholtz-Reziprozität nur für den reflektierten Anteil des Lichtes gilt.
+		In Abbildung \ref{fig:brdf} ist das Beispiel einer typischen BSDF gezeigt, die keine Transmission des Lichtes zulässt \cite[S.~509~ff]{pbrt3}.
+
+		\begin{figure}[h]
+			\center
+			\includegraphics{gg_fig/brdf_1.pdf}
+			\caption{Die Abbildung zeigt die Verteilung des reflektierten Lichtes für alle $\omega\in\shs{\mu}$ bezüglich einer konstanten Einfallsrichtung $\omega_\m{i}\in\shs{\mu}$ einer BSDF $f$ bezüglich der Oberflächennormalen $\mu\in\ssp$.}
+			\label{fig:brdf}
+		\end{figure}
+
+		Die hier eingeführten Funktionen für die Charakterisierung von Materialien können auf verschiedene Weisen verallgemeinert werden.
+		Zu beachten ist vor allem die fehlende Abhängigkeit von der Wellenlänge des einfallenden und der des gestreuten Lichtes, welche Effekte wie Dispersion, Irisieren und Lumineszenz verhindert.
+		Eine weiteres physikalisches Phänomen stellt die Volumenstreuung dar.
+		Bei der Betrachtung dieser wird ein Material durch die sogenannte \enquote{BSSRDF} beschrieben \cite[S.~671~ff]{pbrt3}.
+
+
+		BSDFs sind im Allgemeinen nicht in geschlossener Form notierbar \cite[S.~507~f]{pbrt3}.
+		Aus diesem Grund wollen wir für die Konstruktion realistischer Materialien wie bei der Approximation von Oberflächen verschiedene einfache BSDFs zu Grunde legen.
+		In den beiden folgenden Beispielen handelt es sich um die BSDFs $f$ bezüglich der Normalen $\mu\in\ssp$ für die lambertsch diffuse Reflexion (engl.: \textit{lambertian reflection}, \cite[S.~531~f]{pbrt3}) und für die ideale Reflexion (engl.: \textit{specular reflection}, \cite[S.~144~f]{veach-thesis}).
+		Weitere BSDF-Modelle sind in \cite{pbrt3,veach-thesis,radiosity} zu finden.
+		Es seien $\omega_\m{i},\omega_\m{o}\in\ssp$ mit $\nu\define\sign(\dotp{\mu}{\omega_\m{i}})\cdot\mu$ gegeben.
+		\[
+			f(\omega_\m{i},\omega_\m{o}) = \frac{1}{\pi}\mathds{1}_{\shs{\nu}}(\omega_\m{o}) \hfill \text{(lambertsch diffuse Reflexion)}
+		\]
+		\[
+			f(\omega_\m{i},\omega_\m{o}) = \frac{\delta_{\omega_\m{o}}(2\dotp{\mu}{\omega_\m{i}}\mu - \omega_\m{i})}{\abs{\dotp{\mu}{\omega_\m{i}}}} \hfill \text{(ideale Reflexion)}
+		\]
+
+	% subsection bsdf (end)
+
+	\subsection{Beleuchtung und Szene} % (fold)
+	\label{sub:beleuchtung_und_szene}
+
+		Die BSDF an einem Punkt beschreibt lediglich die Streuung des einfallenden Lichtes.
+		Um den Render-Verfahren einen Sinn zu geben, benötigen wir demnach Lichtquellen.
+		In \cite[S.~707~ff]{pbrt3} und \cite{course-photon-map} werden verschiedene Arten von Lichtquellen definiert, implementiert und gesampled.
+		Der einfachste Weg Lichtquellen einzuführen, besteht in einer abstrakten Formulierung, die unabhängig von der Szenengeometrie agiert.
+		Wir wollen eine sogenannte \enquote{Umgebungsbeleuchtung} (engl.: \textit{hdr environment map} oder \textit{infinite area light}, \cite[S.~737~f]{pbrt3}) einführen.
+		\begin{definition}[Umgebungsbeleuchtung]
+			Eine Umgebungsbeleuchtung ist definiert als eine integrierbare Abbildung $\func{f}{(0,\infty)\times\ssp}{[0,\infty)}$.
+		\end{definition}
+
+		Diese Funktion beschreibt das Licht verschiedener Wellenlängen, welches von einer Kugeloberfläche mit quasi unendlich großem Radius in die Szene ausgesandt wird.
 		Für einen Punkt der Szene, ist dessen Beleuchtung durch diese Funktion also unabhängig von dessen Position.
 		Diese Tatsache wird in Abbildung \ref{fig:hdr_environment_map} wieder an einem Beispiel gezeigt.
-		Die eigentliche Definition soll nun durch eine solche Umgebungsbeleuchtungs-Funktion erweitert werden.
 
-		\begin{figure}
+		\begin{figure}[h]
 			\center
 			\includegraphics{gg_fig/hdr_environment_map_1.pdf}
-			\caption{Die Darstellung zeigt, dass die Beleuchtung zweier Punkte $x_1$ und $x_2$ einer Oberfläche $S$ mit den Normalen $\nu(x_1)$ und $\nu(x_2)$ durch eine Umgebungsbeleuchtungs-Funktion $f$ nur abhängig von der Verdeckung der Punkte und nicht von deren Position ist. Bei $x_1$ und $x_2$ sind also in diesem Falle die gleichen Lichtintensitäten zu messen.}
+			\caption{Die Darstellung zeigt, dass die Beleuchtung zweier Punkte $x_1$ und $x_2$ einer Oberfläche $S$ mit den Normalen $\nu(x_1)$ und $\nu(x_2)$ durch eine Umgebungsbeleuchtung $f$ nur abhängig von der Verdeckung der Punkte und nicht von deren Position ist. Bei $x_1$ und $x_2$ sind in diesem Falle die gleichen Lichtintensitäten zu messen. Es ist $\lambda\in(0,\infty)$ die Wellenlänge des Lichtes und $\omega\in\ssp$ der Raumwinkel.}
 			\label{fig:hdr_environment_map}
 		\end{figure}
 
-		\begin{definition}[Szene]
-			Eine Szene $\s{S}$ bezeichnet ein Tupel $(P_\s{S},E_\s{S})$ mit einer endlichen Menge $P_\s{S}$ von Primitiven und einer Umgebungsbeleuchtungs-Funktion $E_\s{S}$.
-			Die Menge $S(\s{S})$ der Punkte in der Szene $\s{S}$ sei definiert durch
-			\[
-				S(\s{S}) \define \bigcup_{p\in P_\s{S}} S(\triangle_p)
-			\]
+		Aber auch die Materialien der Szene sollten in der Lage sein Licht auszusenden.
+		Wir führen hierfür eine Abbildung ein, die die dafür nötigen Eigenschaften erfüllt.
+		Häufig werden diese Lichtquellen auch \enquote{Feldlichtquellen} (engl.: \textit{area light}) genannt \cite[S.~733~ff]{pbrt3}.
+		\begin{definition}[Emission]
+			Sei $\e{T}$ eine Mesh mit einer Shading-Normalen $\nu$.
+			Dann ist eine Emission von $\e{T}$ durch eine integrierbare Abbildung $\func{E}{\e{T}\times(0,\infty)\times\ssp}{[0,\infty)}$ gegeben.
 		\end{definition}
+
+		Wie bei der vorherigen Defintion beschreibt diese Funktion das ausgesandte Licht in Abhängigkeit der Wellenlänge und des Raumwinkels.
+		Der Unterschied besteht darin, dass sie auf der Oberfläche einer Mesh variieren kann und sich damit auch die Beleuchtung eines Punktes je nach Position verändert.
+
+		Durch die Einführung der Lichtquellen erhalten wir nun die vollständige Beschreibung einer Szene durch Zusammenführung der bereits definierten Strukturen.
+		\begin{definition}[Szene]
+			Eine Szene ist ein Tupel $(\e{T},\nu,f,E,U)$ bestehend aus einer Mesh $\e{T}$ mit einer Shading-Normalen $\nu$, einer integrierbaren Abbildung $\func{f}{\e{T}\times\ssp\times\ssp}{[0,\infty)}$, wobei $f(x,\cdot,\cdot)$ für $\sigma$-fast-alle $x\in\e{T}$ ein BSDF bezüglich $\nu(x)$ darstellt, einer Emission $E$ von $\e{T}$ und einer Umgebungsbeleuchtung $U$.
+		\end{definition}
+
+
+		% Für die eigentliche Approximation der Oberfläche eines Objektes benötigt man jetzt eine Menge von Primitiven.
+		% Solch eine Menge wollen wir auch eine \enquote{Szene} (engl.: \textit{scene}) nennen.
+		% Häufig benötigt man jedoch neben den Lichtquellen, die durch die Materialien der Primitive gegeben sind, noch weitere anders geartete Lichtquellen, die unabhängig von den eigentlichen Primitven der Szene bestehen.
+		% In unserem Falle wollen wir uns speziell auf die Umgebungsbeleuchtungs-Funktion (engl.: \textit{HDR environment map}) beziehen.
+
+		% Diese Funktion beschreibt das Licht verschiedener Wellenlängen, welches von einer Kugeloberfläche mit quasi unendlich großem Radius in die Szene ausgesandt wird.
+		% Für einen Punkt der Szene, ist dessen Beleuchtung durch diese Funktion also unabhängig von dessen Position.
+		% Diese Tatsache wird in Abbildung \ref{fig:hdr_environment_map} wieder an einem Beispiel gezeigt.
+		% Die eigentliche Definition soll nun durch eine solche Umgebungsbeleuchtungs-Funktion erweitert werden.
+
+
+
+	% subsection beleuchtung_und_szene (end)
+
+
+
+	% \subsection{Szenenrepresentation} % (fold)
+	% \label{sec:szenenrepresentation}
+
+		% Um realistische Bilder zu generieren, benötigen wir als Eingabe gewisse Daten der physikalischen Objekte, die durch den Beobachter oder auch die Kamera betrachtet werden.
+		% Für die später betrachteten Algorithmen ist dabei vor allem das Verhalten von Licht auf den Oberflächen dieser Objekte wichtig.
+		% Der Einfachheit halber wollen wir davon ausgehen, dass das Licht nur in den oberen Schichten eines Körpers mit dessen Material wechselwirkt.
+		% Für uns ist es also ausreichend, nur die Oberflächen der gegebenen Objekte und nicht deren Inneres zu beschreiben.
+
+		% Die Oberflächen realer physikalischer Objekte sind im Allgemeinen beliebig geformt und können nicht in geschlossener Form durch eine Gleichung beschrieben werden.
+		% Dennoch lassen sie sich im analytischen Sinne durch einfachere Hyperflächen im Raum approximieren.
+		% Für die Bildgenerierung wählt man für solch eine Fläche meist ein Dreieck.
+		% Es ist einfach zu beschreiben und flexibel genug um die meisten Objekte beliebig genau zu approximieren.
+		% Dabei wollen wir entartete Dreiecke, die nur aus einem Punkt oder einer Strecke bestehen, ausschließen, da sie für die betrachteten Render-Verfahren nicht darstellbar sind.
+		% \begin{definition}[Dreieck]
+		% 	Ein Dreieck $\triangle$ wird durch eine Sequenz $(A,B,C)$ von Punkten in $\SR^3$, für die die Menge $\set{B-A, C-A}$ linear unabhängig ist, charakterisiert.
+		% 	Seien weiterhin
+		% 	\[
+		% 		M \define \set[u+v\leq 1]{(u,v)\in[0,1]^2}
+		% 	\]
+		% 	\[
+		% 		\func{\varphi}{M}{\SR^3},\qquad \varphi(u,v) \define (1-u-v)A + uB + vC
+		% 	\]
+		% 	Dann ist die Menge der Punkte $S$ des Dreiecks gegeben durch $\im\varphi$ und $(M,\varphi)$ stellt deren Standardparametrisierung dar.
+		% 	Der Notation wegen, identifizieren wir $\triangle$ mit $S$ und definieren für alle $(u,v)\in M$
+		% 	\[
+		% 		\triangle(u,v) \define \varphi(u,v)
+		% 	\]
+		% 	Die baryzentrischen Koordinaten $(u,v,w)$ eines Punktes $x\in \triangle$ sind weiterhin durch die folgenden Eigenschaften gegeben.
+		% 	\[
+		% 		(u,v)\in M,\qquad w = 1-u-v,\qquad \triangle(u,v) = x
+		% 	\]
+		% 	Die analytische äußere Normale oder auch Normale ist definiert durch
+		% 	\[
+		% 		\mu \define \frac{\crossp{(B-A)}{(C-A)}}{\norm{\crossp{(B-A)}{(C-A)}}}
+		% 	\]
+		% \end{definition}
+
+		% Jedes Dreieck besitzt auf seiner gesamten Fläche eine eindeutige konstante äußere analytische Normale.
+		% Für die Simulation von globalen Beleuchtungseffekten ist diese Eigenschaft jedoch ein Nachteil, weil die Beleuchtung eines Objektes stark vom Verlauf seiner Normalen abhängt.
+		% Nähern wir ein Objekt nun durch $n\in\SN$ Dreiecke an, so nähern wir zur Zeit auch den Normalenverlauf des Objektes durch die stückweise konstanten äußeren Normalen der Dreiecke an.
+		% Der Fehler dieser Approximation tritt in Form eines facettenhaften Musters auf, welcher für das menschliche Auge gut erkennbar ist.
+		% In Abbildung \ref{fig:facette} wird dieser Effekt genauer an einem Beispiel demonstriert.
+		% Das Problem kann aber durch eine Interpolation, die die Stetigkeit der Normalen erhält, gelöst werden.
+		% \begin{definition}[Normalen-Funktion / Shading-Normale]
+		% 	Sei $\triangle$ ein Dreieck mit der Normalen $\mu$.
+		% 	Dann wird $\func{\nu}{\triangle}{\shs{\mu}}$ als Normalen-Funktion oder auch Shading-Normale von $\triangle$ bezeichnet.
+		% \end{definition}
+
+		% \begin{figure}
+		% 	\begin{subfigure}[b]{0.5\textwidth}
+		% 		\center
+		% 		\includegraphics[scale=0.2]{pic/normal_facette-mark.png}
+		% 		\caption{}
+		% 	\end{subfigure}
+		% 	\begin{subfigure}[b]{0.5\textwidth}
+		% 		\center
+		% 		\includegraphics[scale=0.2]{pic/normal_facette-zoom.png}
+		% 		\caption{}
+		% 	\end{subfigure}
+		% 	\caption{Die Bilder zeigen die gerenderte \enquote{Dragon}-Szene. Das rechte Bild entspricht dem roten Bereich des Linken. In dieser Szene werden die Normalen des Objektmodells durch die analytischen Normalen der Dreiecke angenähert. Da das Modell sehr fein trianguliert ist, fällt dies im ersten Bild nicht auf. Zoomt man jedoch mit der Kamera heran werden die Fehler durch die Approximation deutlich und die einzelnen Dreiecke sind mit dem menschlichen Auge auszumachen.}
+		% 	\label{fig:facette}
+		% \end{figure}
+
+		% \begin{theorem}[Vertex-Shading-Normale]
+		% 	Seien $\triangle$ ein Dreieck mit der Normalen $\mu$ und $\mu_A, \mu_B, \mu_C \in \shs{\mu}$ Normalen an den Punkten des Dreiecks.
+		% 	Sei weiterhin $\nu$ eine Shading-Normale auf $\triangle$, sodass für alle $x\in \triangle$ mit den baryzentrischen Koordinaten $(u,v,w)$ gilt
+		% 	\[
+		% 		\nu(x) \define \frac{w\mu_A + u\mu_B + v\mu_C}{\norm{w\mu_A + u\mu_B + v\mu_C}}
+		% 	\]
+		% 	Dann ist $\nu$ stetig und man nennt es eine Vertex-Shading-Normale von $\triangle$.
+		% 	% Sei $\triangle$ ein Dreieck und seien Normalen $\mu_A, \mu_B, \mu_C \in \SR^3$ an den Punkten des Dreiecks mit den folgenden Eigenschaften für alle $X\in\set{A,B,C}$ gegeben.
+		% 	% \[
+		% 	% 	\norm{\mu_X} = 1,\qquad \dotp{\mu_X}{\mu_\triangle} > 0
+		% 	% \]
+		% 	% Dann definiert die Abbildung $\func{\nu}{S(\triangle)}{\SR^3}$ eine stetige Normalen-Funktion auf $\triangle$, wenn für alle $x\in S(\triangle)$ mit den baryzentrischen Koordinaten $(u,v,w)$ die folgende Aussage gilt.
+		% 	% Wir nennen $\nu$ in diesem Falle eine Vertex-Normalen-Funktion.
+		% \end{theorem}
+
+		% Durch das Setzen der Normalen an den Eckpunkten eines Dreiecks können wir sicher gehen, dass der Verlauf der Normalen stetig von einem Dreieck zu einem anderen übergeht.
+		% Ein beipielhafter Verlauf einer Vertex-Normalen-Funktion wird in Abbildung \ref{fig:normal-function} gezeigt.
+		% Für die in dieser Arbeit betrachteten Effekte und Verfahren reicht diese Art der Normalen-Interpolation aus.
+		% Dennoch gibt es hier weitere Möglichkeiten, wie zum Beispiel \enquote{Normal Maps}, die eine noch genauere Approximation zu Lasten des Speicherverbrauchs ermöglichen.
+
+		% \begin{figure}
+		% 	\begin{subfigure}[b]{0.5\textwidth}
+		% 		\center
+		% 		\includegraphics{gg_fig/scheme_normal-function_1.pdf}
+		% 		% \caption{Verlauf}
+		% 	\end{subfigure}
+		% 	\begin{subfigure}[b]{0.5\textwidth}
+		% 		\center
+		% 		\includegraphics{gg_fig/scheme_normal-function_2.pdf}
+		% 		% \caption{approximierte Fläche}
+		% 	\end{subfigure}
+		% 	\caption{Die erste Skizze auf der linken Seite zeigt den Verlauf einer Vertex-Normalen-Funktion $\nu$ anhand eines Beispiels. $A_\triangle$ und $B_\triangle$ sind dabei die Eckpunkte eines Dreiecks $\triangle$. $\mu_A$ und $\mu_B$ sind die jeweilig gegebenen Vertex-Normalen an den Eckpunkten. Im rechten Bereich der Abbildung ist die durch $\nu$ approximierte gekrümmte Fläche $\tilde{S}(\triangle)$, auf der die Normalen $\nu(x)$ senkrecht stehen, eingezeichnet.}
+		% 	\label{fig:normal-function}
+		% \end{figure}
+
+		% Die kleinste Hyperfläche, die wir durch geschlossene Gleichungen beschreiben können und aus derer wir alle weiteren Objekte zusammensetzen, nennen wir \enquote{Primitiv} (engl.: \textit{primitive}).
+		% Es soll in unserem Falle nicht nur die Informationen des Dreiecks beinhalten, sondern auch Aussagen über dessen Material oder Oberflächenstruktur treffen können.
+		% Insbesondere muss das Primitiv oder dessen Material also die Reflexion, Absorbtion, Transmission und Emission des Lichts an der Oberfläche beschreiben.
+		% Für physikalische Materialien gibt es aber je nach den betrachteten Effekten verschiedene verallgemeinerte Varianten der mathematischen Beschreibung.
+		% Um keine dieser Varianten auszuschließen, soll hier das Primitiv in einer abstrakteren Form definiert werden.
+		% \begin{definition}[Primitiv]
+		% 	Sei $\s{M}$ die Menge der Elemente, die Materialien von Objekten charakterisieren.
+		% 	Dann ist ein Primitiv $p$ gerade ein Tupel $(\triangle_p, \nu_p, m_p)$, bestehend aus einem Dreieck $\triangle_p$, einer Normalen-Funktion $\nu_p$ auf $\triangle_p$ und einem Material $m_p\in \s{M}$.
+		% \end{definition}
+
+
+		% Für die eigentliche Approximation der Oberfläche eines Objektes benötigt man jetzt eine Menge von Primitiven.
+		% Solch eine Menge wollen wir auch eine \enquote{Szene} (engl.: \textit{scene}) nennen.
+		% Häufig benötigt man jedoch neben den Lichtquellen, die durch die Materialien der Primitive gegeben sind, noch weitere anders geartete Lichtquellen, die unabhängig von den eigentlichen Primitven der Szene bestehen.
+		% In unserem Falle wollen wir uns speziell auf die Umgebungsbeleuchtungs-Funktion (engl.: \textit{HDR environment map}) beziehen.
+		% \begin{definition}[Umgebungsbeleuchtungs-Funktion]
+		% 	Eine Umgebungsbeleuchtungs-Funktion ist definiert als eine integrierbare Abbildung $\func{f}{(0,\infty)\times\Omega}{[0,\infty)}$.
+		% \end{definition}
+
+		% Diese Funktion beschreibt das Licht verschiedener Wellenlängen, welches von einer Kugeloberfläche mit quasi unendlich großem Radius in die Szene ausgesandt wird.
+		% Für einen Punkt der Szene, ist dessen Beleuchtung durch diese Funktion also unabhängig von dessen Position.
+		% Diese Tatsache wird in Abbildung \ref{fig:hdr_environment_map} wieder an einem Beispiel gezeigt.
+		% Die eigentliche Definition soll nun durch eine solche Umgebungsbeleuchtungs-Funktion erweitert werden.
+
+		% \begin{figure}
+		% 	\center
+		% 	\includegraphics{gg_fig/hdr_environment_map_1.pdf}
+		% 	\caption{Die Darstellung zeigt, dass die Beleuchtung zweier Punkte $x_1$ und $x_2$ einer Oberfläche $S$ mit den Normalen $\nu(x_1)$ und $\nu(x_2)$ durch eine Umgebungsbeleuchtungs-Funktion $f$ nur abhängig von der Verdeckung der Punkte und nicht von deren Position ist. Bei $x_1$ und $x_2$ sind also in diesem Falle die gleichen Lichtintensitäten zu messen.}
+		% 	\label{fig:hdr_environment_map}
+		% \end{figure}
+
+		% \begin{definition}[Szene]
+		% 	Eine Szene $\s{S}$ bezeichnet ein Tupel $(P_\s{S},E_\s{S})$ mit einer endlichen Menge $P_\s{S}$ von Primitiven und einer Umgebungsbeleuchtungs-Funktion $E_\s{S}$.
+		% 	Die Menge $S(\s{S})$ der Punkte in der Szene $\s{S}$ sei definiert durch
+		% 	\[
+		% 		S(\s{S}) \define \bigcup_{p\in P_\s{S}} S(\triangle_p)
+		% 	\]
+		% \end{definition}
 
 	% subsection szenenrepresentation (end)
 
 	\subsection{Raytracing} % (fold)
 	\label{sub:raytracing}
 
-		Im einfachsten Falle bezeichnet das Wort \enquote{Raytracing} (engl.: \textit{ray tracing}) einen Algorithmus zur Ermittlung der Sichtbarkeit von dreidimensionalen Objekten bezüglich eines Ursprungpunktes (engl.: \textit{origin}) im Raum.
-		Häufig versteht man darunter jedoch auch eine Render-Technik für die Generierung eines gesamten Bildes aus einer gegebenen Szene, die auf dem eben genannten Raytracing-Algorithmus basiert.
+		Im einfachsten Falle bezeichnet das Wort \enquote{Raytracing} (engl.: \textit{ray tracing}) einen Algorithmus zur Ermittlung der Sichtbarkeit von dreidimensionalen Objekten bezüglich eines Ursprungpunktes (engl.: \textit{origin}) im Raum \cite{pbrt3,parker-ray-tracing}.
+		Häufig versteht man darunter jedoch auch eine Render-Technik für die Generierung eines gesamten Bildes aus einer gegebenen Szene, die auf dem eben genannten Raytracing-Algorithmus basiert \cite{pbrt3, nikodym-ray-tracing, parker-ray-tracing}.
 
-		Grundsätzlich gibt es viele Verfahren, um ein Szene auf ein Bild zu rendern.
+		Grundsätzlich gibt es viele Verfahren, um ein Szene auf ein Bild zu rendern \cite{survey-visibility,real-time-render}.
 		Die Erfahrung zeigt aber, dass vor allem in Bereichen, in denen die globalen Beleuchtungseffekte realistisch simuliert werden sollen, Raytracing eine wichtige Grundlage darstellt.
-		Der Grund dafür besteht in der Tatsache, dass Raytracing das Sichtbarkeitsproblem löst und durch die Verwendung von Strahlen eine Basis für die Lichtberechnung im Sinne der geometrischen Optik bereitstellt.
+		Der Grund dafür besteht in der Tatsache, dass Raytracing das \enquote{Sichtbarkeitsproblem} (engl.: \textit{hidden surface removal}, \textit{visible surface determination} oder \textit{occlusion culling}, \cite{3d-visibility, survey-visibility}) löst und durch die Verwendung von Strahlen eine Basis für die Lichtberechnung im Sinne der geometrischen Optik bereitstellt \cite{pbrt3,veach-thesis,parker-ray-tracing}.
 		\begin{definition}[Sichtbarkeitsproblem]
 			Sei $\s{S}$ eine Szene.
 			Dann ist die Sichtbarkeitsfunktion von $\s{S}$ die folgende Abbildung.
@@ -273,55 +511,180 @@
 
 	% subsection radiometrie (end)
 
-	\subsection{Reflexionen an Oberflächen} % (fold)
-	\label{sub:reflexionen_an_oberflächen}
+	% \subsection{Reflexionen an Oberflächen} % (fold)
+	% \label{sub:reflexionen_an_oberflächen}
 
-		Um Primitive zu definieren nutzten wir eine abstrakte Menge $\s{M}$, welche die Elemente enthielt, die die Materialien unserer Szene charakterisierten.
-		Der Grund dafür war, dass die Beschreibung von Materialien ein komplexes Thema ist, dessen vollständige Behandlung hier nicht möglich ist.
-		Wir wollen uns hier auf eine spezielle Kategorie von Materialen beschränken.
-		Dabei beachten wir nur die Reflexion und Absorbtion, nicht aber die Transmission von Licht.
-		Die Idee besteht darin, ein Material durch eine geeignete Funktion auf der Oberfläche zu charakterisieren.
-		Diese Funktionen nennt man \enquote{Bidirektionale Reflektanzverteilungsfunktionen} (engl.: \textit{bidirectional reflectance distribution function}, BRDF).
-		Sie beschreiben den Anteil des reflektierten Lichtes in Abhängigkeit des Ein- und Ausfallwinkels.
-		In Abbildung \ref{fig:brdf} wird anhand einer Skizze die folgende Definition Dieser verdeutlicht.
-		\begin{definition}[BRDF]
-			Sei $\mu\in\Omega$ eine Normale.
-			Dann ist eine BRDF bezüglich $\mu$ gegeben durch eine integrierbare Abbildung
-			\[
-				\func{f}{\Theta_\mu\times\Theta_\mu}{[0,\infty)}
-			\]
-			Es handelt sich bei $f$ um eine physikalische BRDF, wenn die folgenden Eigenschaften für alle $\omega_\m{i},\omega_\m{o}\in\Theta_\mu$ erfüllt sind.
-			\begin{enumerate}[label = \normalfont{(\roman*)}]
-				\item $f(\omega_\m{i},\omega_\m{o}) = f(\omega_\m{o},\omega_\m{i}) \hfill \text{(Helmholtz-Reziprozität)}$
-				\item \label{item:brdf_energy_conservation} $\integral{\Theta_\mu}{}{f(\omega_\m{i},\omega) \abs{\dotp{\mu}{\omega}}}{\sigma(\omega)} \leq 1 \hfill \text{(Energieerhaltung)}$
-			\end{enumerate}
-			Gilt in \ref{item:brdf_energy_conservation} die Gleichheit, so nennt man $f$ auch eine ideale physikalische BRDF.
-		\end{definition}
+	% 	\begin{definition}
+	% 		Sei $\mu\in\ssp$ eine Normale.
+	% 		Dann ist eine BSDF bezüglich $\mu$ gegeben durch eine integrierbare Abbildung
+	% 		\[
+	% 			\func{f}{\ssp\times\ssp}{[0,\infty)}
+	% 		\]
+	% 		mit den folgenden Eigenschaften.
 
-		\begin{figure}
-			\center
-			\includegraphics{gg_fig/brdf_1.pdf}
-			\caption{Die Abbildung zeigt die typische Verteilung des reflektierten Lichtes über der Hemisphere einer häufig verwendeten BRDF $f$ bezüglich einer konstanten Einfallsrichtung $\omega_0$ an einem Punkt $x\in S(\triangle)$. Auch hier sind $\triangle$ ein Dreieck und $\nu$ eine Normalen-Funktion auf $\triangle$.}
-			\label{fig:brdf}
-		\end{figure}
+	% 		\begin{enumerate}[label = \normalfont{(\roman*)}]
+	% 			\item Für alle $\omega_\m{i},\omega_\m{o}\in\shs{\mu}$ und $\tilde{\omega}_\m{i},\tilde{\omega}_\m{o}\in\shs{-\mu}$
+	% 			\[
+	% 				f(\omega_\m{i},\omega_\m{o}) = f(\omega_\m{o},\omega_\m{i})\qquad f(\tilde{\omega}_\m{i},\tilde{\omega}_\m{o}) = f(\tilde{\omega}_\m{o},\tilde{\omega}_\m{i}) \hfill \text{(Helmholtz-Reziprozität)}
+	% 			\]
+	% 			\item \label{item:brdf_energy_conservation} $\integral{\ssp}{}{f(\omega,\omega_\m{o}) \abs{\dotp{\mu}{\omega}}}{\sigma(\omega)} \leq 1 \hfill \text{(Energieerhaltung)}$
+	% 		\end{enumerate}
+	% 	\end{definition}
 
-		BRDFs sind im Allgemeinen nicht in geschlossener Form notierbar.
-		Aus diesem Grund wollen wir für die Konstruktion realistischer BRDFs verschiedene einzelne Reflexionsmodelle zu Grunde legen.
-		Die daraus entstehenden idealen BRDFs können dann durch eine Linearkombination miteinander verbunden werden, um so reale Materialien nachzuahmen.
-		Zu beachten ist, dass die beiden folgenden eingeführten Beispiele solcher Modelle gewisse auftretende physikalische Effekte, wie zum Beispiel die Fresnel-Reflexion, nicht berücksichtigen.
-		\begin{definition}[spezielle BRDFs]
-			Sei $\mu\in\Omega$ eine Normale.
-			Dann definiert man die folgenden BRDFs bezüglich $\mu$ für alle $\omega_\m{i},\omega_\m{o}\in\Theta_\mu$.
-			\begin{enumerate}[label = \normalfont{(\roman*)}]
-				\item $\m{ldr}(\omega_\m{i},\omega_\m{o}) \define \frac{1}{\pi} \hfill \text{(lambertsch diffus)}$
-				\item $\m{psr}(\omega_\m{i},\omega_\m{o}) \define \frac{1}{\abs{\dotp{\mu}{\omega_\m{i}}}} \delta_{\omega_\m{o}}(2\dotp{\mu}{\omega_\m{i}}\mu - \omega_\m{i}) \hfill \text{(perfekt spiegelnd)}$
-			\end{enumerate}
-		\end{definition}
+	% 	Um Primitive zu definieren nutzten wir eine abstrakte Menge $\s{M}$, welche die Elemente enthielt, die die Materialien unserer Szene charakterisierten.
+	% 	Der Grund dafür war, dass die Beschreibung von Materialien ein komplexes Thema ist, dessen vollständige Behandlung hier nicht möglich ist.
+	% 	Wir wollen uns hier auf eine spezielle Kategorie von Materialen beschränken.
+	% 	Dabei beachten wir nur die Reflexion und Absorbtion, nicht aber die Transmission von Licht.
+	% 	Die Idee besteht darin, ein Material durch eine geeignete Funktion auf der Oberfläche zu charakterisieren.
+	% 	Diese Funktionen nennt man \enquote{Bidirektionale Reflektanzverteilungsfunktionen} (engl.: \textit{bidirectional reflectance distribution function}, BRDF).
+	% 	Sie beschreiben den Anteil des reflektierten Lichtes in Abhängigkeit des Ein- und Ausfallwinkels.
+	% 	In Abbildung \ref{fig:brdf} wird anhand einer Skizze die folgende Definition Dieser verdeutlicht.
+	% 	\begin{definition}[BRDF]
+	% 		Sei $\mu\in\Omega$ eine Normale.
+	% 		Dann ist eine BRDF bezüglich $\mu$ gegeben durch eine integrierbare Abbildung
+	% 		\[
+	% 			\func{f}{\Theta_\mu\times\Theta_\mu}{[0,\infty)}
+	% 		\]
+	% 		Es handelt sich bei $f$ um eine physikalische BRDF, wenn die folgenden Eigenschaften für alle $\omega_\m{i},\omega_\m{o}\in\Theta_\mu$ erfüllt sind.
+	% 		\begin{enumerate}[label = \normalfont{(\roman*)}]
+	% 			\item $f(\omega_\m{i},\omega_\m{o}) = f(\omega_\m{o},\omega_\m{i}) \hfill \text{(Helmholtz-Reziprozität)}$
+	% 			\item \label{item:brdf_energy_conservation} $\integral{\Theta_\mu}{}{f(\omega_\m{i},\omega) \abs{\dotp{\mu}{\omega}}}{\sigma(\omega)} \leq 1 \hfill \text{(Energieerhaltung)}$
+	% 		\end{enumerate}
+	% 		Gilt in \ref{item:brdf_energy_conservation} die Gleichheit, so nennt man $f$ auch eine ideale physikalische BRDF.
+	% 	\end{definition}
 
-		Möchte man zusätzlich die Transmission von Licht an einem Punkt mit Normaler $\mu\in\Omega$ betrachten, so lässt sich analog zur Menge der BRDFs bezüglich $\mu$ eine Menge von Funktionen auf $\Theta_{-\mu}\times\Theta_{-\mu}$ definieren.
-		Die Funktionen dieser Klasse werden Bidirektionale Transmissionsverteilungsfunktionen (engl.: \textit{bidirectional transmittance distribution function}, BTDF) genannt.
-		Die Zusammenführung einer BRDF und einer BTDF auf $\Omega$ führt zur verallgemeinerten Bidirektionalen Streuungsverteilungsfunktion (engl.: \textit{bidirectional scattering distribution function}, BSDF).
+	% 	\begin{figure}
+	% 		\center
+	% 		\includegraphics{gg_fig/brdf_1.pdf}
+	% 		\caption{Die Abbildung zeigt die typische Verteilung des reflektierten Lichtes über der Hemisphere einer häufig verwendeten BRDF $f$ bezüglich einer konstanten Einfallsrichtung $\omega_0$ an einem Punkt $x\in S(\triangle)$. Auch hier sind $\triangle$ ein Dreieck und $\nu$ eine Normalen-Funktion auf $\triangle$.}
+	% 		\label{fig:brdf}
+	% 	\end{figure}
+
+	% 	BRDFs sind im Allgemeinen nicht in geschlossener Form notierbar.
+	% 	Aus diesem Grund wollen wir für die Konstruktion realistischer BRDFs verschiedene einzelne Reflexionsmodelle zu Grunde legen.
+	% 	Die daraus entstehenden idealen BRDFs können dann durch eine Linearkombination miteinander verbunden werden, um so reale Materialien nachzuahmen.
+	% 	Zu beachten ist, dass die beiden folgenden eingeführten Beispiele solcher Modelle gewisse auftretende physikalische Effekte, wie zum Beispiel die Fresnel-Reflexion, nicht berücksichtigen.
+	% 	\begin{definition}[spezielle BRDFs]
+	% 		Sei $\mu\in\Omega$ eine Normale.
+	% 		Dann definiert man die folgenden BRDFs bezüglich $\mu$ für alle $\omega_\m{i},\omega_\m{o}\in\Theta_\mu$.
+	% 		\begin{enumerate}[label = \normalfont{(\roman*)}]
+	% 			\item $\m{ldr}(\omega_\m{i},\omega_\m{o}) \define \frac{1}{\pi} \hfill \text{(lambertsch diffus)}$
+	% 			\item $\m{psr}(\omega_\m{i},\omega_\m{o}) \define \frac{1}{\abs{\dotp{\mu}{\omega_\m{i}}}} \delta_{\omega_\m{o}}(2\dotp{\mu}{\omega_\m{i}}\mu - \omega_\m{i}) \hfill \text{(perfekt spiegelnd)}$
+	% 		\end{enumerate}
+	% 	\end{definition}
+
+	% 	Möchte man zusätzlich die Transmission von Licht an einem Punkt mit Normaler $\mu\in\Omega$ betrachten, so lässt sich analog zur Menge der BRDFs bezüglich $\mu$ eine Menge von Funktionen auf $\Theta_{-\mu}\times\Theta_{-\mu}$ definieren.
+	% 	Die Funktionen dieser Klasse werden \enquote{Bidirektionale Transmissionsverteilungsfunktionen} (engl.: \textit{bidirectional transmittance distribution function}, BTDF) genannt.
+	% 	Die Zusammenführung einer BRDF und einer BTDF auf $\Omega$ führt zur verallgemeinerten \enquote{Bidirektionalen Streuungsverteilungsfunktion} (engl.: \textit{bidirectional scattering distribution function}, BSDF).
+
 
 	% subsection reflexionen_an_oberflächen (end)
+
+	\subsection{Rendergleichung} % (fold)
+	\label{sub:rendergleichung}
+
+		Die \enquote{Rendergleichung} (engl.: \textit{rendering equation} oder \textit{light transport equation}) ist eine Integralgleichung, die 1986 von James T. Kajiya entwickelt wurde, um die bis zu diesem Zeitpunkt verbeiteten Rendertechniken für die Simulation globaler Beleuchtungseffekte auf eine gemeinsame Basis zu stellen.
+		Sie selbst kann mithilfe der Prinzipien der geometrischen Optik und dem Energieerhaltungssatz hergeleitet werden.
+		Insbesondere handelt es sich um eine Fredholm-Integralgleichung 2.Art, die eine eindeutige Lösung besitzt.
+		\begin{definition}[Rendergleichung]
+			Sei $\s{S}$ eine gegebene Szene mit Strahldichte-Funktion $L_\s{S}$.
+			Dann gehorcht $L_\s{S}$ der Rendergleichung, wenn für alle $x\in S(\s{S})$ und $\omega_0\in \Omega$ gilt
+			\begin{alignat*}{3}
+				L_\s{S}(x,\omega_0) &= E_\s{S}(x,\omega_0) \\
+				&+\Integral{S(\s{S})}{}{ V_\s{S}(x,y) G_\s{S}(x,y) f_\s{S}(x,\omega(x,y),\omega_0) L_\s{S}(y,\omega(x,y)) }{\sigma(y)}
+			\end{alignat*}
+			Der Übersicht halber wurden dabei die folgenden Symbole verwendet.
+			\[
+				G_\s{S}(x,y) \define \frac{\abs{\dotp{\nu(x)}{\omega(x,y)}}\abs{\dotp{\nu(y)}{\omega(x,y)}}}{\norm{x-y}^2}\qquad \omega(x,y) \define \frac{y-x}{\norm{y-x}}
+			\]
+			Aufgrund der komplexen Struktur verwenden wir auch eine weitere Variante.
+			\[
+				L_\s{S}(x,\omega_0) = E_\s{S}(x,\omega_0) + \integral{\Omega}{}{ f_\s{S}(x,\omega,\omega_0)\tilde{L}_\s{S}(x,\omega) \abs{\dotp{\nu(x)}{\omega}} }{\sigma(\omega)}
+			\]
+		\end{definition}
+
+		\begin{definition}
+			\[
+				L_\s{S}(\lambda,x,\omega_0) = E_\s{S}(\lambda,x,\omega_0) + \integral{\Omega}{}{ f_\s{S}(x,\omega,\omega_0)\tilde{L}_\s{S}(\lambda,x,\omega) \abs{\dotp{\nu(x)}{\omega}} }{\sigma(\omega)}
+			\]
+			\[
+				\tilde{L}_\s{S}(\lambda,x,\omega)\define
+				\begin{cases}
+					L_\s{S}(\lambda,\varphi_r(\m{rt}_\s{S}(r)),-\omega) &: \m{rt}(r) < \infty \\
+					\m{HDR}_\s{S}(\lambda,\omega) &: \m{sonst}
+				\end{cases}
+			\]
+		\end{definition}
+
+		Gehorcht eine Strahldichte-Funktion der Szene $\s{S}$, so simuliert sie die globalen Beleuchtungseffekte dieser Szene auf einer physikalischen Basis, wodurch die entstehenden Lichtverhältnisse für das menschliche Auge unheimlich real wirken.
+
+		BILD EINBINDEN FÜR DIE LÖSUNG
+
+		(KEINE EXTRA SECTION FÜR PATH TRACING)
+		Um die Gleichung zu lösen gibt es verschiedene Verfahren, wie zum Beispiel \enquote{Path Tracing}, \enquote{Bidirectional Path Tracing}, \enquote{Metropolis Light Transport} oder auch \enquote{Photon Mapping}.
+		Im Grunde genommen, kann jeder Algorithmus verwendet werden.
+		Für diese Arbeit wurde Path Tracing verwendet.
+
+	% subsection rendergleichung (end)
+
+	\subsection{Surface Caching} % (fold)
+	\label{sub:surface_caching}
+
+		Der Begriff \enquote{Surface Caching} (deutsch: \textit{Oberflächenpuffer}) wurde vor allem durch das Computerspiel \enquote{Quake} geprägt.
+		Es war das erste Spiel welches sogenannte \enquote{Surface Caches} und Lightmaps verwendete, um so die grafischen Berechnungen während der Laufzeit auf ein Minimum zu beschränken.
+		Der Begriff selbst ist nicht standardisiert und wird meistens verwendet um Algorithmen, die in der \enquote{Quake-Engine} vorkommen, genauer zu erläutern.
+		Wir wollen diesen Begriff für eine Oberklasse von Algorithmen und Datenstrukturen verwenden, die es entweder ermöglichen Informationen auf Oberflächen einer Szene zu speichern oder diese Informationen aus einem geeigneten Oberflächenpuffer wieder auszulesen.
+		Insbesondere wollen wir uns mit dem Speichern von Strahldichten diffuser Lichtverteilungen beschäftigen, bei denen die Strahldichte-Funktion $L$ nur vom Ort der Szene und nicht mehr vom betrachteten Raumwinkel abhängt.
+
+		Zu beachten ist, dass die hier genannten Verfahren im Allgemeinen nur für statische Szenen Sinn ergeben, da eine Veränderung der Geometrie und Lichtverhältnisse dazu führt, dass der Surface Cache keine aktuellen Informationen mehr enthält.
+		Er müsste demnach bei jeder Änderung der Szene neu berechnet werden.
+		Da die betrachteten Szenen teilweise sehr groß sein können, wäre dieser Schritt ineffizient.
+		Zwei typische Verfahren zum zwischenspeichern von Strahldichten werden in den beiden folgenden Unterabschnitten genauer erläutert.
+
+		\subsubsection{Vertex Lighting} % (fold)
+		\label{sub:vertex_lighting}
+
+			Bei der Implementierung einer Szene $\s{S}$ haben wir Vertices eingeführt, um die Speicherkosten von $\s{S}$ zu verringern.
+			Dabei existiert jeder Vertex unabhängig von allen Primitiven.
+			Nur die Primitive besitzen die Informationen, aus welchen Vertices sie selbst bestehen.
+			Dies führt zu der Idee, die diffuse Strahldichte-Funktion $L_\s{S}$ an den Positionen aller Vertices zu evaluieren und zu speichern.
+			Möchte man dann die Szene rendern, so kann man für jeden Strahl, der ein Schnittpunkt $x$ mit der Szene hat, das getroffene Primitiv $p$ und die zugehörigen baryzentrischen Koordinaten $(u,v,w)$ des Schnittpunktes bestimmen.
+			Die Strahldichte an dieser Position wird dann durch die folgende Gleichung interpoliert.
+			\[
+				L_\s{S}(x,\cdot) \approx w L^{(0)}_\s{S}g + u L^{(1)}_\s{S} + v L^{(2)}_\s{S}
+			\]
+
+			Es handelt sich hierbei um Gourad-Shading oder auch bilineare Interpolation auf dem Dreieck.
+
+		% subsubsection vertex_lighting (end)
+
+		\subsubsection{Lightmap} % (fold)
+		\label{ssub:lightmap}
+
+			\urldef{\urllightmapexample}\url{https://upload.wikimedia.org/wikipedia/commons/1/15/Lightmapped_Scene_with_Lightmap.png}
+
+			Lightmaps sind Datenstrukturen, welche vorberechnete Helligkeitswerte für Oberflächen einer Szene in einer Textur speichern.
+			Damit sind sie vor allem für Anwendungen, die sich extrem auf die Grafikkarte des Computers stützen, geeignet, da Grafikkarten speziell eingebaute Hardware besitzen, um Texturen zu verarbeiten.
+			Der gesamte Prozess der Generierung und Nutzung einer solchen Datenstruktur wird auch \enquote{Lightmapping} genannt.
+			Abbildung \ref{fig:lightmap-example}\footnote{Quelle: \urllightmapexample \\ Donnerstag 27.April 17.20 Uhr} zeigt ein einfaches Beispiel.
+
+			\begin{figure}[h]
+				\center
+				\includegraphics[scale=0.2]{pic/lightmap_example.png}
+				\caption{Die rechte Seite der Abbildung zeigt ein typisches Beispiel einer Lightmap-Textur. Mit ihrer Hilfe kann im linken Bereich des Bildes die Szene \enquote{gelightmapped} werden. Beim eigentlichen Rendern der Szene sind nun keine Sichtbarkeitstests mehr nötig, um Schatten zu generieren.}
+				\label{fig:lightmap-example}
+			\end{figure}
+
+			Lightmaps werden im Allgemeinen manuell optimiert, um den speziellen Gegebenheiten einer Szene gerecht zu werden.
+			Dies erfordert eine Menge zusätzlichen Zeit- und Arbeitsaufwand, sobald eine neue Szene betrachtet werden soll.
+			Lightmaps besitzen außerdem auch alle Nachteile von Texturen.
+			Die Größe der Speicher heutiger Grafikkarten ist im Vergleich zu den normalen Arbeitsspeichern eher gering.
+			Damit ist natürlich auch die Größe der Lightmap beschränkt.
+			Ein weiterer Nachteil ist, dass sich eine Textur, die quadratische Pixel besitzt, niemals vollständig an ein Dreieck in der Szene anpassen kann.
+			Die Folge ist, dass bei zu dicht gelegenen Helligkeitswerten auf der Lightmap, die zu verschiedenen Dreiecken gehören, Interpolations-Artefakte auftreten.
+
+		% subsubsection lightmap (end)
+
+	% subsection surface_caching (end)
 
 % section grundlagen_und_methoden (end)

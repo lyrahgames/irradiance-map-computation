@@ -5,6 +5,11 @@
 % \date{}
 \newcommand{\email}{markuspawellek@gmail.com}
 
+\usepackage[mathscr]{euscript}
+
+\newcommand{\ssp}[1][2]{\mathscr{S}^{#1}}
+\newcommand{\shs}[2][2]{\mathscr{H}^{#1}_{#2}}
+
 
 \begin{document}
 
@@ -16,6 +21,11 @@
 	\input{background}
 
 	\newpage
+
+
+	\[
+		\s{H}^2_\mu,\s{S}^2, \mathscr{H}^2_\mu, \mathscr{S}^2, \mathscr{A}
+	\]
 
 
 
@@ -44,6 +54,12 @@
 			f \define \sum_{i=1}^n \alpha_i f_i
 		\]
 	\end{theorem}
+
+
+	\nocite{*}
+	% \bibliographystyle{amsplain}
+	\bibliographystyle{babplain}
+	\bibliography{ref}
 
 
 \end{document}

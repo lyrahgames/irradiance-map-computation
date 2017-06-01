@@ -5,7 +5,8 @@ GG_FIG_DST = $(addsuffix .pdf, $(basename $(GG_FIG_SRC)))
 gg_fig: $(GG_FIG_DST)
 
 %.dvi: %.tex
-	../util/tex_correct $<
+	# ../util/tex_correct $<
+	../util/gg_tikz_export_correct.sh $<
 	latex -halt-on-error -shell-escape $<
 
 %.ps: %.dvi

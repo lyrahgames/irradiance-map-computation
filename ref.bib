@@ -1,0 +1,294 @@
+@book{pbrt2,
+	title={Physically Based Rendering: From Theory to Implementation},
+	author={M. Pharr and G. Humphreys},
+	year={2010},
+	publisher={Morgan Kaufmann},
+	edition={Second},
+	language={english}
+}
+
+@book{pbrt3,
+	title={Physically Based Rendering: From Theory to Implementation},
+	author={M. Pharr and W. Jakob and G. Humphreys},
+	year={2017},
+	publisher={Morgan Kaufmann},
+	Edition={Third},
+	language={english}
+}
+
+@inproceedings{kajiya-lte,
+  title={The rendering equation},
+  author={Kajiya, James T},
+  booktitle={ACM Siggraph Computer Graphics},
+  volume={20},
+  number={4},
+  pages={143--150},
+  year={1986},
+  organization={ACM},
+  language={english}
+}
+
+@article{veach-mlt,
+	abstract = {We present a new Monte Carlo method for solving the light transport problem, inspired by theMetropolis sampling method in computational physics. To render an image, we generate a sequence of light transport paths by randomly mutating a single current path (e.g. adding a new vertex to the path). Eachmutation is accepted or rejected with a care- fully chosen probability, to ensure that paths are sampled according to the contribution they make to the ideal image. We then estimate this image by sampling many paths, and recording their locations on the image plane. Our algorithm is unbiased, handles general geometric and scattering models, uses little storage, and can be orders of magnitude more efficient than previous unbiased approaches. It performs especially well on problems that are usually con- sidered difficult, e.g. those involving bright indirect light, small geometric holes, or glossy surfaces. Furthermore, it is competitive with previous unbiased algorithms even for relatively simple scenes. The key advantage of the Metropolis approach is that the path space is explored locally, by favoring mutations that make small changes to the current path. This has several consequences. First, the average cost per sample is small (typically only one or two rays). Second, once an impor- tant path is found, the nearby paths are explored as well, thus amortizing the expense of finding such paths over many samples. Third, themutation set is easily extended. By con- structing mutations that preserve certain properties of the path (e.g. which light source is used) while changing others, we can exploit various kinds of coherence in the scene. It is often possible to handle difficult lighting problems efficiently by designing a specialized mutation in this way. CR},
+	author = {Veach, Eric and Guibas, Leonidas J.},
+	doi = {10.1145/258734.258775},
+	file = {:home/lyrahgames/pro/thesis-light{\_}mapping/ref{\_}file/10.1.1.88.944.pdf:pdf},
+	isbn = {0897918967},
+	issn = {00978930},
+	journal = {Proceedings of the 24th annual conference on Computer graphics and interactive techniques  - SIGGRAPH '97},
+	keywords = {carlo integration,global illumination,lighting simulation,metropolis-hastings,monte,physically-based rendering,radiative heat transfer,variance reduction},
+	pages = {65--76},
+	title = {{Metropolis light transport}},
+	url = {http://portal.acm.org/citation.cfm?doid=258734.258775},
+	year = {1997},
+	language={english}
+}
+
+@article{veach-thesis,
+	abstract = {Light transport algorithms generate realistic images by simulating the emission and scattering of light in an artificial environment. Applications include lighting design, architecture, and computer animation, while related engineering disciplines include neutron transport and radiative heat transfer. The main challenge with these algorithms is the high complexity of the geometric, scattering, and illumination models that are typically used. In this dissertation, we develop new Monte Carlo techniques that greatly extend the range of input models for which light transport simulations are practical. Our contributions include new theoretical models, statistical methods, and rendering algorithms. We start by developing a rigorous theoretical basis for bidirectional light transport algorithms (those that combine direct and adjoint techniques). First, we propose a linear operator formulation that does not depend on any assumptions about the physical validity of the input scene. We show how to obtain mathematically correct results using a variety of bidirectional techniques. Next we derive a different formulation, such that for any physically valid input scene, the transport operators are symmetric. This symmetry is important for both theory and implementations, and is based on a new reciprocity condition that we derive for transmissive materials. Finally, we show how light transport can be formulated as an integral over a space of paths. This framework allows new sampling and integration techniques to be applied, such as the Metropolis sampling algorithm. We also use this model to investigate the limitations of unbiased Monte Carlo methods, and to show that certain kinds of paths cannot be sampled. Our statistical contributions include a new technique called multiple importance sampling, which can greatly increase the robustness of Monte Carlo integration. It uses more than one sampling technique to evaluate an integral, and then combines these samples in a way that is provably close to optimal. This leads to estimators that have low variance for a broad class of integrands. We also describe a new variance reduction technique called efficiency-optimized Russian roulette. Finally, we link these ideas together to obtain new Monte Carlo light transport algorithms. Bidirectional path tracing uses a family of different path sampling techniques that generate some path vertices starting from a light source, and some starting from a sensor. We show that when these techniques are combined using multiple importance sampling, a large range of difficult lighting effects can be handled efficiently. The algorithm is unbiased, handles arbitrary geometry and materials, and is relatively simple to implement. The second algorithm we describe is Metropolis light transport, inspired by the Metropolis sampling method from computational physics. Paths are generated by following a random walk through path space, such that the probability density of visiting each path is proportional to the contribution it makes to the ideal image. The resulting algorithm is unbiased, uses little storage, handles arbitrary geometry and materials, and can be orders of magnitude more efficient than previous unbiased approaches. It performs especially well on problems that are usually considered difficult, e.g. those involving bright indirect light, small geometric holes, or glossy surfaces. To our knowledge, this is the first application of the Metropolis method to transport problems of any kind.},
+	author = {Veach, Eric},
+	doi = {10.1016/S1350-9462(98)00033-0},
+	file = {:home/lyrahgames/pro/thesis-light{\_}mapping/ref{\_}file/thesis.pdf:pdf},
+	isbn = {0591907801},
+	issn = {13509462},
+	journal = {Dissertation at the Department of Computer Science of Stanford University},
+	number = {December},
+	pages = {759--764},
+	pmid = {21450696},
+	title = {{Robust Monte Carlo Methods for Light Transport Simulation}},
+	url = {http://graphics.stanford.edu/papers/veach{\_}thesis/},
+	volume = {134},
+	year = {1997},
+	language={english}
+}
+
+@book{diffgeo,
+	title={Differentialgeometrie: Kurven - Flächen - Mannigfaltigkeiten},
+	author={Wolfgang Kühnel},
+	year={2013},
+	publisher = {Springer Spektrum},
+	edition = {Sechste},
+	isbn = {978-3-658-00614-3},
+	language = {ngerman}
+}
+
+@article{course-triangle-mesh,
+	author = {Botsch, Mario and Pauly, Mark and Rossl, C},
+	doi = {10.1145/1185657.1185839},
+	file = {:home/lyrahgames/pro/thesis-light{\_}mapping/ref{\_}file/botsch{\_}2006{\_}GMT{\_}sg.pdf:pdf},
+	isbn = {1595933646},
+	journal = {Acm Siggraph 2006 {\ldots}},
+	pages = {1--148},
+	title = {{Geometric modeling based on triangle meshes}},
+	url = {http://dl.acm.org/citation.cfm?id=1185839},
+	year = {2006},
+	language={english}
+}
+
+@article{surface-triangle-mesh,
+	abstract = {Jean-Marie Morvan Institut Girard Desargues and INRIA, 2004 Route des Lucioles, BP 93, 06904 Sophia-Antipolis, France, Jean-Marie.Morvan@sophia.inria.fr Boris Thibert Institut Girard Desargues Universite Lyon1,batiment 21 43 Bd },
+	author = {Morvan, Jean-Marie and Thibert, Boris},
+	doi = {http://doi.acm.org/10.1145/566282.566306},
+	file = {:home/lyrahgames/pro/thesis-light{\_}mapping/ref{\_}file/thibertacm.pdf:pdf},
+	isbn = {1-58113-506-8},
+	journal = {SMA '02: Proceedings of the seventh ACM symposium on Solid modeling and applications},
+	keywords = {{\"{a}}{\'{o}} ð {\o}{\`{u}}{\"{o}},{\aa} ð {\"{u}},{\^{e}}{\'{o}} {\`{u}},{\`{i}}{\"{o}} {\`{o}} {\`{u}}ð {\"{o}},{\'{i}}{\`{o}} {\'{o}}ð {\`{o}},{\~{n}},{\'{o}} {\'{o}}{\~{n}} {\o}{\"{o}} {\'{o}}{\~{n}}{\^{o}}{\`{u}}¹,{\'{o}}{\~{n}} {\o}{\"{o}}{\'{y}},{\'{o}}{\~{n}}{\^{o}}{\`{u}}{\o} {\o} {\'{o}}{\`{o}} ð,{\o}{\`{o}},þ},
+	pages = {147--158},
+	title = {{Smooth surface and triangular mesh: comparison of the area, the normals and the unfolding}},
+	year = {2002},
+	language={english}
+}
+
+@book{tricks-game,
+	title={Tricks of the 3D Game Progamming Gurus: Advanced 3D Graphics and Rasterization},
+	author={André LaMothe},
+	year={2003},
+	publisher = {Sams Publishing},
+	language = {english}
+}
+
+@book{real-time-render,
+	title={Real-Time Rendering},
+	author={Tomas Akenine-Möller and Eric Haines and Naty Hoffman},
+	year={2008},
+	publisher = {A K Peters, Ltd.},
+	edition={Third},
+	language={english}
+}
+
+@article{intro-brdf,
+	abstract = {Ionising radiation has been an important part of cancer treatment for almost a century, being used in external-beam radiotherapy, brachytherapy, and targeted radionuclide therapy. At the molecular and cellular level, cell killing has been attributed to deposition of energy from the radiation in the DNA within the nucleus, with production of DNA double-strand breaks playing a central part. However, this DNA-centric model has been questioned because cell-death pathways, in which direct relations between cell killing and DNA damage diverge, have been reported. These pathways include membrane-dependent signalling pathways and bystander responses (when cells respond not to direct radiation exposure but to the irradiation of their neighbouring cells). New insights into mechanisms of these responses coupled with technological advances in targeting of cells in experimental systems with microbeams have led to a reassessment of the model of how cells are killed by ionising radiation. This review provides an update on these mechanisms.},
+	author = {Nicodemus, Fe and Richmond, Jc and Hsia, Jj},
+	doi = {10.1109/LPT.2009.2020494},
+	file = {:home/lyrahgames/pro/thesis-light{\_}mapping/ref{\_}file/nicodemus-brdf-nist.pdf:pdf},
+	isbn = {0867202947},
+	issn = {10411135},
+	journal = {Science And Technology},
+	number = {October},
+	pages = {1--52},
+	pmid = {15992701},
+	title = {{Geometrical considerations and nomenclature for reflectance}},
+	url = {http://graphics.stanford.edu/courses/cs448-05-winter/papers/nicodemus-brdf-nist.pdf},
+	volume = {60},
+	year = {1977},
+	language = {english}
+}
+
+@book{radiosity,
+	title = {Radiosity and Realistic Image Synthesis},
+	author = {Michael F. Cohen and John R. Wallace},
+	year = {1995},
+	publisher = {Academic Press Professional},
+	isbn = {0-12-059756-X},
+	language = {english}
+}
+
+@article{course-photon-map,
+	abstract = {This course serves as a practical guide to photon maps. Any reader who can implement a ray tracer should be able to add an efficient implementation of photonmaps to his or her ray tracer after attending this course and reading the course notes. There are many reasons to augment a ray tracer with photon maps. Photon maps makes it possible to efficiently compute global illumi- nation including caustics, diffuse color bleeding, and participating media. Photon maps can be used in scenes containing many complex objects of general type (e.g. the method is not restricted to tessel- lated models). The method is capable of handling advanced material descriptions based on a mixture of specular, diffuse, and non-diffuse components. Furthermore, the method is easy to implement and ex- periment with. This course is structured as a two hour tutorial. We will therefore assume that the participants have knowledge of global illumination algorithms (in particular ray tracing), material models, and radio- metric terms such as radiance and flux. We will discuss in detail photon tracing, the photon map data structure, the photon map ra- diance estimate, and rendering techniques based on photon maps. We will emphasize the techniques for efficient computation through- out the presentation. Finally, we will present some examples of scenes rendered with photon maps and explain the important aspects that we considered when rendering each scene.},
+	author = {Jensen, Henrik Wann},
+	doi = {10.1145/1103900.1103920},
+	file = {:home/lyrahgames/pro/thesis-light{\_}mapping/ref{\_}file/course8.pdf:pdf},
+	isbn = {0111456789},
+	journal = {SIGGRAPH 2000 Course Notes CD-},
+	keywords = {photon mapping,ray tracing},
+	pages = {20--es},
+	title = {{A practical guide to global illumination using photon maps}},
+	url = {http://portal.acm.org/citation.cfm?doid=1103900.1103920{\%}5Cnhttp://171.67.77.70/courses/cs348b-00/course8.pdf},
+	volume = {38},
+	year = {2000},
+	language = {english}
+}
+
+@article{light-field-render,
+	abstract = {A number of techniques have been proposed for flying through scenes by redisplaying previously rendered or digitized views. Techniques have also been proposed for interpolating between views by warping input images, using depth information or correspondences between multiple images. In this paper, we describe a simple and robust method for generating new views from arbitrary camera positions without depth information or fea- ture matching, simply by combining and resampling the available images. The key to this technique lies in interpreting the input images as 2D slices of a 4D function - the light field. This func- tion completely characterizes the flow of light through unob- structed space in a static scene with fixed illumination. We describe a sampled representation for light fields that allows for both efficient creation and display of inward and out- ward looking views. We hav e created light fields from large arrays of both rendered and digitized images. The latter are acquired using a video camera mounted on a computer-controlled gantry. Once a light field has been created, new views may be constructed in real time by extracting slices in appropriate direc- tions. Since the success of the method depends on having a high sample rate, we describe a compression system that is able to compress the light fields we have generated by more than a factor of 100:1 with very little loss of fidelity. We also address the issues of antialiasing during creation, and resampling during slice extrac- tion. CR},
+	author = {Levoy, Marc and Hanrahan, Pat},
+	doi = {10.1145/237170.237199},
+	file = {:home/lyrahgames/pro/thesis-light{\_}mapping/ref{\_}file/p31-levoy.pdf:pdf},
+	isbn = {0897917464},
+	issn = {00978930},
+	journal = {Proceedings of the 23rd annual conference on Computer graphics and interactive techniques  - SIGGRAPH '96},
+	pages = {31--42},
+	title = {{Light field rendering}},
+	url = {http://portal.acm.org/citation.cfm?doid=237170.237199},
+	year = {1996},
+	language = {english}
+}
+
+@article{gi-density-estimation,
+	author = {Shirley, P. and Wade, B. and Hubbard, P. M. and Zareski, D. and Walter, B. and Greenberg, D. P.},
+	file = {:home/lyrahgames/pro/thesis-light{\_}mapping/ref{\_}file/de95.pdf:pdf},
+	journal = {Proceedings of 6th Workshop on Rendering},
+	pages = {219--230},
+	title = {{Global Illumination via Density-Estimation}},
+	url = {http://link.springer.com/chapter/10.1007/978-3-7091-9430-0{\_}21{\%}5Cnhttp://www.cs.utah.edu/{~}shirley/papers/de95.pdf},
+	year = {1995},
+	language = {english},
+}
+
+@article{gi-llde,
+	author = {Walter, Bruce and Hubbard, Philip M and Shirley, Peter},
+	file = {:home/lyrahgames/pro/thesis-light{\_}mapping/ref{\_}file/denocol.pdf:pdf},
+	title = {{Global Illumination Using Local Linear Density Estimation}}
+}
+
+@article{irr-grad,
+	abstract = {A new method for improving the accuracy of a diffuse interreflection calculation is introduced in a ray tracing context. The information from a hemispherical sampling of the luminous environment is interpreted in a new way to predict the change in irradiance as a function of position and surface orientation. The additional computation involved is modest and the benefit is substantial. An improved interpolation of irradiance resulting from the gradient calculation produces smoother, more accurate renderings. This result is achieved through better utilization of ray samples rather than additional samples or alternate sampling strategies. Thus, the technique is applicable to a variety of global illumination algorithms that use hemicubes or Monte Carlo sampling techniques.},
+	author = {Ward, Gregory J. and Heckbert, Paul S},
+	doi = {10.1145/1401132.1401225},
+	file = {:home/lyrahgames/pro/thesis-light{\_}mapping/ref{\_}file/paper.pdf:pdf},
+	journal = {ACM SIGGRAPH 2008 classes on - SIGGRAPH '08},
+	pages = {1},
+	title = {{Irradiance gradients}},
+	url = {http://portal.acm.org/citation.cfm?doid=1401132.1401225},
+	year = {2008}
+}
+
+@article{mesh-colors,
+	abstract = {The coloring of 3D models using 2D or 3D texture mapping has well-known intrinsic problems, such as mapping discontinuities and limitations to model editing after coloring. Workarounds for these problems often require adopting very complex approaches. Here we propose a new technique, called mesh colors, for associating color data directly with a polygonal mesh. The approach eliminates problems deriving from using a map from texture space to model space. Mesh colors is an extension of vertex colors where, in addition to keeping color values on each vertex, they are also kept on edges and faces. Like texture mapping, the approach allows higher texture resolution than model resolution, but at the same time it guarantees one-to-one correspondence between the model surface and the color data, and eliminates discontinuities. We show that mesh colors integrate well with the current graphics pipeline and can be used to generate very high-quality textures.},
+	author = {Yuksel, Cem and Keyser, John and House, Donald H.},
+	doi = {10.1145/1731047.1731053},
+	file = {:home/lyrahgames/download/Downloads/meshcolors{\_}tog.pdf:pdf},
+	isbn = {0730-0301},
+	issn = {07300301},
+	journal = {ACM Transactions on Graphics},
+	number = {2},
+	pages = {1--11},
+	title = {{Mesh colors}},
+	volume = {29},
+	year = {2010}
+}
+
+@article{3d-visibility,
+	author = {Durand, F},
+	file = {:home/lyrahgames/pro/thesis-light{\_}mapping/ref{\_}file/vo.pdf:pdf},
+	journal = {Universit{\'{e}} Joseph Fourier, Grenoble, France},
+	title = {{3D Visibility: analytical study and applications}},
+	url = {http://scholar.google.com/scholar?hl=en{\&}btnG=Search{\&}q=intitle:3D+Visibility+:+Analytical+Study+and+Applications{\#}0{\%}5Cnhttp://scholar.google.com/scholar?hl=en{\&}btnG=Search{\&}q=intitle:3D+Visibility:+analytical+study+and+applications{\#}0},
+	year = {1999},
+	language = {english}
+}
+
+@article{survey-visibility,
+	abstract = { Visibility algorithms for walkthrough and related applications have grown into a significant area, spurred by the growth in the complexity of models and the need for highly interactive ways of navigating them. In this survey, we review the fundamental issues in visibility and conduct an overview of the visibility culling techniques developed in the last decade. The taxonomy we use distinguishes point-based methods from-region methods. Point-based methods are further subdivided into object and image-precision techniques, while from-region approaches can take advantage of the cell-and-portal structure of architectural environments or handle generic scenes.},
+	author = {Cohen-Or, Daniel and Chrysanthou, Yiorgos L. and Silva, Cl{\'{a}}udio T. and Durand, Fr{\'{e}}do},
+	doi = {10.1109/TVCG.2003.1207447},
+	file = {:home/lyrahgames/pro/thesis-light{\_}mapping/ref{\_}file/Visibility Survey.pdf:pdf},
+	isbn = {1077-2626},
+	issn = {10772626},
+	journal = {IEEE Transactions on Visualization and Computer Graphics},
+	keywords = {Interactive rendering,Occlusion culling,Visibility computations,Walkthrough systems},
+	number = {3},
+	pages = {412--431},
+	title = {{A survey of visibility for walkthrough applications}},
+	volume = {9},
+	year = {2003},
+	language = {english}
+}
+
+@book{bronstein,
+	title={Taschenbuch der Mathematik},
+	author={Bronstein and Semendjajew and Musiol and Mühlig},
+	year={2016},
+	publisher = {Europa-Lehrmittel},
+	edition = {Zehnte},
+	isbn = {978-3-8085-5789-1},
+	language = {ngerman}
+}
+
+@book{measure-theory,
+	title={Maß- und Integrationstheorie},
+	author={Jürgen Elstrodt},
+	year={2011},
+	publisher = {Springer},
+	edition = {Siebte korrigierte und aktualisierte},
+	isbn = {978-3-642-17904-4},
+	language = {ngerman}
+}
+
+@article{nikodym-ray-tracing,
+	abstract = {Rendering is a process of generating a 2D image from a mathematical description of a 3D scene. There are many ways to approach this task, driven by demands of a particular application. From animated movies, where the visual quality is the primary goal, to interactive applications (e.g. computer games), where the time available to render one frame is not much more than a few milliseconds. The ray tracing algorithm has long been used for oine rendering, and the rendering times were far from interactive. But as the performance of rendering hardware increases, ray tracing becomes an option for interactive applications. In this thesis, I will focus on the two dierent areas of the use of the ray tracing algorithm. I will attempt to implement an interactive application for the synthesis of images based on the ray tracing algorithm, with the option to render a particular view in much higher visual quality, though not in real-time.},
+	author = {Nikodym, Tomas},
+	file = {:home/lyrahgames/pro/thesis-light{\_}mapping/ref{\_}file/nikodtom{\_}2010bach.pdf:pdf},
+	pages = {76},
+	title = {{Ray Tracing Algorithm For Interactive Applications Tomas Nikodym}},
+	year = {2010},
+	language = {english}
+}
+
+@article{parker-ray-tracing,
+	abstract = {Note: OCR errors may be found in this Reference List extracted from the full text article. ACM has opted to expose the complete List rather than only correct and linked references.},
+	author = {Parker, Steven and Martin, William and Sloan, Peter-Pike J and Shirley, Peter and Smits, Brian and Hansen, Charles},
+	doi = {10.1145/300523.300537},
+	file = {:home/lyrahgames/pro/thesis-light{\_}mapping/ref{\_}file/avdploeg.pdf:pdf},
+	isbn = {1581130821},
+	journal = {Proceedings of the 1999 symposium on Interactive 3D graphics SI3D 99},
+	pages = {119--126},
+	title = {{Interactive ray tracing}},
+	url = {http://portal.acm.org/citation.cfm?doid=300523.300537},
+	volume = {pages},
+	year = {1999},
+	language = {english}
+}
+
+
+
