@@ -1,0 +1,49 @@
+\documentclass{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{mathrsfs}
+\usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
+\pagestyle{empty}
+ 
+%<<<<<<<WARNING>>>>>>>
+% PGF/Tikz doesn't support the following mathematical functions:
+% cosh, acosh, sinh, asinh, tanh, atanh,
+% x^r with r not integer
+
+% Plotting will be done using GNUPLOT
+% GNUPLOT must be installed and you must allow Latex to call external programs by
+% Adding the following option to your compiler
+% shell-escape    OR    enable-write18 
+% Example: pdflatex --shell-escape file.tex 
+
+\begin{document}
+\definecolor{ttttff}{rgb}{0.2,0.2,1.}
+\begin{tikzpicture}[line cap=round,line join=round,>={Stealth},x=3.0cm,y=3.0cm]
+\clip(-1.0612707468463094,-0.16534896080448253) rectangle (1.0705638133711781,1.0333929024953892);
+\fill[fill=black,fill opacity=0.10000000149011612] (0.08505615361571214,0.531600230937928) -- (0.631752491082314,0.5666448679550178) -- (0.41447574157635686,0.7383635893387583) -- cycle;
+\draw [shift={(0.,0.)},line width=0.4pt,dotted,color=ttttff]  plot[domain=0.:3.141592653589793,variable=\t]({1.*1.*cos(\t r)+0.*1.*sin(\t r)},{0.*1.*cos(\t r)+1.*1.*sin(\t r)});
+\draw [line width=0.4pt] (0.08505615361571214,0.531600230937928)-- (0.631752491082314,0.5666448679550178);
+\draw [line width=0.4pt] (0.631752491082314,0.5666448679550178)-- (0.41447574157635686,0.7383635893387583);
+\draw [line width=0.4pt] (0.41447574157635686,0.7383635893387583)-- (0.08505615361571214,0.531600230937928);
+\draw [line width=0.4pt,domain=-1.0612707468463094:1.0705638133711781] plot(\x,{(-0.-0.*\x)/1.});
+\draw [line width=0.4pt,dash pattern=on 2pt off 2pt,color=ttttff] (-0.6742021832596827,0.7385468272817081)-- (0.,0.);
+\draw [line width=0.4pt,dash pattern=on 2pt off 2pt,color=ttttff] (0.,0.)-- (0.28481058461312436,0.5841671864635628);
+\draw [->,line width=0.4pt,color=ttttff] (0.,0.) -- (0.08764768034075207,0.1797717556538995);
+\draw [->,line width=0.4pt,color=ttttff] (0.,0.) -- (-0.13484043665193654,0.1477093654563416);
+\draw [->,line width=0.4pt,color=ttttff] (-0.6742021832596827,0.7385468272817081) -- (-0.539361746607746,0.5908374618253663);
+\draw [->,line width=0.4pt,color=ttttff] (0.28481058461312436,0.5841671864635628) -- (0.19716290427237226,0.4043954308096632);
+\draw[line width=0.4pt,color=ttttff, smooth,samples=100,domain=0.0:3.141592653589793] plot[parametric] function{-cos((t)),sin((t))};
+\begin{scriptsize}
+\draw[color=ttttff] (0.06773821027821676,0.9155110849132688) node {$U(\lambda,\omega)$};
+\draw [fill=black] (0.,0.) circle (1.5pt);
+\draw[color=black] (-0.0019946958971216212,-0.08731451817969865) node {$x$};
+\draw [fill=black] (-0.6742021832596827,0.7385468272817081) circle (1.5pt);
+\draw [fill=black] (0.28481058461312436,0.5841671864635628) circle (1.5pt);
+\draw[color=ttttff] (0.3815362880672395,0.11690327847665069) node {$\tilde{L}(x,\lambda,\omega_2)$};
+\draw[color=ttttff] (-0.3556401486434805,0.668125298719805) node {$U(\lambda,\omega_1)$};
+\draw[color=ttttff] (0.5475670170561404,0.4622471947735666) node {$L(\tilde{x},\lambda,-\omega_2)$};
+\draw[color=ttttff] (-0.46189981519637713,0.16339188259354323) node {$\tilde{L}(x,\lambda,\omega_1)$};
+\end{scriptsize}
+\end{tikzpicture}
+\end{document}

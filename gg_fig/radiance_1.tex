@@ -5,18 +5,6 @@
 \usetikzlibrary{arrows}
 \usetikzlibrary{arrows.meta}
 \pagestyle{empty}
- 
-%<<<<<<<WARNING>>>>>>>
-% PGF/Tikz doesn't support the following mathematical functions:
-% cosh, acosh, sinh, asinh, tanh, atanh,
-% x^r with r not integer
-
-% Plotting will be done using GNUPLOT
-% GNUPLOT must be installed and you must allow Latex to call external programs by
-% Adding the following option to your compiler
-% shell-escape    OR    enable-write18 
-% Example: pdflatex --shell-escape file.tex 
-
 \begin{document}
 \definecolor{ccqqqq}{rgb}{0.8,0.,0.}
 \definecolor{ttttff}{rgb}{0.2,0.2,1.}
@@ -36,7 +24,7 @@
 \begin{scriptsize}
 \draw[color=black] (-3.8414319261340557,-0.7937519360933237) node {$\partial K$};
 \draw[color=ccqqqq] (2.3267854109346793,0.3244629027904848) node {$\mu(x)$};
-\draw[color=ttttff] (4.455000749455472,6.095894329287561) node {$\mathcal{L}(\lambda,x,\omega)$};
+\draw[color=ttttff] (4.455000749455472,6.095894329287561) node {$\mathcal{L}(x,\lambda,\omega)$};
 \draw [fill=black] (0.,0.) circle (1.5pt);
 \draw[color=black] (-0.017858606079752204,-0.9380377217557506) node {$x$};
 \end{scriptsize}

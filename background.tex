@@ -107,14 +107,10 @@
 			Seien $n\in\SN$ und Dreiecke $\triangle_i$ mit Shading-Normalen $\nu_i$ für alle $i\in\SN,i\leq n$.
 			Weiterhin definieren wir
 			\[
-				\e{T}\define \bigcup_{i=1}^n \triangle_i \qquad \e{A}\define \set[{ \text{es gibt genau ein $i\in\SN,i\leq n$, sodass $x\in\triangle_i$} }]{x\in\e{T}}
+				\e{T}\define \bigcup_{i=1}^n \triangle_i \qquad \e{A}\define \set[{ \exists!\ i\in\SN,i\leq n\colon\ x\in\triangle_i }]{x\in\e{T}}
 			\]
 			\[
-				\func{\nu}{\e{T}}{\ssp\cup\set{0}},\qquad \nu(x)\define
-				\begin{cases}
-					\nu_i(x) & :x\in\e{A} \text{ mit } x\in\triangle_i \text{ für } i\in\SN,i\leq n \\
-					0 & :\text{sonst}
-				\end{cases}
+				\func{\nu}{\e{T}}{\ssp\cup\set{0}},\qquad \nu(x)\define \sum_{i=1}^n \nu_i(x)\mathds{1}_{\e{A}\cap\triangle_i}(x)
 			\]
 			Dann nennen wir $\e{T}$ eine Mesh mit Shading-Normaler $\nu$, wenn für $\sigma$-fast-alle $x\in\e{T}$ auch $x\in\e{A}$ gilt.
 		\end{definition}
@@ -390,126 +386,145 @@
 
 		Grundsätzlich gibt es viele Verfahren, um ein Szene auf ein Bild zu rendern \cite{survey-visibility,real-time-render}.
 		Die Erfahrung zeigt aber, dass vor allem in Bereichen, in denen die globalen Beleuchtungseffekte realistisch simuliert werden sollen, Raytracing eine wichtige Grundlage darstellt.
-		Der Grund dafür besteht in der Tatsache, dass Raytracing das \enquote{Sichtbarkeitsproblem} (engl.: \textit{hidden surface removal}, \textit{visible surface determination} oder \textit{occlusion culling}, \cite{3d-visibility, survey-visibility}) löst und durch die Verwendung von Strahlen eine Basis für die Lichtberechnung im Sinne der geometrischen Optik bereitstellt \cite{pbrt3,veach-thesis,parker-ray-tracing}.
+		Der Grund dafür besteht in der Tatsache, dass Raytracing das \enquote{Sichtbarkeitsproblem} (engl.: \textit{visibility problem}, \cite{3d-visibility, survey-visibility}) löst und durch die Verwendung von Strahlen eine Basis für die Lichtberechnung im Sinne der geometrischen Optik bereitstellt \cite{pbrt3,veach-thesis,parker-ray-tracing}.
 		\begin{definition}[Sichtbarkeitsproblem]
-			Sei $\s{S}$ eine Szene.
-			Dann ist die Sichtbarkeitsfunktion von $\s{S}$ die folgende Abbildung.
+			Sei $\e{T}$ eine Mesh.
+			Dann ist die Sichtbarkeitsfunktion von $\e{T}$ die folgende Abbildung.
 			\[
-				\func{V_\s{S}}{\SR^3\times S(\s{S})}{\set{0,1}}
+				\func{V_\e{T}}{\SR^3\times\e{T}}{\set{0,1}}
 			\]
 			\[
-				V_\s{S}(o,x)=
+				V_\e{T}(o,x)=
 				\begin{cases}
-					1 &: S(\s{S}) \cap \set[\gamma\in(0,1)]{(1-\gamma)o + \gamma x} = \emptyset \\
+					1 &: \e{T} \cap \set[\gamma\in(0,1)]{(1-\gamma)o + \gamma x} = \emptyset \\
 					0 &: \m{sonst}
 				\end{cases}
 			\]
-			Das Sichtbarkeitsproblem beschreibt dann die Aufgabe diese Funktion für gegebene Szenen und Parameter zu evaluieren.
+			Das Sichtbarkeitsproblem beschreibt die Aufgabe diese Funktion für gegebene Parameter zu evaluieren.
 		\end{definition}
+
+		Die Sichtbarkeitsfunktion gibt an, ob der Oberflächenpunkt $x$ vom Beobachtungspunkt $o$ aus in gerader Linie gesehen werden kann oder ob zwischen diesen Punkten ein weiterer Punkt der Mesh $\e{T}$ den Punkt $x$ verdeckt \cite[S.~30]{3d-visibility}.
+		Daran anknüpfend besteht die Basis des Raytracing-Verfahrens auf dem Aussenden von \enquote{Strahlen} (engl.: \textit{ray}) bezüglich eines Ursprungspunktes \cite{pbrt3,parker-ray-tracing,nikodym-ray-tracing}.
+		Für diese Strahlen kann der Schnittpunkt mit $\e{T}$ ermittelt werden.
+		Liegt der Schnittpunkt zwischen $o$ und $x$, so beträgt der Wert der Sichtbarkeitsfunktion $0$.
+		Im noch bleibenden Fall ergibt sich der Wert zu $1$.
+		Die Sichtbarkeitsfunktion kann somit für alle gegebenen Parameter durch Raytracing berechnet werden.
+		Abbildung \ref{fig:ray_tracing-1} zeigt diese Methode anhand einer Skizze.
 
 		\begin{figure}[h]
 			\center
 			\includegraphics{gg_fig/ray_tracing_1.pdf}
-			\caption{Die Abbildung zeigt eine Skizze, welche das Sichtbarkeitsproblem und den Raytracing-Algorithmus verdeutlicht. Die grau melierten Dreiecke sollen die gegebene Szene $\s{S}$ darstellen. Der ausgesendete Strahl $r=(r_\m{o},r_\m{d})$ trifft in der Szene genau zwei Punkte $x_1$ und $x_2$. Dabei wird $x_2$ durch $x_1$ verdeckt. Es gilt also $V_\s{S}(r_\m{o},x_1)=1$ und $V_\s{S}(r_\m{o},x_2)=0$.}
+			\caption{Die Abbildung zeigt eine Skizze, welche das Sichtbarkeitsproblem und den Raytracing-Algorithmus verdeutlicht. Die grau melierten Dreiecke sollen die gegebene Mesh $\e{T}$ darstellen. Der ausgesendete Strahl $r$, gegeben durch $(r_\m{o},r_\m{d})$, trifft in der Mesh genau zwei Punkte $x_1$ und $x_2$. Dabei wird $x_2$ durch $x_1$ verdeckt. Es gilt also $V_\e{T}(r_\m{o},x_1)=1$ und $V_\e{T}(r_\m{o},x_2)=0$.}
 			\label{fig:ray_tracing-1}
 		\end{figure}
 
-		Die Sichtbarkeitsfunktion gibt an, ob der Oberflächenpunkt $x$ vom Beobachtungspunkt $o$ aus in gerader Linie gesehen werden kann oder ob zwischen diesen Punkten ein Primitiv den Punkt $x$ verdeckt.
-		Daran anknüpfend besteht die Basis des Raytracing-Verfahrens auf dem Aussenden von \enquote{Strahlen} (engl.: \textit{ray}) bezüglich eines Ursprungspunktes.
-		Für diese Strahlen kann der Schnittpunkt mit der Szene ermittelt werden.
-		Liegt der Schnittpunkt zwischen $o$ und $x$, so beträgt der Wert der Sichtbarkeitsfunktion $0$ ansonsten $1$.
-		Die Sichtbarkeitsfunktion kann somit für alle gegebenen Parameter durch Raytracing berechnet werden.
-		Abbildung \ref{fig:ray_tracing-1} zeigt diese Methode anhand einer Skizze.
+		% \begin{definition}[Strahl]
+		% 	Ein Strahl $r$ sei gerade durch ein Tupel $(r_\m{o},r_\m{d})$ mit einem Ursprungspunkt $r_\m{o}\in\SR^3$ und einer Richtung $r_\m{d}\in\SR^3\setminus\set{0}$ charakterisiert. Die Menge $S(r)$ der Punkte des Strahls ist gegeben durch das Bild der Parametrisierung $([0,\infty),\varphi_r)$
+		% 	\[
+		% 		S(r) \define \im{\varphi_r},\qquad \func{\varphi_r}{[0,\infty)}{\SR^3},\qquad \varphi_r(t)\define r_\m{o} + tr_\m{d}
+		% 	\]
+		% 	Die Menge aller Strahlen sei mit $R$ bezeichnet.
+		% \end{definition}
+
 		\begin{definition}[Strahl]
-			Ein Strahl $r$ sei gerade durch ein Tupel $(r_\m{o},r_\m{d})$ mit einem Ursprungspunkt $r_\m{o}\in\SR^3$ und einer Richtung $r_\m{d}\in\SR^3\setminus\set{0}$ charakterisiert. Die Menge $S(r)$ der Punkte des Strahls ist gegeben durch das Bild der Parametrisierung $([0,\infty),\varphi_r)$
+			Seien ein Ursprung $o\in\SR^3$, eine Richtung $d\in\ssp$ und die folgende Abbildung gegeben.
 			\[
-				S(r) \define \im{\varphi_r},\qquad \func{\varphi_r}{[0,\infty)}{\SR^3},\qquad \varphi_r(t)\define r_\m{o} + tr_\m{d}
+				\func{\varphi}{[0,\infty)}{\SR^3},\qquad \varphi(\gamma)\define o + \gamma d
 			\]
-			Die Menge aller Strahlen sei mit $R$ bezeichnet.
+			Dann wird das Bild $\im\varphi$ ein Strahl $r$ genannt.
+			Dabei ist $([0,\infty),\varphi)$ die Standardparametrisierung von $r$.
+			Der Notation wegen, definieren wir für alle $\gamma\in[0,\infty)$
+			\[
+				r(\gamma) \define \varphi(\gamma)
+			\]
+			Durch das Tupel $(o,d)$ charakterisieren und identifizieren wir den Strahl $r$.
+			Die Menge aller Strahlen definieren wir als $\e{R}$.
 		\end{definition}
 
-		Die vollständige Evaluierung von $V_\s{S}$ ist jedoch häufig nicht nötig.
+		Die vollständige Evaluierung von $V_\e{T}$ ist jedoch häufig nicht notwendig.
 		In Abbildung \ref{fig:ray_tracing-1} ist klar, dass alle Punkte von $r$, die hinter $x_1$ liegen von dem Beobachtungspunkt $r_\m{o}$ aus nicht sichtbar sind.
-		Beim eigentlichen Raytracing-Algorithmus macht man sich dies zu Nutze und berechnet für eine vorgegebene Richtung nur den nächsten Schnittpunkt.
-		Alle weiteren Schnittpunkte können ignoriert werden, da sie vom Strahl aus nicht erreicht werden.
+		Beim eigentlichen Raytracing-Algorithmus wirkt sich diese Eigenschaft positiv aus.
+		Es reicht für eine gegebene Richtung und einen gegebenen Beobachtungspunkt den nächsten Schnittpunkt des resultierenden Strahles zu ermitteln.
+		Für alle weiteren Schnittpunkte, sofern diese existieren, ergibt sich die Sichtbarkeitsfunktion zu Null, wodurch sie für das weitere Vorgehen ignoriert werden können \cite[S.~4~ff,~866]{pbrt3}.
 		\begin{definition}[Raytracing-Funktion]
-			Sei $\s{S}$ eine Szene.
-			Dann ist die Raytracing-Funktion der Szene $\s{S}$ gegeben durch die folgende Abbildung.
+			Sei $\e{T}$ eine Mesh.
+			Dann ist die Raytracing-Funktion von $\e{T}$ durch die folgende Abbildung gegeben.
 			\[
-				\func{\m{rt}_\s{S}}{R}{(0,\infty]}
+				\func{\m{rt}_\e{T}}{\e{R}}{(0,\infty]}
 			\]
 			\[
-				\m{rt}_\s{S}(r) \define
+				\m{rt}_\e{T}(r) \define
 				\begin{cases}
-					\min\set[r(t)\in S(\s{S})]{t\in(0,\infty)} &: S(\s{S})\cap \varphi_r((0,\infty)) \neq \emptyset \\
+					\min\set[r(\gamma)\in \e{T}]{\gamma\in(0,\infty)} &: \e{T}\cap (r\setminus\set{r(0)}) \neq \emptyset \\
 					\infty &: \m{sonst}
 				\end{cases}
 			\]
 		\end{definition}
 
-		Wie bereits erwähnt, erweitert man diesen Algorithmus häufig mit der Berechnung eines gesamten Bildes, indem man für jeden Pixel des Bildes einen oder mehrere Strahlen durch einen analogen virtuellen Pixel im Szenenraum schießt und die Raytracing-Funktion für diese evaluiert.
+		Wie bereits erwähnt, erweitert man diesen Algorithmus häufig mit der Berechnung eines gesamten Bildes, indem man für jeden Pixel des Bildes einen oder mehrere Strahlen durch einen analogen virtuellen Pixel im Szenenraum schießt und die Raytracing-Funktion für diese evaluiert \cite{pbrt3,parker-ray-tracing,nikodym-ray-tracing}.
 		Abbildung \ref{fig:ray_tracing-2} zeigt dieses Verfahren anhand einer Skizze.
-		Um gleichzeitig das Shading zu ermöglichen, ermittelt man nicht nur den Schnittpunkt, sondern auch in welchem Primitiv sich dieser befindet und welche baryzentrischen Koordinaten er besitzt.
-		Die Implementierung des Raytracing-Verfahrens soll hier nicht gezeigt werden, da eine einfache naive Implementierung meistens einen zu großen Rechenaufwand darstellt und die hier verwendete optimierte Variante weit über das Thema dieser Arbeit hinausgeht.
-
-		\begin{figure}
+		\begin{figure}[h]
 			\center
 			\includegraphics{gg_fig/ray_tracing_2.pdf}
-			\caption{In der Skizze ist ein typisches Render-Verfahren auf der Basis des Raytracing-Algorithmus dargestellt. Bezüglich eines Beobachtungspunktes $o$ wird durch jeden Pixel eines virtuellen Bildschirms $\m{VS}$ ein Strahl geschossen und dessen Raytracing-Funktion evaluiert. Gibt es keinen Schnittpunkt, so wird der Pixel meistens schwarz gefärbt. Ansonsten kann zum Beispiel die Farbe des getroffenen Objektes angezeigt werden. Der Übersicht wegen sind im Bild nur vier der eigentlich acht Strahlen sichtbar.}
+			\caption{In der Skizze ist ein typisches Render-Verfahren auf der Basis des Raytracing-Algorithmus dargestellt. Bezüglich eines Beobachtungspunktes $o\in\SR^3$ wird durch jeden Pixel eines virtuellen Bildschirms $\m{VS}$ ein Strahl geschossen und der Wert der Raytracing-Funktion evaluiert. Die grau melierten Dreiecke bilden die Mesh $\e{T}$. Je nachdem, ob ein Strahl einen Schnittpunkt mit $\e{T}$ aufweist, wird ein entsprechendes Shading-Verfahren ausgeführt. Der Übersicht wegen sind im Bild nur vier der eigentlich acht Strahlen sichtbar.}
 			\label{fig:ray_tracing-2}
 		\end{figure}
+		Um gleichzeitig das sogenannte \enquote{Shading} zu ermöglichen, ermittelt man nicht nur den Schnittpunkt, sondern auch in welchem Dreieck sich dieser befindet und welche baryzentrischen Koordinaten er besitzt \cite{pbrt3,ray-triangle-intersection}.
+		Die Implementierung des Raytracing-Verfahrens soll hier nicht gezeigt werden, da eine einfache Implementierung einen zu großen Rechenaufwand darstellt und die hier verwendete optimierte Variante weit über das Thema dieser Arbeit hinausgeht.
+		Für eine strukturierte Einführung von Beschleunigungsstrukturen sei auf \cite[S.~247~ff]{pbrt3} und \cite{parker-ray-tracing,nikodym-ray-tracing} verwiesen.
 
 	% subsection raytracing (end)
 
 	\subsection{Radiometrie} % (fold)
 	\label{sub:radiometrie}
 
-		Ein physikalischer Körper $K$ mit der Oberfläche $\partial K$ und äußerer Normalen-Funktion $\mu$ sendet aufgrund verschiedener physikalischer Effekte, wie zum Beispiel Reflexion oder Emission, elektromagnetische Wellen aus.
-		Für die Simulation von Beleuchtungseffekten ist es nötig die Abhängigkeit dieser Abstrahlung für verschiedene Wellenlängen $\lambda\in(0,\infty)$, verschiedene Oberflächenpunkte $x\in\partial K$ und verschiedene Richtungen $\omega\in\Omega$ zu betrachten.
+		Ein physikalischer Körper $K$ mit der Oberfläche $\partial K$ und äußerer Normalen-Funktion $\mu$ sendet aufgrund verschiedener physikalischer Effekte, wie zum Beispiel Reflexion oder Emission, elektromagnetische Wellen aus \cite{nolting-edyn}.
+		Für die Simulation von Beleuchtungseffekten ist es nötig die Abhängigkeit dieser Abstrahlung für verschiedene Wellenlängen $\lambda\in(0,\infty)$, verschiedene Oberflächenpunkte $x\in\partial K$ und verschiedene Richtungen $\omega\in\ssp$ zu betrachten.
 		Dafür führen wir die sogenannte \enquote{spektrale Strahldichte} (engl.: \textit{spectral radiance}) ein.
-		Sie gibt an, wie viel Energie pro Zeit, pro Wellenlängenänderung, pro Flächenelement und pro Raumwinkel abgestrahlt beziehungsweise empfangen wird.
-		Sind also messbare Teilmengen $\Lambda\subset (0,\infty)$, $U\subset \partial K$ und $S\subset\Omega$ gegeben, so kann man die spektrale Strahldichte über die abgegebene Strahlungsleistung $\Phi(\Lambda,U,S)$ der Oberfläche $U$ in den Raumwinkelbereich $S$ definieren.
+		Sie gibt an, wie viel Energie pro Zeit, pro Wellenlängenänderung, pro Flächenelement und pro Raumwinkel abgestrahlt beziehungsweise empfangen wird \cite{intro-radiometry,malacara-colorimetry,ohta-colorimetry}.
+		Sind also messbare Teilmengen $\Lambda\subset (0,\infty)$, $U\subset \partial K$ und $S\subset\ssp$ gegeben, so kann man die spektrale Strahldichte über die abgegebene Strahlungsleistung $\Phi(U,\Lambda,S)$ der Oberfläche $U$ in den Raumwinkelbereich $S$ definieren \cite{intro-radiometry}.
 		Die zugehörige Abbildung ist dann wie folgt gegeben.
 		\[
-			\func{\s{L}}{(0,\infty)\times\partial K\times \Omega}{[0,\infty)}
+			\func{\s{L}}{\partial K\times(0,\infty)\times \ssp}{[0,\infty)}
 		\]
 		\[
-			\Phi(\Lambda,U,S) \definedby \integral{\Lambda}{}{ \integral{U}{}{ \integral{S}{}{ \s{L}(\lambda,x,\omega)\abs{\dotp{\mu(x)}{\omega}} }{\omega} }{\sigma(x)} }{\lambda}
+			\Phi(U,\Lambda,S) \definedby \integral{U}{}{ \integral{\Lambda}{}{ \integral{S}{}{ \s{L}(x,\lambda,\omega)\abs{\dotp{\mu(x)}{\omega}} }{\sigma(\omega)} }{\lambda(\lambda)} }{\sigma(x)}
 		\]
 		Abbildung \ref{fig:radiance} zeigt eine Skizze, welche die Struktur dieser Abbildung verdeutlicht.
-		Der Erfahrung nach stellt die spektrale Strahldichte für das menschliche Auge die sinnvollste messbare Größe für die empfundene Helligkeit einer Oberfläche bezüglich eines Beobachtungspunktes dar.
+		Der Erfahrung nach stellt die spektrale Strahldichte für das menschliche Auge die sinnvollste messbare Größe für die empfundene Helligkeit einer Oberfläche bezüglich eines Beobachtungspunktes dar \cite{malacara-colorimetry,ohta-colorimetry}.
 
 		\begin{figure}[h]
 			\center
 			\includegraphics{gg_fig/radiance_1.pdf}
-			\caption{Die Skizze stellt ein qualitatives Beispiel einer spektralen Strahldichte $\s{L}$ dar, die an einem Punkt $x$ auf der Oberfläche $\partial K$ und für eine Wellenlänge $\lambda$ eine Verteilung in Abhängigkeit von $\omega$ auf der Einheitskugel besitzt. In der Abbildung ist dabei die Abstrahlung nur erlaubt, wenn $\dotp{\omega}{\mu(x)}>0$, wobei $\mu(x)$ die äußere Normale im Punkt $x$ beschreibt.}
+			\caption{Die Skizze stellt das qualitative Beispiel einer spektralen Strahldichte $\s{L}$ dar, die an einem Punkt $x$ auf der Oberfläche $\partial K$ mit der äußeren Normalen $\mu$ und für eine Wellenlänge $\lambda$ eine Verteilung in Abhängigkeit von $\omega\in\ssp$ besitzt.}
 			\label{fig:radiance}
 		\end{figure}
 
 		Eine weitere Größe, die wir hier einführen möchten, ist die sogenannte spektrale \enquote{Bestrahlungsstärke} oder auch spektrale Irradianz (engl.: \textit{spectral irradiance}).
 		Sie wird vor allem bei der noch folgenden Konstruktion der Irradiance Maps benötigt werden.
-		Wir definieren sie für eine messbare Teilmenge $S\subset\Omega$.
+		Wir definieren sie für eine messbare Teilmenge $S\subset\ssp$ \cite[S.~9~f]{guide-radiometry}.
 		\[
-			\func{\s{E}}{(0,\infty)\times\partial K}{[0,\infty)},\qquad \s{E}(\lambda,x) \define \integral{S}{}{ \s{L}(\lambda,x,\omega)\abs{\dotp{\mu(x)}{\omega}} }{\sigma(\omega)}
+			\func{\s{E}}{\partial K\times (0,\infty)}{[0,\infty)},\qquad \s{E}(x,\lambda) \define \integral{S}{}{ \s{L}(x,\lambda,\omega)\abs{\dotp{\mu(x)}{\omega}} }{\sigma(\omega)}
 		\]
-		Die spektrale Bestrahlungsstärke quantifiziert die Energie pro Zeit, pro Wellenlängenänderung und pro Flächenelement, die an einem Punkt auf der Oberfläche des Objektes aus dem Raumwinkelbereich $S$ empfangen wird.
+		Die spektrale Bestrahlungsstärke quantifiziert die Energie pro Zeit, pro Wellenlängenänderung und pro Flächenelement, die an einem Punkt auf der Oberfläche des Objektes aus dem Raumwinkelbereich $S$ empfangen wird \cite{intro-radiometry,guide-radiometry}.
 
 		Für die weiteren Algorithmen und Implementierungen reicht es entkoppelte Abbildungen zu betrachten, welche für jeden Punkt einer Szene und jede gegebene Richtung der Strahldichte beziehungsweise der Irradianz entsprechen.
 		Später werden dies die Funktionen sein, die wir durch \enquote{Path Tracing} simulieren und durch geeignetes \enquote{Surface Caching} zwischenspeichern wollen.
-		\begin{definition}[Strahldichte- und Irradianz-Funktion]
-			Sei $\s{S}$ eine Szene.
-			Dann ist eine Strahldichte-Funktion von $\s{S}$ gegeben durch eine integrierbare Abbildung
+		\begin{definition}[Strahldichte und Irradianz]
+			Sei $\Sigma\define (\e{T},\nu,f,E,U)$ eine Szene.
+			Dann ist eine Strahldichte von $\Sigma$ gegeben durch eine integrierbare Abbildung
 			\[
-				\func{L_\s{S}}{(0,\infty)\times S(\s{S})\times \Omega}{[0,\infty)}
+				\func{L}{\e{T}\times(0,\infty)\times\ssp}{[0,\infty)}
 			\]
-			Die zu $L_\s{S}$ gehörige Irradianz-Funktion ist definiert durch
+			Die zu $L$ gehörige Irradianz definieren wir durch die folgende Funktion.
 			\[
-				\func{E_{L_\s{S}}}{(0,\infty)\times S(\s{S})}{[0,\infty)},\qquad E_{L_\s{S}}(\lambda, x) \define \integral{\Theta_{\mu(x)}}{}{L_\s{S}(\lambda,x,\omega) \dotp{\mu(x)}{\omega}}{\sigma(\omega)}
+				\func{E}{\e{T}\times(0,\infty)}{[0,\infty)},\qquad E(x,\lambda)\define \integral{\shs{\nu(x)}}{}{L(x,\lambda,\omega)\dotp{\mu(x)}{\omega}}{\sigma(\omega)}
 			\]
-			Ist aus dem Kontext klar, um welche Strahldichte-Funktion es sich handelt, schreiben wir auch $E_\s{S}$.
 		\end{definition}
 
 	% subsection radiometrie (end)
+
+
 
 	% \subsection{Reflexionen an Oberflächen} % (fold)
 	% \label{sub:reflexionen_an_oberflächen}
@@ -583,105 +598,134 @@
 	\subsection{Rendergleichung} % (fold)
 	\label{sub:rendergleichung}
 
-		Die \enquote{Rendergleichung} (engl.: \textit{rendering equation} oder \textit{light transport equation}) ist eine Integralgleichung, die 1986 von James T. Kajiya entwickelt wurde, um die bis zu diesem Zeitpunkt verbeiteten Rendertechniken für die Simulation globaler Beleuchtungseffekte auf eine gemeinsame Basis zu stellen.
-		Sie selbst kann mithilfe der Prinzipien der geometrischen Optik und dem Energieerhaltungssatz hergeleitet werden.
-		Insbesondere handelt es sich um eine Fredholm-Integralgleichung 2.Art, die eine eindeutige Lösung besitzt.
-		\begin{definition}[Rendergleichung]
-			Sei $\s{S}$ eine gegebene Szene mit Strahldichte-Funktion $L_\s{S}$.
-			Dann gehorcht $L_\s{S}$ der Rendergleichung, wenn für alle $x\in S(\s{S})$ und $\omega_0\in \Omega$ gilt
-			\begin{alignat*}{3}
-				L_\s{S}(x,\omega_0) &= E_\s{S}(x,\omega_0) \\
-				&+\Integral{S(\s{S})}{}{ V_\s{S}(x,y) G_\s{S}(x,y) f_\s{S}(x,\omega(x,y),\omega_0) L_\s{S}(y,\omega(x,y)) }{\sigma(y)}
-			\end{alignat*}
-			Der Übersicht halber wurden dabei die folgenden Symbole verwendet.
-			\[
-				G_\s{S}(x,y) \define \frac{\abs{\dotp{\nu(x)}{\omega(x,y)}}\abs{\dotp{\nu(y)}{\omega(x,y)}}}{\norm{x-y}^2}\qquad \omega(x,y) \define \frac{y-x}{\norm{y-x}}
-			\]
-			Aufgrund der komplexen Struktur verwenden wir auch eine weitere Variante.
-			\[
-				L_\s{S}(x,\omega_0) = E_\s{S}(x,\omega_0) + \integral{\Omega}{}{ f_\s{S}(x,\omega,\omega_0)\tilde{L}_\s{S}(x,\omega) \abs{\dotp{\nu(x)}{\omega}} }{\sigma(\omega)}
-			\]
-		\end{definition}
+		Die \enquote{Rendergleichung} (engl.: \textit{rendering equation} oder \textit{light transport equation}, \cite[S.~861]{pbrt3}) ist eine Integralgleichung, die 1986 von James T. Kajiya entwickelt wurde, um die bis zu diesem Zeitpunkt verbreiteten Rendertechniken für die Simulation globaler Beleuchtungseffekte auf eine gemeinsame Basis zu stellen \cite{kajiya-lte}.
+		In \cite{kajiya-lte}, \cite[S.~349~ff,~862~ff]{pbrt3} und \cite{veach-thesis} wird sie mithilfe der Prinzipien der geometrischen Optik und dem Energieerhaltungssatz hergeleitet.
+		\cite{veach-thesis} stellt dabei die resultierende Gleichung zusätzlich in einer Operator-Formulierung dar.
+		Insbesondere handelt es sich bei der Rendergleichung um eine Fredholm-Integralgleichung 2.Art, die unter gewissen Voraussetzungen eine eindeutige Lösung besitzt (siehe hierzu \cite[S.~103~ff]{veach-thesis} und \cite{integral-equations}).
+		% \begin{definition}[Rendergleichung]
+		% 	Sei $\s{S}$ eine gegebene Szene mit Strahldichte-Funktion $L_\s{S}$.
+		% 	Dann gehorcht $L_\s{S}$ der Rendergleichung, wenn für alle $x\in S(\s{S})$ und $\omega_0\in \Omega$ gilt
+		% 	\begin{alignat*}{3}
+		% 		L_\s{S}(x,\omega_0) &= E_\s{S}(x,\omega_0) \\
+		% 		&+\Integral{S(\s{S})}{}{ V_\s{S}(x,y) G_\s{S}(x,y) f_\s{S}(x,\omega(x,y),\omega_0) L_\s{S}(y,\omega(x,y)) }{\sigma(y)}
+		% 	\end{alignat*}
+		% 	Der Übersicht halber wurden dabei die folgenden Symbole verwendet.
+		% 	\[
+		% 		G_\s{S}(x,y) \define \frac{\abs{\dotp{\nu(x)}{\omega(x,y)}}\abs{\dotp{\nu(y)}{\omega(x,y)}}}{\norm{x-y}^2}\qquad \omega(x,y) \define \frac{y-x}{\norm{y-x}}
+		% 	\]
+		% 	Aufgrund der komplexen Struktur verwenden wir auch eine weitere Variante.
+		% 	\[
+		% 		L_\s{S}(x,\omega_0) = E_\s{S}(x,\omega_0) + \integral{\Omega}{}{ f_\s{S}(x,\omega,\omega_0)\tilde{L}_\s{S}(x,\omega) \abs{\dotp{\nu(x)}{\omega}} }{\sigma(\omega)}
+		% 	\]
+		% \end{definition}
 
 		\begin{definition}
+			Seien $\Sigma\define (\e{T},\nu,f,E,U)$ eine Szene und $L$ eine Strahldichte von $\Sigma$.
+			Dann gehorcht $L$ der Rendergleichung, wenn für alle $x\in\e{T}$, $\lambda\in(0,\infty)$ und $\omega_\m{o}\in\ssp$ das Folgende gilt.
 			\[
-				L_\s{S}(\lambda,x,\omega_0) = E_\s{S}(\lambda,x,\omega_0) + \integral{\Omega}{}{ f_\s{S}(x,\omega,\omega_0)\tilde{L}_\s{S}(\lambda,x,\omega) \abs{\dotp{\nu(x)}{\omega}} }{\sigma(\omega)}
+				L(x,\lambda,\omega_\m{o}) = E(x,\lambda,\omega_\m{o}) + \integral{\ssp}{}{ f(x,\omega,\omega_\m{o})\tilde{L}(x,\lambda,\omega) \abs{\dotp{\nu(x)}{\omega}} }{\sigma(\omega)}
 			\]
 			\[
-				\tilde{L}_\s{S}(\lambda,x,\omega)\define
+				\tilde{L}(x,\lambda,\omega)\define
 				\begin{cases}
-					L_\s{S}(\lambda,\varphi_r(\m{rt}_\s{S}(r)),-\omega) &: \m{rt}(r) < \infty \\
-					\m{HDR}_\s{S}(\lambda,\omega) &: \m{sonst}
+					L(r(\m{rt}_\e{T}(r)),\lambda,-\omega) &: r\in\e{R}, r\equiv(x,\omega),\ \m{rt}_\e{T}(r) < \infty \\
+					U(\lambda,\omega) &: \m{sonst}
 				\end{cases}
 			\]
 		\end{definition}
 
-		Gehorcht eine Strahldichte-Funktion der Szene $\s{S}$, so simuliert sie die globalen Beleuchtungseffekte dieser Szene auf einer physikalischen Basis, wodurch die entstehenden Lichtverhältnisse für das menschliche Auge unheimlich real wirken.
+		In der Definition entspricht $\tilde{L}(x,\lambda,\omega)$ der aus $\omega$ einfallenden Strahldichte am Punkt $x$ der Wellenlänge $\lambda$.
+		Die Funktionen $\tilde{L}$ und $L$ sind über die Raytracing-Funktion miteinander verbunden.
+		Existiert jedoch für den gegebenen Strahl $r$ kein Schnittpunkt mit der Szene, so entspricht die einfallende Strahldichte gerade der Umgebungsbeleuchtung.
+		In Abbildung \ref{fig:lte-incident-emitted-radiance} wird dieser Zusammenhang an einem Beispiel demonstriert.
+		Die Strahldichte in Richtung $\omega$ entspricht damit der Summe des emittierten und des gestreuten Lichtes am Punkt $x$.
 
-		BILD EINBINDEN FÜR DIE LÖSUNG
+		\begin{figure}[h]
+			\center
+			\includegraphics{gg_fig/lte-incident_and_emitted_radiance.pdf}
+			\caption{Die Abbildung skizziert an einem Beispiel die Relation der Funktionen $L$ und $\tilde{L}$ aus der Definition der Rendergleichung. Dabei stellen das Dreieck einen Teil der Mesh, $U$ die Umgebungsbeleuchtung für $\omega\in\ssp$, $\omega_1,\omega_2$ Raumrichtungen, $\lambda$ die betrachtete Wellenlänge und $x$ einen Punkt auf der Mesh dar. Für $\tilde{x}$ gilt nach Defintion $\tilde{x}=r(\m{rt}_\e{T}(r))$, wobei der Strahl $r$ durch $(x,\omega_2)$ gegeben ist. Der Strahl in Richtung $\omega_1$ besitzt keinen Schnittpunkt mit der Szene, wodurch sich die einfallende Strahldichte aus der Umgebungsbeleuchtung ergibt.}
+			\label{fig:lte-incident-emitted-radiance}
+		\end{figure}
 
-		(KEINE EXTRA SECTION FÜR PATH TRACING)
-		Um die Gleichung zu lösen gibt es verschiedene Verfahren, wie zum Beispiel \enquote{Path Tracing}, \enquote{Bidirectional Path Tracing}, \enquote{Metropolis Light Transport} oder auch \enquote{Photon Mapping}.
-		Im Grunde genommen, kann jeder Algorithmus verwendet werden.
-		Für diese Arbeit wurde Path Tracing verwendet.
+		Gehorcht die Strahldichte einer Szene der Rendergleichung, so simuliert sie die globalen Beleuchtungseffekte dieser Szene auf einer physikalischen Basis, wodurch die entstehenden Lichtverhältnisse für das menschliche Auge real wirken \cite{kajiya-lte,pbrt3,veach-thesis}.
+		Die Rendergleichung lässt sich aber im Allgemeinen nicht analytisch lösen \cite{pbrt3,veach-thesis,kajiya-lte}.
+		% In \cite[S.~863~f]{pbrt3} ist jedoch die Lösung eines Spezialfalls beschrieben.
+		Aus diesem Grund sind verschiedene numerische Lösungsmethoden für die Berechnung einer Strahldichte, die der Rendergleichung gehorcht, entwickelt worden.
+		Die berühmtesten Beispiele stellen das \enquote{Path Tracing} \cite{kajiya-lte}, das \enquote{Bidirectional Path Tracing} \cite{bidirectional-path-tracing}, der \enquote{Metropolis Light Transport} \cite{veach-mlt} und das \enquote{Photon Mapping} \cite{course-photon-map} dar.
+		Eine strukturierte Einführung zu diesen Verfahren gibt es auch hier in \cite{pbrt3}.
+		Das Beispiel für eine durch Path Tracing erzeugte Lösung ist in Abbildung \ref{fig:example-audi-r8-pt} zu sehen.
+
+		\begin{figure}[h]
+			\center
+			\includegraphics[scale=0.4]{pic/example-audi_r8-pt.png}
+			\caption{Die Abbildung stellt eine durch Path Tracing simulierte Lösung der Rendergleichung für die \enquote{Audi R8}-Szene dar. Die Lichtquelle besteht hier alleine aus der Umgebungsbeleuchtung. Für die BSDFs ist immer eine Mischung aus idealer Reflexion, lambertsch diffuser Reflexion und idealer Brechung gewählt worden.}
+			\label{fig:example-audi-r8-pt}
+		\end{figure}
+
+		Alle genannten Verfahren arbeiten auf der Basis von Zufallszahlen.
+		Da die Rendergleichung eine mehrdimensionale Integralgleichung ist, bietet sich die Verwendung verschiedener \enquote{Monte-Carlo-Methoden} an \cite{monte-carlo-method}.
+		Für uns bedeutet diese Tatsache, dass es sich bei der Abfrage der Strahldichte für diese numerischen Verfahren um die Realisierung einer Zufallsvariable handelt, deren Erwartungswert im besten Falle der der wahren Strahldichte entspricht.
+		Eine detailliertere Betrachtung dieser Eigenschaft wird in den weiteren Kapiteln folgen.
+		Für die Konstruktion der Irradiance Maps ist es im Grunde genommen unwichtig, welcher Algorithmus verwendet wird, sofern er in der Lage ist die Strahldichte für gegebene Parameter zu evaluieren.
+		Wir verwenden hier einen einfachen Path Tracing Algorithmus.
 
 	% subsection rendergleichung (end)
 
-	\subsection{Surface Caching} % (fold)
-	\label{sub:surface_caching}
+	% \subsection{Surface Caching} % (fold)
+	% \label{sub:surface_caching}
 
-		Der Begriff \enquote{Surface Caching} (deutsch: \textit{Oberflächenpuffer}) wurde vor allem durch das Computerspiel \enquote{Quake} geprägt.
-		Es war das erste Spiel welches sogenannte \enquote{Surface Caches} und Lightmaps verwendete, um so die grafischen Berechnungen während der Laufzeit auf ein Minimum zu beschränken.
-		Der Begriff selbst ist nicht standardisiert und wird meistens verwendet um Algorithmen, die in der \enquote{Quake-Engine} vorkommen, genauer zu erläutern.
-		Wir wollen diesen Begriff für eine Oberklasse von Algorithmen und Datenstrukturen verwenden, die es entweder ermöglichen Informationen auf Oberflächen einer Szene zu speichern oder diese Informationen aus einem geeigneten Oberflächenpuffer wieder auszulesen.
-		Insbesondere wollen wir uns mit dem Speichern von Strahldichten diffuser Lichtverteilungen beschäftigen, bei denen die Strahldichte-Funktion $L$ nur vom Ort der Szene und nicht mehr vom betrachteten Raumwinkel abhängt.
+	% 	Der Begriff \enquote{Surface Caching} (deutsch: \textit{Oberflächenpuffer}) wurde vor allem durch das Computerspiel \enquote{Quake} geprägt.
+	% 	Es war das erste Spiel welches sogenannte \enquote{Surface Caches} und Lightmaps verwendete, um so die grafischen Berechnungen während der Laufzeit auf ein Minimum zu beschränken.
+	% 	Der Begriff selbst ist nicht standardisiert und wird meistens verwendet um Algorithmen, die in der \enquote{Quake-Engine} vorkommen, genauer zu erläutern.
+	% 	Wir wollen diesen Begriff für eine Oberklasse von Algorithmen und Datenstrukturen verwenden, die es entweder ermöglichen Informationen auf Oberflächen einer Szene zu speichern oder diese Informationen aus einem geeigneten Oberflächenpuffer wieder auszulesen.
+	% 	Insbesondere wollen wir uns mit dem Speichern von Strahldichten diffuser Lichtverteilungen beschäftigen, bei denen die Strahldichte-Funktion $L$ nur vom Ort der Szene und nicht mehr vom betrachteten Raumwinkel abhängt.
 
-		Zu beachten ist, dass die hier genannten Verfahren im Allgemeinen nur für statische Szenen Sinn ergeben, da eine Veränderung der Geometrie und Lichtverhältnisse dazu führt, dass der Surface Cache keine aktuellen Informationen mehr enthält.
-		Er müsste demnach bei jeder Änderung der Szene neu berechnet werden.
-		Da die betrachteten Szenen teilweise sehr groß sein können, wäre dieser Schritt ineffizient.
-		Zwei typische Verfahren zum zwischenspeichern von Strahldichten werden in den beiden folgenden Unterabschnitten genauer erläutert.
+	% 	Zu beachten ist, dass die hier genannten Verfahren im Allgemeinen nur für statische Szenen Sinn ergeben, da eine Veränderung der Geometrie und Lichtverhältnisse dazu führt, dass der Surface Cache keine aktuellen Informationen mehr enthält.
+	% 	Er müsste demnach bei jeder Änderung der Szene neu berechnet werden.
+	% 	Da die betrachteten Szenen teilweise sehr groß sein können, wäre dieser Schritt ineffizient.
+	% 	Zwei typische Verfahren zum zwischenspeichern von Strahldichten werden in den beiden folgenden Unterabschnitten genauer erläutert.
 
-		\subsubsection{Vertex Lighting} % (fold)
-		\label{sub:vertex_lighting}
+	% 	\subsubsection{Vertex Lighting} % (fold)
+	% 	\label{sub:vertex_lighting}
 
-			Bei der Implementierung einer Szene $\s{S}$ haben wir Vertices eingeführt, um die Speicherkosten von $\s{S}$ zu verringern.
-			Dabei existiert jeder Vertex unabhängig von allen Primitiven.
-			Nur die Primitive besitzen die Informationen, aus welchen Vertices sie selbst bestehen.
-			Dies führt zu der Idee, die diffuse Strahldichte-Funktion $L_\s{S}$ an den Positionen aller Vertices zu evaluieren und zu speichern.
-			Möchte man dann die Szene rendern, so kann man für jeden Strahl, der ein Schnittpunkt $x$ mit der Szene hat, das getroffene Primitiv $p$ und die zugehörigen baryzentrischen Koordinaten $(u,v,w)$ des Schnittpunktes bestimmen.
-			Die Strahldichte an dieser Position wird dann durch die folgende Gleichung interpoliert.
-			\[
-				L_\s{S}(x,\cdot) \approx w L^{(0)}_\s{S}g + u L^{(1)}_\s{S} + v L^{(2)}_\s{S}
-			\]
+	% 		Bei der Implementierung einer Szene $\s{S}$ haben wir Vertices eingeführt, um die Speicherkosten von $\s{S}$ zu verringern.
+	% 		Dabei existiert jeder Vertex unabhängig von allen Primitiven.
+	% 		Nur die Primitive besitzen die Informationen, aus welchen Vertices sie selbst bestehen.
+	% 		Dies führt zu der Idee, die diffuse Strahldichte-Funktion $L_\s{S}$ an den Positionen aller Vertices zu evaluieren und zu speichern.
+	% 		Möchte man dann die Szene rendern, so kann man für jeden Strahl, der ein Schnittpunkt $x$ mit der Szene hat, das getroffene Primitiv $p$ und die zugehörigen baryzentrischen Koordinaten $(u,v,w)$ des Schnittpunktes bestimmen.
+	% 		Die Strahldichte an dieser Position wird dann durch die folgende Gleichung interpoliert.
+	% 		\[
+	% 			L_\s{S}(x,\cdot) \approx w L^{(0)}_\s{S}g + u L^{(1)}_\s{S} + v L^{(2)}_\s{S}
+	% 		\]
 
-			Es handelt sich hierbei um Gourad-Shading oder auch bilineare Interpolation auf dem Dreieck.
+	% 		Es handelt sich hierbei um Gourad-Shading oder auch bilineare Interpolation auf dem Dreieck.
 
-		% subsubsection vertex_lighting (end)
+	% 	% subsubsection vertex_lighting (end)
 
-		\subsubsection{Lightmap} % (fold)
-		\label{ssub:lightmap}
+	% 	\subsubsection{Lightmap} % (fold)
+	% 	\label{ssub:lightmap}
 
-			\urldef{\urllightmapexample}\url{https://upload.wikimedia.org/wikipedia/commons/1/15/Lightmapped_Scene_with_Lightmap.png}
+	% 		\urldef{\urllightmapexample}\url{https://upload.wikimedia.org/wikipedia/commons/1/15/Lightmapped_Scene_with_Lightmap.png}
 
-			Lightmaps sind Datenstrukturen, welche vorberechnete Helligkeitswerte für Oberflächen einer Szene in einer Textur speichern.
-			Damit sind sie vor allem für Anwendungen, die sich extrem auf die Grafikkarte des Computers stützen, geeignet, da Grafikkarten speziell eingebaute Hardware besitzen, um Texturen zu verarbeiten.
-			Der gesamte Prozess der Generierung und Nutzung einer solchen Datenstruktur wird auch \enquote{Lightmapping} genannt.
-			Abbildung \ref{fig:lightmap-example}\footnote{Quelle: \urllightmapexample \\ Donnerstag 27.April 17.20 Uhr} zeigt ein einfaches Beispiel.
+	% 		Lightmaps sind Datenstrukturen, welche vorberechnete Helligkeitswerte für Oberflächen einer Szene in einer Textur speichern.
+	% 		Damit sind sie vor allem für Anwendungen, die sich extrem auf die Grafikkarte des Computers stützen, geeignet, da Grafikkarten speziell eingebaute Hardware besitzen, um Texturen zu verarbeiten.
+	% 		Der gesamte Prozess der Generierung und Nutzung einer solchen Datenstruktur wird auch \enquote{Lightmapping} genannt.
+	% 		Abbildung \ref{fig:lightmap-example}\footnote{Quelle: \urllightmapexample \\ Donnerstag 27.April 17.20 Uhr} zeigt ein einfaches Beispiel.
 
-			\begin{figure}[h]
-				\center
-				\includegraphics[scale=0.2]{pic/lightmap_example.png}
-				\caption{Die rechte Seite der Abbildung zeigt ein typisches Beispiel einer Lightmap-Textur. Mit ihrer Hilfe kann im linken Bereich des Bildes die Szene \enquote{gelightmapped} werden. Beim eigentlichen Rendern der Szene sind nun keine Sichtbarkeitstests mehr nötig, um Schatten zu generieren.}
-				\label{fig:lightmap-example}
-			\end{figure}
+	% 		\begin{figure}[h]
+	% 			\center
+	% 			\includegraphics[scale=0.2]{pic/lightmap_example.png}
+	% 			\caption{Die rechte Seite der Abbildung zeigt ein typisches Beispiel einer Lightmap-Textur. Mit ihrer Hilfe kann im linken Bereich des Bildes die Szene \enquote{gelightmapped} werden. Beim eigentlichen Rendern der Szene sind nun keine Sichtbarkeitstests mehr nötig, um Schatten zu generieren.}
+	% 			\label{fig:lightmap-example}
+	% 		\end{figure}
 
-			Lightmaps werden im Allgemeinen manuell optimiert, um den speziellen Gegebenheiten einer Szene gerecht zu werden.
-			Dies erfordert eine Menge zusätzlichen Zeit- und Arbeitsaufwand, sobald eine neue Szene betrachtet werden soll.
-			Lightmaps besitzen außerdem auch alle Nachteile von Texturen.
-			Die Größe der Speicher heutiger Grafikkarten ist im Vergleich zu den normalen Arbeitsspeichern eher gering.
-			Damit ist natürlich auch die Größe der Lightmap beschränkt.
-			Ein weiterer Nachteil ist, dass sich eine Textur, die quadratische Pixel besitzt, niemals vollständig an ein Dreieck in der Szene anpassen kann.
-			Die Folge ist, dass bei zu dicht gelegenen Helligkeitswerten auf der Lightmap, die zu verschiedenen Dreiecken gehören, Interpolations-Artefakte auftreten.
+	% 		Lightmaps werden im Allgemeinen manuell optimiert, um den speziellen Gegebenheiten einer Szene gerecht zu werden.
+	% 		Dies erfordert eine Menge zusätzlichen Zeit- und Arbeitsaufwand, sobald eine neue Szene betrachtet werden soll.
+	% 		Lightmaps besitzen außerdem auch alle Nachteile von Texturen.
+	% 		Die Größe der Speicher heutiger Grafikkarten ist im Vergleich zu den normalen Arbeitsspeichern eher gering.
+	% 		Damit ist natürlich auch die Größe der Lightmap beschränkt.
+	% 		Ein weiterer Nachteil ist, dass sich eine Textur, die quadratische Pixel besitzt, niemals vollständig an ein Dreieck in der Szene anpassen kann.
+	% 		Die Folge ist, dass bei zu dicht gelegenen Helligkeitswerten auf der Lightmap, die zu verschiedenen Dreiecken gehören, Interpolations-Artefakte auftreten.
 
 		% subsubsection lightmap (end)
 
