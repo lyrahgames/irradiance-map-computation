@@ -376,3 +376,29 @@
 	isbn = {978-3-540-89140-6},
 	language = {ngerman}
 }
+
+@article{radiance-caching,
+	author = {Gautron, Pascal and Kriva, Jaroslav and Pattanaik, Sumanta and Bouatouch, Kadi},
+	file = {:home/lyrahgames/pro/thesis-light{\_}mapping/ref{\_}file/ieee{\_}TVCG.pdf:pdf},
+	number = {5},
+	pages = {1--11},
+	title = {{Radiance Caching for Efficient Global Illumination Computation}},
+	volume = {11},
+	year = {2005},
+	language = {english}
+}
+
+@article{pre-radiance-caching,
+	abstract = {The incident indirect light over a range of image pixels is often coherent. Two common approaches to exploit this inter-pixel coherence to improve rendering performance are Irradiance Caching and Radiance Caching. Both compute incident indirect light only for a small subset of pixels (the cache), and later interpolate between pixels. Irradiance Caching uses scalar values that can be interpolated efficiently, but cannot account for shading variations caused by normal and reflectance variation between cache items. Radiance Caching maintains directional information, e. g., to allow highlights between cache items, but at the cost of storing and evaluating a Spherical Harmonics (SH) function per pixel. The arithmetic and bandwidth cost for this evaluation is linear in the number of coefficients and can be substantial. In this paper, we propose a method to replace it by an efficient per-cache item pre-filtering based on MIP maps — such as previously done for environment maps — leading to a single constant-time lookup per pixel. Additionally, per-cache item geometry statistics stored in distance-MIP maps are used to improve the quality of each pixel's lookup. Our approximate interactive global illumination approach is an order of magnitude faster than Radiance Caching with Phong BRDFs and can be combined with Monte Carlo-raytracing, Point-based Global Illumination or Instant Radiosity.},
+	author = {Scherzer, Daniel and Nguyen, Chuong H. and Ritschel, Tobias and Seidel, Hans Peter},
+	doi = {10.1111/j.1467-8659.2012.03134.x},
+	file = {:home/lyrahgames/pro/thesis-light{\_}mapping/ref{\_}file/PreconvolvedRadianceCaching.pdf:pdf},
+	issn = {01677055},
+	journal = {Computer Graphics Forum},
+	number = {4},
+	pages = {1391--1397},
+	title = {{Pre-convolved Radiance Caching}},
+	volume = {31},
+	year = {2012},
+	language = {english}
+}
