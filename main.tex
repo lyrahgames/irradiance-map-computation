@@ -1,6 +1,6 @@
 \input{sty/pre}
 
-\title{Bachelorarbeit \\ Surface Caching und Lightmapping}
+\title{Bachelorarbeit \\ Irradiance Mapping}
 \author{Markus Pawellek}
 % \date{}
 \newcommand{\email}{markuspawellek@gmail.com}
@@ -10,11 +10,19 @@
 \newcommand{\ssp}[1][2]{\mathscr{S}^{#1}}
 \newcommand{\shs}[2][2]{\mathscr{H}^{#1}_{#2}}
 
+\usepackage{tabularx}
+
+\let\stdsection\section
+\renewcommand*\section{\cleardoublepage\stdsection}
+
 \begin{document}
 
-	\articletitle
+	\input{titlepage}
 
 	\tableofcontents
+	\newpage
+	\thispagestyle{empty}
+	\null
 	\newpage
 
 	\input{background}
@@ -38,23 +46,56 @@
 	\end{figure}
 
 
-	Aufgrund der Definition von physikalischer BRDFs muss bei Linearkombination eine weitere Bedingung beachtet werden.
-	Das folgende Theorem klärt dies genauer.
-	\begin{theorem}[Linearkombination von BRDFs bildet wieder eine BRDF]
-		Seien $\triangle$ ein Dreieck und $\nu$ eine äußere Normalen-Funktion auf $\triangle$.
-		Seien weiterhin $n\in\SN$ und für alle $i\in\SN$ mit $i\leq n$ ideale BRDFs $f_i$ und Koeffizienten $\alpha_i\in[0,1]$ mit $\sum_{i=1}^n\alpha_i \leq 1$ gegeben.
-		Dann ist die folgende Funktion wieder eine physikalische BRDF.
-		\[
-			f \define \sum_{i=1}^n \alpha_i f_i
-		\]
-	\end{theorem}
+	% Aufgrund der Definition von physikalischer BRDFs muss bei Linearkombination eine weitere Bedingung beachtet werden.
+	% Das folgende Theorem klärt dies genauer.
+	% \begin{theorem}[Linearkombination von BRDFs bildet wieder eine BRDF]
+	% 	Seien $\triangle$ ein Dreieck und $\nu$ eine äußere Normalen-Funktion auf $\triangle$.
+	% 	Seien weiterhin $n\in\SN$ und für alle $i\in\SN$ mit $i\leq n$ ideale BRDFs $f_i$ und Koeffizienten $\alpha_i\in[0,1]$ mit $\sum_{i=1}^n\alpha_i \leq 1$ gegeben.
+	% 	Dann ist die folgende Funktion wieder eine physikalische BRDF.
+	% 	\[
+	% 		f \define \sum_{i=1}^n \alpha_i f_i
+	% 	\]
+	% \end{theorem}
 
 
 	\newpage
 	% \setlength\extrarowheight{5pt}
 	\renewcommand{\arraystretch}{1.3}
 	\begin{table}[h]
-		\begin{tabular}[\textwidth]{p{0.2\textwidth}p{0.8\textwidth}}
+		% \begin{tabular}[\textwidth]{p{0.1\textwidth}p{0.9\textwidth}}
+		% 	\hline
+		% 	\textbf{Symbol} & \textbf{Definition} \\
+		% 	\hline
+		% 	\hline \\
+
+		% 	$\SN$ & Menge der natürlichen Zahlen (Null nich eingeschlossen) \\
+
+		% 	$\SR$ & Menge der reellen Zahlen \\
+
+		% 	$\overline{\SR}$ & $\SR\cup\set{-\infty,\infty}$ \\
+
+		% 	$(a,b)$ & $\set[a < x < b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
+
+		% 	$[a,b]$ & $\set[a \leq x \leq b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
+
+		% 	$[a,b)$ & $\set[a \leq x < b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
+
+		% 	$(a,b]$ & $\set[a < x \leq b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
+
+		% 	$\dotp{x}{y}$ & $\sum_{i=1}^n x_iy_i$ mit $x,y\in\SR^n$ für $n\in\SN$ \\
+
+		% 	$\norm{x}$ & $\sqrt{\dotp{x}{x}}$ mit $x\in\SR^n$ für $n\in\SN$ \\
+
+		% 	$\ssp$ & $\set[\norm{x}=1]{x\in\SR^3}$ \\
+
+		% 	$\shs{\mu}$ & $\set[\dotp{\mu}{x}\geq 0]{x\in\ssp}$ mit $\mu\in\ssp$\\
+
+		% 	$\im f$ & $\set[x\in X]{f(x)}\subset Y$ mit der Abbildung $\func{f}{X}{Y}$ und Mengen $X$, $Y$
+
+		% 	\\
+		% 	\hline
+		% \end{tabular}
+		\begin{tabularx}{\textwidth}{p{0.1\textwidth}p{0.9\textwidth}}
 			\hline
 			\textbf{Symbol} & \textbf{Definition} \\
 			\hline
@@ -86,7 +127,7 @@
 
 			\\
 			\hline
-		\end{tabular}
+		\end{tabularx}
 	\end{table}
 
 	\newpage
@@ -96,5 +137,8 @@
 	\bibliographystyle{babplain}
 	\bibliography{ref}
 
+
+	\newpage
+	\input{statutory_declaration}
 
 \end{document}

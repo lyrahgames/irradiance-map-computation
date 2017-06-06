@@ -10,7 +10,8 @@
 		Es gibt jedoch verschiedene Verfahren um einfache BSDF-Modelle zu konstruieren, die in der Simulation der Strahldichte Anwendung finden.
 		In \cite[S.~507~f]{pbrt3} wird hierfür die Verwendung von Messdaten, phenomenologischen Beobachtungen, Simulationsergebnissen und physikalischen Gesetzen als Beispiel genannt.
 		Durch die Kombination solcher Modelle ist man dann in der Lage auch diverse komplexe Materialien zu simulieren.
-		\begin{theorem}[zusammengesetzte BSDF]
+		Das folgende Theorem formuliert dieses Vorgehen genauer.
+		\begin{theorem*}[BSDF-Reihe]
 			Seien $\mu\in\ssp$, $(f_n)_{n\in\SN}$ eine Folge von BSDFs bezüglich $\mu$ und $(\alpha_n)_{n\in\SN}$ eine Folge von Werten in $[0,1]$, sodass die beiden folgenden Eigenschaften für $\sigma^2$-fast-alle $(\omega_\m{i},\omega_\m{o})\in\ssp\times\ssp$ gelten.
 			\[
 				\sum_{n\in\SN}\alpha_n f_n(\omega_\m{i},\omega_\m{o}) < \infty ,\qquad \sum_{n\in\SN}\alpha_n \leq 1
@@ -26,7 +27,7 @@
 					0 &: \m{sonst}
 				\end{cases}
 			\]
-		\end{theorem}
+		\end{theorem*}
 		\begin{proof}
 			Für die Wohldefiniertheit von $f$ betrachten wir dessen Definitions- und Wertebereich.
 			Der Definitionsbereich von $f$ entspricht dem der $f_n$ für alle $n\in\SN$.
@@ -77,13 +78,172 @@
 			\]
 		\end{proof}
 
-		Das Theorem beweist, dass man sogar in der Lage ist abzählbar viele BSDFs miteinander zu kombinieren, sofern man auf die Konvergenz der Koeffizienten achtet.
-		In den meisten Fällen reicht es allerdings endlich viele BSDFs zu betrachten.
-
-		\begin{corollary}
-
-		\end{corollary}
+		Nach dieser Aussage ist man in der Lage, abzählbar viele BSDFs mithilfe entsprechender Koeffizienten miteinander zu kombinieren.
+		Eine direkte Folgerung bildet die Anwendung des Satzes auf nur endlich viele BSDFs.
+		\begin{corollary*}[BSDF-Summe]
+			Seien $\mu\in\ssp$ und $n\in\SN$.
+			Weiterhin seien $f_k$ eine BSDF bezüglich $\mu$ und $\alpha_k\in[0,1]$ für alle $k\in\SN$ mit $k\leq n$, sodass $\sum_{k=1}^n \alpha_k \leq 1$ gilt.
+			Dann ist die folgende Abbildung eine BSDF bezüglich $\mu$.
+			\[
+				f\define \sum_{k=1}^n\alpha_k f_k
+			\]
+		\end{corollary*}
 
 	% subsection analyse_von_materialien (end)
+
+	\subsection{Lambertsch diffuse Materialien und die Rendergleichung} % (fold)
+	\label{sub:lambertsch_diffuse_materialien_und_die_rendergleichung}
+
+		Eines der einfachsten BSDF-Modelle ist das der lambertsch diffusen Reflexion, welches in Abschnitt \ref{sub:bsdf} als Beispiel eingeführt wurde.
+		Die einfallende Strahldichte wird bei diesem Modell gleichmäßig in alle Richtungen der Halbkugel gestreut, was auch der idealen diffusen Reflexion entspricht.
+		Eine Oberfläche mit dieser Eigenschaft wird auch Lambertscher Strahler (engl.: \textit{Lambertian radiator}, \cite[S.~17]{intro-radiometry}) genannt.
+		Zu beachten ist, dass diese BSDF keinerlei Transmission von Licht beschreibt und auch im Allgemeinen keiner physikalischen Basis entspricht.
+		Dennoch stellt sie eine gute Approximation vieler realer Oberflächen, die ein mattes Aussehen besitzen, dar \cite[S.~532]{pbrt3}.
+		Das Modell eignet sich aufgrund seiner Simplizität für die numerische Simulation der globalen Beleuchtung.
+		In Abbildung \ref{fig:shaderball-bsdf} ist erkennbar, dass der Szene durch die Verwendung des Modells ein plastisches und damit auch realistischeres Aussehen zu Teil wird.
+
+		\begin{figure}[h]
+			\begin{subfigure}[b]{0.5\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/shaderball-bsdf-0.png}
+			\end{subfigure}
+			\begin{subfigure}[b]{0.5\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/shaderball-bsdf-10.png}
+			\end{subfigure}
+			\caption{Die Bilder zeigen die gerenderte \enquote{Shaderball}-Szene, beleuchtet durch eine direktionale Lichtquelle. Im linken Bild wurde die Strahldichte der Szene nur durch direkte Beleuchtung ohne die Verwendung einer entsprechenden BSDF berechnet. Im rechten Bild wurde für jedes Material eine lambertsch diffuse Reflexion angenommen. Die Szene wirkt hier wesentlich plastischer und realistischer als im linken Bild.}
+			\label{fig:shaderball-bsdf}
+		\end{figure}
+
+		Wir wollen nun eine Szene $\Sigma\define(\e{T},\nu,f,E,U)$ und einen Punkt $x\in\e{T}$ betrachten, sodass $f(x,\cdot,\cdot)$ einen Lambertschen Strahler bezüglich $\nu(x)$ darstellt.
+		Die Rendergleichung für die Strahldichte $L$ am Punkt $x$ in Richtung $\omega_\m{o}\in\shs{\nu(x)}$ für eine Wellenlänge $\lambda\in(0,\infty)$ lautet dann wie folgt.
+		\[
+			L(x,\lambda,\omega_\m{o}) = E(x,\lambda,\omega_\m{o}) + \underbrace{\frac{1}{\pi} \integral{\ssp}{}{\mathds{1}_{\shs{\nu(x)}}(\omega) \tilde{L}(x,\lambda,\omega) \abs{\dotp{\nu(x)}{\omega}} }{\sigma(\omega)}}_{\definedby L_\m{r}(x,\lambda,\omega_\m{o})}
+		\]
+		$L_\m{r}(x,\lambda,\omega_\m{o})$ beschreibt den reflektierten Anteil der Strahldichte.
+		Die charakteristische Funktion im Integranden ändert die Integrationsmenge.
+		Bezeichnen wir die Irradianz von $L$ durch die Variable $R$, so folgt
+		% Folglich gilt für den reflektierten Anteil gerade
+		\[
+			L_\m{r}(x,\lambda,\omega_\m{o}) = \frac{1}{\pi} \integral{\shs{\nu(x)}}{}{\tilde{L}(x,\lambda,\omega) \dotp{\nu(x)}{\omega}}{\sigma(\omega)} = \frac{R(x,\lambda)}{\pi}
+		\]
+
+		Der reflektierte Anteil $L_\m{r}(x,\lambda,\omega_\m{o})$ ergibt sich damit aus der mit $\frac{1}{\pi}$ skalierten Irradianz $R(x,\lambda)$ \cite[S.~785~f]{pbrt2}.
+		Insbesondere ist er damit unabhängig von der Richtung $\omega_\m{o}$.
+		Das Einsetzen in den übrigen Teil der Gleichung ergibt dann direkt
+		\[
+			L(x,\lambda,\omega_\m{o}) = E(x,\lambda,\omega_\m{o}) + \frac{1}{\pi}R(x,\lambda)
+		\]
+		In den meisten Fällen ist $E$ selbst unabhängig von $\omega_\m{o}$ und an vielen Punkten im Raum sogar identisch mit Null.
+		Für matte Oberflächen, deren Reflexionsverhalten durch einen lambertschen Strahler charakterisiert werden kann, reicht es dementsprechend die Irradianz zu betrachten \cite{irr-grad,irradiance-caching}.
+
+		% Wir wollen nun einen Punkt $x$ einer Oberfläche mit Normaler $\mu\in\ssp$ und der BSDF eines lambertschen Strahlers bezüglich $\mu$ betrachten.
+		% Dann ergibt sich der Anteil $L_\m{r}$ des reflektierten, aber nicht emittierten Lichtes, am Punkt $x$ in Richtung $\omega_0\in\shs{\mu}$ mit Wellenlänge $\lambda\in(0,\infty)$ aus dem zweiten Term der Rendergleichung.
+		% \begin{alignat*}{3}
+		% 	L_\m{r}(x,\lambda,\omega_0) &=&&\ \integral{\ssp}{}{ \frac{\mathds{1}_{\shs{\nu}}(\omega_0)}{\pi} \tilde{L}(x,\lambda,\omega) \abs{\dotp{\mu}{\omega}} }{\sigma(\omega)} \\
+		% 	&=&&\ \frac{1}{\pi} \integral{\shs{\mu}}{}{\tilde{L}(x,\lambda,\omega) \dotp{\mu}{\omega}}{\sigma(\omega)} = \frac{R(x,\lambda)}{\pi}
+		% \end{alignat*}
+		% Für den letzten Schritt wurde die Definition der Irradianz bezüglich eines Punktes verwendet.
+		% Die reflektierte Strahldichte für einen lambertschen Strahler ist damit unabhängig von der Richtung $\omega_0$ und entspricht gerade der durch $\frac{1}{\pi}$-skalierten Irradianz.
+		% Folglich reicht es für ideale diffuse Oberflächen die richtungsunabhängige Irradianz zu betrachten.
+
+		Verwendet man jetzt das Korollar des vorigen Abschnittes, so lässt sich das einfache Modell der lambertsch diffusen Reflexion zum Beispiel mit einer idealen Reflexion verbinden, wie es in Abbildung \ref{fig:shaderball-bsdf-sum} gezeigt ist.
+		Das resultierende Material ist komplexer aufgebaut und beschreibt eine andere Klasse von Materialien.
+		Die Verwendung eines lambertschen Strahlers kann somit durch Kombination mit anderen BSDF-Modellen auf einen größeren Bereich von Materialarten ausgeweitet werden.
+		Mithin ist es in der Praxis in fast allen Szenen nötig diffuse Reflexionen an den Oberflächen der Objekte auszuwerten.
+
+		\begin{figure}[h]
+			\begin{subfigure}[b]{0.5\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/shaderball-bsdf_sum-diffuse.png}
+			\end{subfigure}
+			\begin{subfigure}[b]{0.5\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/shaderball-bsdf_sum-specular.png}
+			\end{subfigure}
+			\caption{Die Bilder zeigen die gerenderte \enquote{Shaderball}-Szene, beleuchtet durch eine Umgebungsbeleuchtung. Im linken Bild bestehen die verwendeten BSDFs nur aus der lambertsch diffusen Reflexion. Im rechten Bild wurde das Material der äußeren Körpers zusätzlich mit der BSDF einer idealen Reflexion kombiniert. Das entstehende Material ist kein idealer Spiegel, aber auch kein idealer diffuser Strahler.}
+			\label{fig:shaderball-bsdf-sum}
+		\end{figure}
+
+		Wir nehmen jetzt an, dass sich die BSDF am Punkt $x$ aus der Kombination eines lambertschen Strahlers mit Koeffizient $\alpha$ und einer beliebigen BSDF $\tilde{f}(x,\cdot,\cdot)$ mit Koeffizient $\beta$ ergibt.
+		Dabei fordern wir, dass $\alpha,\beta\in[0,1]$ und $\alpha +\beta\leq 1$ gilt.
+		Das Korollar über die Summe von BSDFs tätigt dann eine klare Aussage über die Form des reflektierten Anteils.
+		\[
+			L(x,\lambda,\omega_\m{o}) = E(x,\lambda,\omega_\m{o}) + \frac{\alpha}{\pi}R(x,\lambda) + \beta \integral{\ssp}{}{\tilde{f}(x,\omega,\omega_\m{o})\tilde{L}(x,\lambda,\omega)\abs{\dotp{\nu(x)}{\omega}}}{\sigma(\omega)}
+		\]
+
+		Diese Form der Rendergleichung für Lambertsche Strahler besitzt für die Verwendung in der Praxis einen Vorteil.
+		Die BSDF $\tilde{f}(x,\cdot,\cdot)$ ergibt sich meistens aus stark richtungsabhängigen Anteilen, wie zum Beispiel der idealen Reflexion, der idealen Brechung oder ähnlich glänzenden Materialien.
+		Diese Anteile können vergleichsweise gut durch Raytracing beziehungsweise auch Path Tracing gerendert werden.
+		Die Berechnung von $R(x,\lambda)$ erfordert jedoch immer eine Integration über die gesamte Hemisphere, bei der jeder erhaltene Wert gleichermaßen gewichtet werden muss.
+		Diese Bedingung erschwert die Evaluierung und resultiert in entsprechend langen Zeiträumen des Renderings.
+
+		Der große Vorteil an der Irradianz besteht jedoch darin, dass sie unabhängig von der betrachteten Richtung ist.
+		Die empfangene Strahldichte von $x$ ist konstant egal von welchem Punkt im Raum aus man $x$ betrachtet.
+		Diese Eigenschaft ermöglicht es, $R(x,\lambda)$ vorzuberechnen und am Punkt $x$ zu speichern.
+		Jedes mal, wenn man nun den Punkt $x$ aus einer Richtung $\tilde{\omega}\in\shs{\nu(x)}$ betrachtet, wird das Integral des rechten Teils der Gleichung effizient durch Path Tracing geschätzt. Der Wert $R(x,\lambda)$ kann mit $E(x,\lambda,\tilde{\omega})$ ausgelesen und zum resultierenden Wert hinzugefügt werden.
+		Infolgedessen verkürzen sich die benötigten Renderzeiten.
+		Da es sich bei $R$ um die Irradianz handelt, wollen wir die zugehörige Datenstruktur, die ihre Werte speichert \enquote{Irradiance Map} nennen.
+
+		Wir möchten hier bemerken, dass die genannten Eigenschaften nur für die Translation des Beobachtungspunktes gelten.
+		Die Änderung der Beleuchtung oder Geometrie führt zu einer neuen Szene $\tilde{\Sigma}$ deren Irradianz $\tilde{R}$ im Allgemeinen nicht $R$ entspricht.
+		Die Irradiance Map muss demnach für jede Modifizierung der Szene neu berechnet werden, um die korrekten Werte der Irradianz zu beinhalten.
+
+	% subsection lambertsch_diffuse_materialien_und_die_rendergleichung (end)
+
+	\subsection{Irradiance Map und Irradiance Cache} % (fold)
+	\label{sub:irradiance_map_und_irradiance_cache}
+
+		In \cite{irradiance-caching} und \cite[S.~783~ff]{pbrt2} wird das Verfahren des sogenannten \enquote{Irradiance Caching} beschrieben.
+		Es basiert auf der vorherigen Gleichung und ermöglicht das Zwischenspeichern der Irradianz in einem \enquote{Cache}.
+		Dabei werden nur Werte, für die genügend bereits aufgenommene Werte in der Nähe gefunden werden, durch diesen Cache interpoliert.
+		Ist dies nicht der Fall, so wird die Irradianz an diesem Punkt neu geschätzt und im Cache abgelegt.
+		Der Cache besteht aus einer räumlichen Datenstruktur (engl.: \textit{spatial datastructure}), wie zum Beispiel einem \enquote{Octree}, der die einzelnen Irradianz-Werte mit ihrer Position im Raum unabhängig von der Mesh speichert.
+		Dies ermöglicht die Implementierung einer effizienten Suche für die bereits aufgenommenen Werte.
+
+		Irradiance Caching ist damit ein Verfahren, welches in Abhängigkeit des derzeitigen Beobachtungspunktes Werte aufnimmt, speichert und interpoliert.
+		Folglich berechnet es nur die Irradianzen an Punkten, die durch den Beobachter gesehen werden.
+		Auch die Interpolation kann sich dadurch dem derzeitigen Bildausschnitt anpassen und exaktere Ergebnisse liefern.
+
+		Eines der wichtigsten Probleme besteht darin, dass die Interpolation der aufgenommenen Werte über dem Raum und nicht über der Oberfläche der Szene stattfindet.
+		Diese fehlerhafte Interpolation führt in einigen Szenen mit dünnen Wänden zu sogenannten \enquote{light leaks} und anderen Beleuchtungs-Artefakten.
+		Weiterhin ist es im Allgemeinen ratsam nur die indirekte Irradianz durch einen Irradiance Cache anzunähern, da sich diese über der Oberfläche nur langsam ändert und gut approximiert werden kann.
+		Beleuchtungseffekte, die durch die Umgebungsbeleuchtung oder andere direkte Lichtquellen erzeugt werden, müssen hiernach für jedes Bild neu berechnet werden.
+
+		Ein andere Variante ist die in dieser Arbeit besprochene komplette Vorberechnung einer Irradiance Map.
+		Sie speichert die aufgenommenen Werte durch eine passende Datenstruktur auf der Oberfläche der Szene und ermöglicht eine vergleichsweise einfache lokale Interpolation.
+		Beispiele finden sich in \cite{course-photon-map,gi-llde,gi-density-estimation}.
+		Dies ermöglicht das Speichern der direkten Irradianz und verhindert die Entstehung einiger Beleuchtungsartefakte.
+		Allerdings müssen Irradiance Maps auch Werte für Bereiche der Szene speichern, die vom Beobachter aus nicht gesehen werden.
+		Dies führt dazu, dass Irradiance Maps im Allgemeinen einen sehr viel höheren Speicherverbrauch aufweisen als Irradiance Caches.
+
+	% subsection irradiance_map_und_irradiance_cache (end)
+
+	\subsection{Fehlerabschätzung der Irradianz} % (fold)
+	\label{sub:fehlerabschätzung_der_irradianz}
+
+		In Abschnitt \ref{sub:rendergleichung} wurde erwähnt das die meisten Renderverfahren, wie zum Beispiel das hier verwendete Path Tracing, auf der Basis von Zufallsvariablen arbeiten.
+		Das Integral in der Rendergleichung wird dabei mithilfe geeigneter Monte-Carlo-Methoden berechnet.
+		Aus diesem Grund bildet sich bei den Lösungen der Rendergleichung immer ein gewisses \enquote{Rauschen} (engl.: \textit{noise}) aus.
+		In Abbildung \ref{fig:sponza-noise} wird dies an einem Beispiel demonstriert.
+
+		\begin{figure}[h]
+			\begin{subfigure}[b]{0.5\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/sponza-noise-high.png}
+			\end{subfigure}
+			\begin{subfigure}[b]{0.5\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/sponza-noise-low.png}
+			\end{subfigure}
+			\caption{Die Bilder zeigen die gerenderte \enquote{Sponza}-Szene, deren Materialien aus Lambertschen Strahlern bestehen und deren Umgebungsbeleuchtung eine konstante Funktion ist. Für das linke Bild wurde an jedem sichtbaren Punkt der Szene die Irradianz durch $16$ Messungen ermittelt. Das Resultat beinhaltet noch einen großen Anteil des Rauschens. Im rechten Bild wurden jeweils $1024$ Messungen durchgeführt, wodurch es wesentlich rauschärmer als das Linke ist.}
+			\label{fig:sponza-noise}
+		\end{figure}
+
+		Möchte man die Irradianz für den Irradiance Cache oder auch die Irradiance Map ermitteln, so muss also darauf geachtet werden, dass das Rauschen des Endresultates und damit dessen Fehler klein bleibt.
+		Mathematisch lässt sich dieser Sachverhalt durch Zufallsvariablen formulieren.
+		Wir gehen davon aus, dass die Abfrage der Strahldichte einer Zufallsvariable
+
+	% subsection fehlerabschätzung_der_irradianz (end)
 
 % section schätzung_der_irradianz (end)
