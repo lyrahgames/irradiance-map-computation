@@ -13,17 +13,27 @@
 \usepackage{tabularx}
 
 \let\stdsection\section
-\renewcommand*\section{\cleardoublepage\stdsection}
+\renewcommand*\section{\cleardoublepage\thispagestyle{titlestyle}\stdsection}
 
 \begin{document}
 
 	\input{titlepage}
 
+	\pagestyle{contentstyle}
+
+	\cleardoublepage
+	\pagenumbering{roman}
 	\tableofcontents
-	\newpage
-	\thispagestyle{empty}
-	\null
-	\newpage
+
+	\cleardoublepage
+	\listoffigures
+
+	\cleardoublepage
+	\input{symbol_table}
+
+	\cleardoublepage
+	\pagestyle{mainstyle}
+	\pagenumbering{arabic}
 
 	\input{background}
 	\input{irradiance_estimation}
@@ -58,87 +68,22 @@
 	% \end{theorem}
 
 
-	\newpage
-	% \setlength\extrarowheight{5pt}
-	\renewcommand{\arraystretch}{1.3}
-	\begin{table}[h]
-		% \begin{tabular}[\textwidth]{p{0.1\textwidth}p{0.9\textwidth}}
-		% 	\hline
-		% 	\textbf{Symbol} & \textbf{Definition} \\
-		% 	\hline
-		% 	\hline \\
+	% \newpage
+	\appendix
 
-		% 	$\SN$ & Menge der natürlichen Zahlen (Null nich eingeschlossen) \\
 
-		% 	$\SR$ & Menge der reellen Zahlen \\
+	\cleardoublepage
+	\pagestyle{contentstyle}
+	\pagenumbering{roman}
 
-		% 	$\overline{\SR}$ & $\SR\cup\set{-\infty,\infty}$ \\
-
-		% 	$(a,b)$ & $\set[a < x < b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
-
-		% 	$[a,b]$ & $\set[a \leq x \leq b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
-
-		% 	$[a,b)$ & $\set[a \leq x < b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
-
-		% 	$(a,b]$ & $\set[a < x \leq b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
-
-		% 	$\dotp{x}{y}$ & $\sum_{i=1}^n x_iy_i$ mit $x,y\in\SR^n$ für $n\in\SN$ \\
-
-		% 	$\norm{x}$ & $\sqrt{\dotp{x}{x}}$ mit $x\in\SR^n$ für $n\in\SN$ \\
-
-		% 	$\ssp$ & $\set[\norm{x}=1]{x\in\SR^3}$ \\
-
-		% 	$\shs{\mu}$ & $\set[\dotp{\mu}{x}\geq 0]{x\in\ssp}$ mit $\mu\in\ssp$\\
-
-		% 	$\im f$ & $\set[x\in X]{f(x)}\subset Y$ mit der Abbildung $\func{f}{X}{Y}$ und Mengen $X$, $Y$
-
-		% 	\\
-		% 	\hline
-		% \end{tabular}
-		\begin{tabularx}{\textwidth}{p{0.1\textwidth}p{0.9\textwidth}}
-			\hline
-			\textbf{Symbol} & \textbf{Definition} \\
-			\hline
-			\hline \\
-
-			$\SN$ & Menge der natürlichen Zahlen (Null nich eingeschlossen) \\
-
-			$\SR$ & Menge der reellen Zahlen \\
-
-			$\overline{\SR}$ & $\SR\cup\set{-\infty,\infty}$ \\
-
-			$(a,b)$ & $\set[a < x < b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
-
-			$[a,b]$ & $\set[a \leq x \leq b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
-
-			$[a,b)$ & $\set[a \leq x < b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
-
-			$(a,b]$ & $\set[a < x \leq b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
-
-			$\dotp{x}{y}$ & $\sum_{i=1}^n x_iy_i$ mit $x,y\in\SR^n$ für $n\in\SN$ \\
-
-			$\norm{x}$ & $\sqrt{\dotp{x}{x}}$ mit $x\in\SR^n$ für $n\in\SN$ \\
-
-			$\ssp$ & $\set[\norm{x}=1]{x\in\SR^3}$ \\
-
-			$\shs{\mu}$ & $\set[\dotp{\mu}{x}\geq 0]{x\in\ssp}$ mit $\mu\in\ssp$\\
-
-			$\im f$ & $\set[x\in X]{f(x)}\subset Y$ mit der Abbildung $\func{f}{X}{Y}$ und Mengen $X$, $Y$
-
-			\\
-			\hline
-		\end{tabularx}
-	\end{table}
-
-	\newpage
-
+	% \pagestyle{empty}
 	\nocite{*}
 	% \bibliographystyle{amsplain}
 	\bibliographystyle{babplain}
 	\bibliography{ref}
 
 
-	\newpage
+	\cleardoublepage
 	\input{statutory_declaration}
 
 \end{document}
