@@ -244,6 +244,172 @@
 		Mathematisch lässt sich dieser Sachverhalt durch Zufallsvariablen formulieren.
 		Wir gehen davon aus, dass die Abfrage der Strahldichte einer Zufallsvariable
 
+		% \begin{figure}[h]
+		% 	\begin{subfigure}[t]{0.5\textwidth}
+		% 		\center
+		% 		\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-ref.png}
+		% 		\caption{\parbox[t]{0.5\textwidth}{Path Tracing}}
+		% 	\end{subfigure}
+		% 	\begin{subfigure}[t]{0.5\textwidth}
+		% 		\center
+		% 		\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-s512.png}
+		% 		\caption{\parbox[t]{0.5\textwidth}{$512$ Samples \\ $7.32\unit{s}$}}
+		% 	\end{subfigure}
+		% 	\medskip\\
+		% 	\begin{subfigure}[t]{0.5\textwidth}
+		% 		\center
+		% 		\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-s4096.png}
+		% 		\caption{\parbox[t]{0.5\textwidth}{$4096$ Samples \\ $56.08\unit{s}$}}
+		% 	\end{subfigure}
+		% 	\begin{subfigure}[t]{0.5\textwidth}
+		% 		\center
+		% 		\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-s16384.png}
+		% 		\caption{\parbox[t]{0.5\textwidth}{$16384$ Samples \\ $222.06\unit{s}$}}
+		% 	\end{subfigure}
+		% 	\caption{Die Abbildungen zeigen erzeugte }
+		% 	\label{fig:irr-est-rc-dragon}
+		% \end{figure}
+
+		\begin{figure}[h]
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-ref.png}
+				\caption{\parbox[t]{0.5\textwidth}{Path Tracing}}
+				\label{subfig:irr-est-rc-dragon-pt}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-s512.png}
+				\caption{\parbox[t]{0.5\textwidth}{$512$ Samples \\ $7.32\unit{s}$}}
+				\label{subfig:irr-est-rc-dragon-512}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-s4096.png}
+				\caption{\parbox[t]{0.5\textwidth}{$4096$ Samples \\ $56.08\unit{s}$}}
+				\label{subfig:irr-est-rc-dragon-4096}
+			\end{subfigure}
+			\caption{Die Bilder zeigen die gerenderte \enquote{Dragon}-Szene mit einer schwach variierenden Umgebungsbeleuchtung. \ref{subfig:irr-est-rc-dragon-pt} ist ein durch Path Tracing aufgenommenes Referenzbild. Für \ref{subfig:irr-est-rc-dragon-512} und \ref{subfig:irr-est-rc-dragon-4096} wurden die Irradianzen an den Eckpunkten der Mesh geschätzt und gespeichert. Zwischen den Eckpunkten fand eine lineare Interpolation statt. Die Anzahl der Samples gibt an, wie viele Stichprobenwerte verwendet wurden, um die Irradianz an jedem Punkt zu schätzen. Die Zeit entspricht der Berechnungsdauer für alle Punkte.}
+			\label{fig:irr-est-rc-dragon}
+		\end{figure}
+
+		\begin{figure}[h]
+			\begin{subfigure}[b]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-s512-err.png}
+				\caption{$512$ Samples}
+			\end{subfigure}
+			\begin{subfigure}[b]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-s4096-err.png}
+				\caption{$4096$ Samples}
+			\end{subfigure}
+			\begin{subfigure}[b]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-s16384-err.png}
+				\caption{$16384$ Samples}
+			\end{subfigure}
+			\caption{Die Bilder zeigen die geschätzten Standardabweichungen der Irradianzen an den Eckpunkten der \enquote{Dragon}-Szene analog zu Abbildung \ref{fig:irr-est-rc-dragon}. Eine hellere Farbe bedeutet dabei eine höhere Standardabweichung. Die Anzahl der Samples gibt an, wie viele Stichprobenwerte verwendet wurden, um die Irradianz und ihre Standardabweichung an jedem Punkt zu schätzen. Deutlich erkennbar ist die Abnahme des Fehlers für größere Sampleanzahlen.}
+			\label{fig:irr-est-rc-dragon-err}
+		\end{figure}
+
+		\begin{figure}[h]
+			\begin{subfigure}[t]{0.5\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-shaderball2-ref.png}
+				\caption{\parbox[t]{0.5\textwidth}{Path Tracing}}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.5\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-shaderball2-s512.png}
+				\caption{\parbox[t]{0.5\textwidth}{$512$ Samples \\ $6.00\unit{s}$}}
+				\label{subfig:irr-est-rc-shaderball-512}
+			\end{subfigure}
+			\medskip \\
+			\begin{subfigure}[t]{0.5\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-shaderball2-s4096.png}
+				\caption{\parbox[t]{0.5\textwidth}{$4096$ Samples \\ $48.85\unit{s}$}}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.5\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-shaderball2-s16384.png}
+				\caption{\parbox[t]{0.5\textwidth}{$16384$ Samples \\ $191.22\unit{s}$}}
+			\end{subfigure}
+			\caption{Die Bilder zeigen die gerenderte \enquote{Shaderball}-Szene analog zu Abbildung \ref{fig:irr-est-rc-dragon}. \ref{subfig:irr-est-rc-shaderball-512} zeigt, dass die Verwendung von nur $512$ Samples starke Flecken erzeugen, die erst für größere Sampleanzahlen verschwinden.}
+			\label{fig:irr-est-rc-shaderball}
+		\end{figure}
+
+		\FloatBarrier
+
+		\begin{figure}[h]
+			\begin{subfigure}[b]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-shaderball2-s512-err.png}
+				\caption{$512$ Samples}
+			\end{subfigure}
+			\begin{subfigure}[b]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-shaderball2-s4096-err.png}
+				\caption{$4096$ Samples}
+			\end{subfigure}
+			\begin{subfigure}[b]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-shaderball2-s16384-err.png}
+				\caption{$16384$ Samples}
+			\end{subfigure}
+			\caption{Die Bilder zeigen die gerenderte \enquote{Shaderball}-Szene analog zu Abbildung \ref{fig:irr-est-rc-dragon-err}. Vor allem in Bereichen, die schwach von außen beleuchtet werden oder in Nischen liegen, kann man einen erhöhten Fehler feststellen. Hier muss ein Strahl mehrmals reflektiert werden, um Licht einzusammeln.}
+			\label{fig:irr-est-rc-shaderball-err}
+		\end{figure}
+
+		\begin{figure}[h]
+			\begin{subfigure}[t]{0.5\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-dragon-ref.png}
+				\caption{Path Tracing}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.5\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-dragon-irr.png}
+				\caption{Irradianz}
+			\end{subfigure}
+			\medskip \\
+			\begin{subfigure}[t]{0.5\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-dragon-err.png}
+				\caption{Standardabweichung}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.5\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-dragon-scount.png}
+				\caption{Sampleanzahl}
+			\end{subfigure}
+			\caption{}
+			\label{fig:irr-est-ra-dragon}
+		\end{figure}
+
+		\begin{figure}[h]
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-dragon2-ref.png}
+				\caption{Path Tracing}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-dragon2-irr.png}
+				\caption{Irradianz}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-dragon2-scount.png}
+				\caption{Sampleanzahl}
+			\end{subfigure}
+			\caption{}
+			\label{fig:irr-est-ra-dragon2}
+		\end{figure}
+
+		\FloatBarrier
+
 	% subsection fehlerabschätzung_der_irradianz (end)
 
 % section schätzung_der_irradianz (end)
