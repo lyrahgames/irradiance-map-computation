@@ -65,7 +65,7 @@
 				\includegraphics[width=0.95\textwidth]{pic/normal_facette-zoom.png}
 				% \caption{}
 			\end{subfigure}
-			\caption{Die Bilder zeigen die gerenderte \enquote{Dragon}-Szene. Das rechte Bild entspricht dem roten Bereich des Linken. In dieser Szene werden die Normalen des Objektmodells durch die analytischen Normalen der Dreiecke angenähert. Da das Modell sehr fein trianguliert ist, fällt dies im ersten Bild nicht auf. Zoomt man jedoch mit der Kamera heran werden die Fehler durch die Approximation deutlich und die einzelnen Dreiecke sind mit dem menschlichen Auge auszumachen.}
+			\caption[Facetten-Muster der \enquote{Dragon}-Szene ohne Shading-Normale]{Die Bilder zeigen die gerenderte \enquote{Dragon}-Szene. Das rechte Bild entspricht dem roten Bereich des Linken. In dieser Szene werden die Normalen des Objektmodells durch die analytischen Normalen der Dreiecke angenähert. Da das Modell sehr fein trianguliert ist, fällt dies im ersten Bild nicht auf. Zoomt man jedoch mit der Kamera heran werden die Fehler durch die Approximation deutlich und die einzelnen Dreiecke sind mit dem menschlichen Auge auszumachen.}
 			\label{fig:facette}
 		\end{figure}
 
@@ -82,7 +82,7 @@
 				\includegraphics{gg_fig/scheme_normal-function_2.pdf}
 				% \caption{approximierte Fläche}
 			\end{subfigure}
-			\caption{Die erste Skizze auf der linken Seite zeigt den Verlauf einer Vertex-Shading-Normalen $\nu$ anhand eines Beispiels. $A$ und $B$ sind dabei zwei Eckpunkte eines Dreiecks $\triangle$. $\mu_A$ und $\mu_B$ sind die jeweilig gegebenen Vertex-Normalen an den Eckpunkten. Im rechten Bereich der Abbildung ist die durch $\nu$ approximierte gekrümmte Fläche $\tilde{\triangle}$, auf der die Shading-Normale $\nu$ senkrecht steht, eingezeichnet.}
+			\caption[Beispiel des Verlaufs einer Vertex-Shading-Normalen]{Die erste Skizze auf der linken Seite zeigt den Verlauf einer Vertex-Shading-Normalen $\nu$ anhand eines Beispiels. $A$ und $B$ sind dabei zwei Eckpunkte eines Dreiecks $\triangle$. $\mu_A$ und $\mu_B$ sind die jeweilig gegebenen Vertex-Normalen an den Eckpunkten. Im rechten Bereich der Abbildung ist die durch $\nu$ approximierte gekrümmte Fläche $\tilde{\triangle}$, auf der die Shading-Normale $\nu$ senkrecht steht, eingezeichnet.}
 			\label{fig:normal-function}
 		\end{figure}
 
@@ -159,7 +159,7 @@
 		\begin{figure}[h]
 			\center
 			\includegraphics{gg_fig/brdf_1.pdf}
-			\caption{Die Abbildung zeigt die Verteilung des reflektierten Lichtes für alle $\omega\in\shs{\mu}$ bezüglich einer konstanten Einfallsrichtung $\omega_\m{i}\in\shs{\mu}$ einer BSDF $f$ bezüglich der Oberflächennormalen $\mu\in\ssp$.}
+			\caption[Struktur des Beispiels einer BSDF]{Die Abbildung zeigt die Verteilung des reflektierten Lichtes für alle $\omega\in\shs{\mu}$ bezüglich einer konstanten Einfallsrichtung $\omega_\m{i}\in\shs{\mu}$ einer BSDF $f$ bezüglich der Oberflächennormalen $\mu\in\ssp$.}
 			\label{fig:brdf}
 		\end{figure}
 
@@ -202,7 +202,7 @@
 		\begin{figure}[h]
 			\center
 			\includegraphics{gg_fig/hdr_environment_map_1.pdf}
-			\caption{Die Darstellung zeigt, dass die Beleuchtung zweier Punkte $x_1$ und $x_2$ einer Oberfläche $S$ mit den Normalen $\nu(x_1)$ und $\nu(x_2)$ durch eine Umgebungsbeleuchtung $f$ nur abhängig von der Verdeckung der Punkte und nicht von deren Position ist. Bei $x_1$ und $x_2$ sind in diesem Falle die gleichen Lichtintensitäten zu messen. Es ist $\lambda\in(0,\infty)$ die Wellenlänge des Lichtes und $\omega\in\ssp$ der Raumwinkel.}
+			\caption[Wirkungsweise einer Umgebungsbeleuchtung]{Die Darstellung zeigt, dass die Beleuchtung zweier Punkte $x_1$ und $x_2$ einer Oberfläche $S$ mit den Normalen $\nu(x_1)$ und $\nu(x_2)$ durch eine Umgebungsbeleuchtung $f$ nur abhängig von der Verdeckung der Punkte und nicht von deren Position ist. Bei $x_1$ und $x_2$ sind in diesem Falle die gleichen Lichtintensitäten zu messen. Es ist $\lambda\in(0,\infty)$ die Wellenlänge des Lichtes und $\omega\in\ssp$ der Raumwinkel.}
 			\label{fig:hdr_environment_map}
 		\end{figure}
 
@@ -414,7 +414,7 @@
 		\begin{figure}[h]
 			\center
 			\includegraphics{gg_fig/ray_tracing_1.pdf}
-			\caption{Die Abbildung zeigt eine Skizze, welche das Sichtbarkeitsproblem und den Raytracing-Algorithmus verdeutlicht. Die grau melierten Dreiecke sollen die gegebene Mesh $\e{T}$ darstellen. Der ausgesendete Strahl $r$, gegeben durch $(r_\m{o},r_\m{d})$, trifft in der Mesh genau zwei Punkte $x_1$ und $x_2$. Dabei wird $x_2$ durch $x_1$ verdeckt. Es gilt also $V_\e{T}(r_\m{o},x_1)=1$ und $V_\e{T}(r_\m{o},x_2)=0$.}
+			\caption[Skizze des Sichtbarkeitsproblems und des Raytracing-Verfahrens]{Die Abbildung zeigt eine Skizze, welche das Sichtbarkeitsproblem und den Raytracing-Algorithmus verdeutlicht. Die grau melierten Dreiecke sollen die gegebene Mesh $\e{T}$ darstellen. Der ausgesendete Strahl $r$, gegeben durch $(r_\m{o},r_\m{d})$, trifft in der Mesh genau zwei Punkte $x_1$ und $x_2$. Dabei wird $x_2$ durch $x_1$ verdeckt. Es gilt also $V_\e{T}(r_\m{o},x_1)=1$ und $V_\e{T}(r_\m{o},x_2)=0$.}
 			\label{fig:ray_tracing-1}
 		\end{figure}
 
@@ -466,7 +466,7 @@
 		\begin{figure}[h]
 			\center
 			\includegraphics{gg_fig/ray_tracing_2.pdf}
-			\caption{In der Skizze ist ein typisches Render-Verfahren auf der Basis des Raytracing-Algorithmus dargestellt. Bezüglich eines Beobachtungspunktes $o\in\SR^3$ wird durch jeden Pixel eines virtuellen Bildschirms $\m{VS}$ ein Strahl geschossen und der Wert der Raytracing-Funktion evaluiert. Die grau melierten Dreiecke bilden die Mesh $\e{T}$. Je nachdem, ob ein Strahl einen Schnittpunkt mit $\e{T}$ aufweist, wird ein entsprechendes Shading-Verfahren ausgeführt. Der Übersicht wegen sind im Bild nur vier der eigentlich acht Strahlen sichtbar.}
+			\caption[Raytracing als Render-Verfahren]{In der Skizze ist ein typisches Render-Verfahren auf der Basis des Raytracing-Algorithmus dargestellt. Bezüglich eines Beobachtungspunktes $o\in\SR^3$ wird durch jeden Pixel eines virtuellen Bildschirms $\m{VS}$ ein Strahl geschossen und der Wert der Raytracing-Funktion evaluiert. Die grau melierten Dreiecke bilden die Mesh $\e{T}$. Je nachdem, ob ein Strahl einen Schnittpunkt mit $\e{T}$ aufweist, wird ein entsprechendes Shading-Verfahren ausgeführt. Der Übersicht wegen sind im Bild nur vier der eigentlich acht Strahlen sichtbar.}
 			\label{fig:ray_tracing-2}
 		\end{figure}
 		Um gleichzeitig das sogenannte \enquote{Shading} zu ermöglichen, ermittelt man nicht nur den Schnittpunkt, sondern auch in welchem Dreieck sich dieser befindet und welche baryzentrischen Koordinaten er besitzt \cite{pbrt3,ray-triangle-intersection}.
@@ -496,7 +496,7 @@
 		\begin{figure}[h]
 			\center
 			\includegraphics{gg_fig/radiance_1.pdf}
-			\caption{Die Skizze stellt das qualitative Beispiel einer spektralen Strahldichte $\s{L}$ dar, die an einem Punkt $x$ auf der Oberfläche $\partial K$ mit der äußeren Normalen $\mu$ und für eine Wellenlänge $\lambda$ eine Verteilung in Abhängigkeit von $\omega\in\ssp$ besitzt.}
+			\caption[Skizzenhaftes Beispiel der Strahldichte]{Die Skizze stellt das qualitative Beispiel einer spektralen Strahldichte $\s{L}$ dar, die an einem Punkt $x$ auf der Oberfläche $\partial K$ mit der äußeren Normalen $\mu$ und für eine Wellenlänge $\lambda$ eine Verteilung in Abhängigkeit von $\omega\in\ssp$ besitzt.}
 			\label{fig:radiance}
 		\end{figure}
 
@@ -643,7 +643,7 @@
 		\begin{figure}[h]
 			\center
 			\includegraphics{gg_fig/lte-incident_and_emitted_radiance.pdf}
-			\caption{Die Abbildung skizziert an einem Beispiel die Relation der Funktionen $L$ und $\tilde{L}$ aus der Definition der Rendergleichung. Dabei stellen das Dreieck einen Teil der Mesh, $U$ die Umgebungsbeleuchtung für $\omega\in\ssp$, $\omega_1,\omega_2$ Raumrichtungen, $\lambda$ die betrachtete Wellenlänge und $x$ einen Punkt auf der Mesh dar. Für $\tilde{x}$ gilt nach Defintion $\tilde{x}=r(\m{rt}_\e{T}(r))$, wobei der Strahl $r$ durch $(x,\omega_2)$ gegeben ist. Der Strahl in Richtung $\omega_1$ besitzt keinen Schnittpunkt mit der Szene, wodurch sich die einfallende Strahldichte aus der Umgebungsbeleuchtung ergibt.}
+			\caption[Relation zwischen der ein- und ausfallenden Strahldichte]{Die Abbildung skizziert an einem Beispiel die Relation der Funktionen $L$ und $\tilde{L}$ aus der Definition der Rendergleichung. Dabei stellen das Dreieck einen Teil der Mesh, $U$ die Umgebungsbeleuchtung für $\omega\in\ssp$, $\omega_1,\omega_2$ Raumrichtungen, $\lambda$ die betrachtete Wellenlänge und $x$ einen Punkt auf der Mesh dar. Für $\tilde{x}$ gilt nach Defintion $\tilde{x}=r(\m{rt}_\e{T}(r))$, wobei der Strahl $r$ durch $(x,\omega_2)$ gegeben ist. Der Strahl in Richtung $\omega_1$ besitzt keinen Schnittpunkt mit der Szene, wodurch sich die einfallende Strahldichte aus der Umgebungsbeleuchtung ergibt.}
 			\label{fig:lte-incident-emitted-radiance}
 		\end{figure}
 
@@ -658,7 +658,7 @@
 		\begin{figure}[h]
 			\center
 			\includegraphics[width=0.95\textwidth]{pic/example-audi_r8-pt.png}
-			\caption{Die Abbildung stellt eine durch Path Tracing simulierte Lösung der Rendergleichung für die \enquote{Audi R8}-Szene dar. Die Lichtquelle besteht hier alleine aus der Umgebungsbeleuchtung. Für die BSDFs ist immer eine Mischung aus idealer Reflexion, lambertsch diffuser Reflexion und idealer Brechung gewählt worden.}
+			\caption[\enquote{Audi R8}-Szene als Beispiel für die Lösung der Rendergleichung durch Path Tracing]{Die Abbildung stellt eine durch Path Tracing simulierte Lösung der Rendergleichung für die \enquote{Audi R8}-Szene dar. Die Lichtquelle besteht hier alleine aus der Umgebungsbeleuchtung. Für die BSDFs ist immer eine Mischung aus idealer Reflexion, lambertsch diffuser Reflexion und idealer Brechung gewählt worden.}
 			\label{fig:example-audi-r8-pt}
 		\end{figure}
 

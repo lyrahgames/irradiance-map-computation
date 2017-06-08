@@ -13,7 +13,10 @@
 \usepackage{tabularx}
 
 \let\stdsection\section
-\renewcommand*\section{\cleardoublepage\thispagestyle{titlestyle}\stdsection}
+% \renewcommand*\section{\cleardoublepage\thispagestyle{titlestyle}\stdsection}
+\renewcommand*\section{\thispagestyle{titlestyle}\stdsection}
+
+\usepackage{emptypage}
 
 \begin{document}
 
@@ -23,6 +26,22 @@
 
 	\cleardoublepage
 	\pagenumbering{roman}
+
+	\hrule
+	\medskip
+	\begin{abstract}
+		\itshape
+		\input{abstract}
+	\end{abstract}
+	% {
+	% 	\centering\section*{Zusammenfassung}
+	% 	\itshape
+	% 	\input{abstract}
+	% }
+	\medskip
+	\hrule
+	\bigskip
+
 	\tableofcontents
 
 	\cleardoublepage
@@ -35,25 +54,33 @@
 	\pagestyle{mainstyle}
 	\pagenumbering{arabic}
 
+	\cleardoublepage
+	\input{introduction}
+	\cleardoublepage
 	\input{background}
+	\cleardoublepage
 	\input{irradiance_estimation}
+	\cleardoublepage
+	\input{irradiance_map_generator}
+	\cleardoublepage
+	\input{conclusion}
 
 	\newpage
 
 
-	Diese Definition zeigt diverse Probleme auf, die bei der Modellierung von Objekten entstehen können.
-	Dreiecke der Primitive in einer Szene dürfen sich im Allgemeinen beliebig schneiden.
-	Dadurch ist es im Allgemeinen nicht möglich jedem Oberflächenpunkt eine eindeutige äußere Normale zuzuordnen.
-	Bei der Generierung der Irradiance Maps werden sich diese Punkte als Fehler äußern.
+	% Diese Definition zeigt diverse Probleme auf, die bei der Modellierung von Objekten entstehen können.
+	% Dreiecke der Primitive in einer Szene dürfen sich im Allgemeinen beliebig schneiden.
+	% Dadurch ist es im Allgemeinen nicht möglich jedem Oberflächenpunkt eine eindeutige äußere Normale zuzuordnen.
+	% Bei der Generierung der Irradiance Maps werden sich diese Punkte als Fehler äußern.
 
-	Die abstrakte Definition ist für die Implementierung leider noch nicht ausreichend.
+	% Die abstrakte Definition ist für die Implementierung leider noch nicht ausreichend.
 
-	\begin{figure}[h]
-		\center
-		\includegraphics{gg_fig/triangle_mesh_1.pdf}
-		\caption{Die Abbildung zeigt eine beispielhafte Menge von Dreiecken $\set[i\in\SN,i\leq 7]{\triangle^{(i)}}$. Verschiedene Gruppen von Dreiecken bilden eine Approximation einer Oberfläche im Raum. Dabei werden die Eckpunkte der Dreiecke geteilt und es gilt zum Beispiel $\triangle^{(1)}_B=\triangle^{(3)}_A$ und $\triangle^{(1)}_C = \triangle^{(3)}_C$.}
-		\label{fig:triangle_mesh}
-	\end{figure}
+	% \begin{figure}[h]
+	% 	\center
+	% 	\includegraphics{gg_fig/triangle_mesh_1.pdf}
+	% 	\caption[Skizze Implementierung Szene]{Die Abbildung zeigt eine beispielhafte Menge von Dreiecken $\set[i\in\SN,i\leq 7]{\triangle^{(i)}}$. Verschiedene Gruppen von Dreiecken bilden eine Approximation einer Oberfläche im Raum. Dabei werden die Eckpunkte der Dreiecke geteilt und es gilt zum Beispiel $\triangle^{(1)}_B=\triangle^{(3)}_A$ und $\triangle^{(1)}_C = \triangle^{(3)}_C$.}
+	% 	\label{fig:triangle_mesh}
+	% \end{figure}
 
 
 	% Aufgrund der Definition von physikalischer BRDFs muss bei Linearkombination eine weitere Bedingung beachtet werden.
@@ -68,20 +95,27 @@
 	% \end{theorem}
 
 
-	% \newpage
+
+	\cleardoublepage
+
+	\nocite{*}
+
+	\phantomsection
+	\addcontentsline{toc}{section}{Literatur}
+	\bibliographystyle{babplain}
+	\bibliography{ref}
+
+
+
 	\appendix
-
-
 	\cleardoublepage
 	\pagestyle{contentstyle}
 	\pagenumbering{roman}
 
-	% \pagestyle{empty}
-	\nocite{*}
-	% \bibliographystyle{amsplain}
-	\bibliographystyle{babplain}
-	\bibliography{ref}
 
+
+	\cleardoublepage
+	\input{acknowledgements}
 
 	\cleardoublepage
 	\input{statutory_declaration}
