@@ -289,7 +289,7 @@
 				\caption{\parbox[t]{0.5\textwidth}{$4096$ Samples \\ $56.08\unit{s}$}}
 				\label{subfig:irr-est-rc-dragon-4096}
 			\end{subfigure}
-			\caption{Die Bilder zeigen die gerenderte \enquote{Dragon}-Szene mit einer schwach variierenden Umgebungsbeleuchtung. \ref{subfig:irr-est-rc-dragon-pt} ist ein durch Path Tracing aufgenommenes Referenzbild. Für \ref{subfig:irr-est-rc-dragon-512} und \ref{subfig:irr-est-rc-dragon-4096} wurden die Irradianzen an den Eckpunkten der Mesh geschätzt und gespeichert. Zwischen den Eckpunkten fand eine lineare Interpolation statt. Die Anzahl der Samples gibt an, wie viele Stichprobenwerte verwendet wurden, um die Irradianz an jedem Punkt zu schätzen. Die Zeit entspricht der Berechnungsdauer für alle Punkte.}
+			\caption{Die Bilder zeigen die gerenderte \enquote{Dragon}-Szene mit einer schwach variierenden Umgebungsbeleuchtung. \ref{subfig:irr-est-rc-dragon-pt} ist ein durch Path Tracing aufgenommenes Referenzbild. Für \ref{subfig:irr-est-rc-dragon-512} und \ref{subfig:irr-est-rc-dragon-4096} wurden die Irradianzen an den Eckpunkten der Mesh geschätzt und gespeichert. Zwischen den Eckpunkten fand eine lineare Interpolation statt. Die Anzahl der Samples gibt an, wie viele Stichprobenwerte verwendet wurden, um die Irradianz an jedem Punkt zu schätzen. Die Zeit entspricht dabei der Berechnungsdauer. \ref{subfig:irr-est-rc-dragon-4096} weist zum Referenzbild keine Unterschiede auf. In \ref{subfig:irr-est-rc-dragon-512} sind jedoch einige schwache Artefakte in Form von Lichtflecken zu beobachten.}
 			\label{fig:irr-est-rc-dragon}
 		\end{figure}
 
@@ -309,7 +309,7 @@
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-s16384-err.png}
 				\caption{$16384$ Samples}
 			\end{subfigure}
-			\caption{Die Bilder zeigen die geschätzten Standardabweichungen der Irradianzen an den Eckpunkten der \enquote{Dragon}-Szene analog zu Abbildung \ref{fig:irr-est-rc-dragon}. Eine hellere Farbe bedeutet dabei eine höhere Standardabweichung. Die Anzahl der Samples gibt an, wie viele Stichprobenwerte verwendet wurden, um die Irradianz und ihre Standardabweichung an jedem Punkt zu schätzen. Deutlich erkennbar ist die Abnahme des Fehlers für größere Sampleanzahlen.}
+			\caption{Die Bilder zeigen die geschätzten Standardabweichungen der Irradianzen an den Eckpunkten der \enquote{Dragon}-Szene analog zu Abbildung \ref{fig:irr-est-rc-dragon}. Eine hellere Farbe bedeutet dabei eine höhere Standardabweichung. Deutlich erkennbar ist die Abnahme des Fehlers für größere Sampleanzahlen. Dennoch bleiben auch für $2^{14}$ Samples noch Stellen übgrig, die einen vergleichsweise hohen Fehler aufweisen.}
 			\label{fig:irr-est-rc-dragon-err}
 		\end{figure}
 
@@ -330,17 +330,17 @@
 				\center
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-shaderball2-s4096.png}
 				\caption{\parbox[t]{0.5\textwidth}{$4096$ Samples \\ $48.85\unit{s}$}}
+				\label{subfig:irr-est-rc-shaderball-4096}
 			\end{subfigure}
 			\begin{subfigure}[t]{0.5\textwidth}
 				\center
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-shaderball2-s16384.png}
 				\caption{\parbox[t]{0.5\textwidth}{$16384$ Samples \\ $191.22\unit{s}$}}
+				\label{subfig:irr-est-rc-shaderball-16384}
 			\end{subfigure}
-			\caption{Die Bilder zeigen die gerenderte \enquote{Shaderball}-Szene analog zu Abbildung \ref{fig:irr-est-rc-dragon}. \ref{subfig:irr-est-rc-shaderball-512} zeigt, dass die Verwendung von nur $512$ Samples starke Flecken erzeugen, die erst für größere Sampleanzahlen verschwinden.}
+			\caption{Die Bilder zeigen die gerenderte \enquote{Shaderball}-Szene entsprechend der Benennung aus Abbildung \ref{fig:irr-est-rc-dragon}. Die Monte-Carlo-Integration erzeugt in \ref{subfig:irr-est-rc-shaderball-512} mit nur $2^9$ Samples ein fleckiges Muster, welches durch die Verteilung der Zufallsvariable um den Erwartungswert hervorgerufen wird. In \ref{subfig:irr-est-rc-shaderball-4096} und \ref{subfig:irr-est-rc-shaderball-16384} ist erkennbar, dass die Entstehung von Flecken durch eine höhere Sampleanzahl verringert werden kann. Dennoch sind in \ref{subfig:irr-est-rc-shaderball-16384} auch für $2^{14}$ Samples im unteren Stand der Szene noch Flecken sichtbar.}
 			\label{fig:irr-est-rc-shaderball}
 		\end{figure}
-
-		\FloatBarrier
 
 		\begin{figure}[h]
 			\begin{subfigure}[b]{0.33\textwidth}
@@ -358,33 +358,36 @@
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-shaderball2-s16384-err.png}
 				\caption{$16384$ Samples}
 			\end{subfigure}
-			\caption{Die Bilder zeigen die gerenderte \enquote{Shaderball}-Szene analog zu Abbildung \ref{fig:irr-est-rc-dragon-err}. Vor allem in Bereichen, die schwach von außen beleuchtet werden oder in Nischen liegen, kann man einen erhöhten Fehler feststellen. Hier muss ein Strahl mehrmals reflektiert werden, um Licht einzusammeln.}
+			\caption{Die Bilder zeigen die Standardabweichungen der \enquote{Shaderball}-Szene aus Abbildung \ref{fig:irr-est-rc-shaderball} entsprechend der Benennung aus Abbildung \ref{fig:irr-est-rc-dragon}. Vor allem Bereiche, die schwach von außen beleuchtet werden oder in Nischen liegen, weisen einen erhöhten Fehler auf. Die regelmäßigen Artefakte entstehen durch geringe Auflösung der Mesh in diesen Bereichen.}
 			\label{fig:irr-est-rc-shaderball-err}
 		\end{figure}
 
 		\begin{figure}[h]
-			\begin{subfigure}[t]{0.5\textwidth}
+			\begin{subfigure}[t]{0.33\textwidth}
 				\center
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-dragon-ref.png}
 				\caption{Path Tracing}
+				\label{subfig:irr-est-ra-dragon-ref}
 			\end{subfigure}
-			\begin{subfigure}[t]{0.5\textwidth}
+			\begin{subfigure}[t]{0.33\textwidth}
 				\center
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-dragon-irr.png}
 				\caption{Irradianz}
+				\label{subfig:irr-est-ra-dragon-irr}
 			\end{subfigure}
-			\medskip \\
-			\begin{subfigure}[t]{0.5\textwidth}
-				\center
-				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-dragon-err.png}
-				\caption{Standardabweichung}
-			\end{subfigure}
-			\begin{subfigure}[t]{0.5\textwidth}
+			% \medskip \\
+			% \begin{subfigure}[t]{0.33\textwidth}
+			% 	\center
+			% 	\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-dragon-err.png}
+			% 	\caption{Standardabweichung}
+			% \end{subfigure}
+			\begin{subfigure}[t]{0.33\textwidth}
 				\center
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-dragon-scount.png}
 				\caption{Sampleanzahl}
+				\label{subfig:irr-est-ra-dragon-scount}
 			\end{subfigure}
-			\caption{}
+			\caption{Die Bilder zeigen die \enquote{Dragon}-Szene mit einer schwach variierenden Umgebungsbeleuchtung. \ref{subfig:irr-est-ra-dragon-ref} ist das durch Path Tracing erzeugte Referenzbild. \ref{subfig:irr-est-ra-dragon-irr} zeigt die an den Eckpunkten adaptiv aufgenommenen Irradianzen mit linearer Interpolation. \ref{subfig:irr-est-ra-dragon-scount} stellt dabei die zugehörigen Sampleanzahlen dar. Hier bedeutet eine hellere Farbe eine höhere Sampleanzahl. Die Berechnungszeit betrug $253\unit{s}$ mit der maximalen Sampleanzahl $2^{16}$ und einem maximalen relativen Fehler von $3\unit{\%}$.}
 			\label{fig:irr-est-ra-dragon}
 		\end{figure}
 
@@ -404,8 +407,90 @@
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-dragon2-scount.png}
 				\caption{Sampleanzahl}
 			\end{subfigure}
-			\caption{}
+			\caption{Die Bilder zeigen die \enquote{Dragon}-Szene mit einer stark variierenden Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $559\unit{s}$ mit der maximalen Sampleanzahl $2^{16}$ und einem maximalen relativen Fehler von $3\unit{\%}$.}
 			\label{fig:irr-est-ra-dragon2}
+		\end{figure}
+
+		\begin{figure}[h]
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball-ref.png}
+				\caption{Path Tracing}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball-irr.png}
+				\caption{Irradianz}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball-scount.png}
+				\caption{Sampleanzahl}
+			\end{subfigure}
+			\caption{Die Bilder zeigen die \enquote{Shaderball}-Szene mit einer stark variierenden Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $1170\unit{s}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
+			\label{fig:irr-est-ra-shaderball}
+		\end{figure}
+
+		\begin{figure}[h]
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball2-ref.png}
+				\caption{Path Tracing}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball2-irr.png}
+				\caption{Irradianz}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball2-scount.png}
+				\caption{Sampleanzahl}
+			\end{subfigure}
+			\caption{Die Bilder zeigen die \enquote{Shaderball}-Szene der Abbildung \ref{fig:irr-est-ra-shaderball} aus einem anderen Blickwinkel. Die aufgenommenen Irradianzen beinhalten im unteren Stand weniger Rauschen als das Referenzbild.}
+			\label{fig:irr-est-ra-shaderball2}
+		\end{figure}
+
+		\begin{figure}[h]
+			\begin{subfigure}[t]{\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball3-ref.png}
+				\caption{Path Tracing}
+			\end{subfigure}
+			\medskip \\
+			\begin{subfigure}[t]{\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball3-irr.png}
+				\caption{Irradianz}
+			\end{subfigure}
+			\medskip \\
+			\begin{subfigure}[t]{\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball3-scount.png}
+				\caption{Sampleanzahl}
+			\end{subfigure}
+			\caption{Die Bilder zeigen die \enquote{Shaderball}-Szene mit einer stark konzentrierten Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $1090\unit{s}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
+			\label{fig:irr-est-ra-shaderball3}
+		\end{figure}
+
+		\begin{figure}[h]
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball4-ref.png}
+				\caption{Path Tracing}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball4-irr.png}
+				\caption{Irradianz}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball4-scount.png}
+				\caption{Sampleanzahl}
+			\end{subfigure}
+			\caption{Die Bilder zeigen die \enquote{Shaderball}-Szene mit einer stark konzentrierten Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $1470\unit{s}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
+			\label{fig:irr-est-ra-shaderball4}
 		\end{figure}
 
 		\FloatBarrier
