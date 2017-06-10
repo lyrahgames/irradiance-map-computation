@@ -225,19 +225,19 @@
 		In Abschnitt \ref{sub:rendergleichung} wurde erwähnt das die meisten Renderverfahren, wie zum Beispiel das hier verwendete Path Tracing, auf der Basis von Zufallsvariablen arbeiten.
 		Das Integral in der Rendergleichung wird dabei mithilfe geeigneter Monte-Carlo-Methoden berechnet.
 		Aus diesem Grund bildet sich bei den Lösungen der Rendergleichung immer ein gewisses \enquote{Rauschen} (engl.: \textit{noise}) aus.
-		In Abbildung \ref{fig:sponza-noise} wird dies an einem Beispiel demonstriert.
+		In Abbildung \ref{fig:fairy-noise} wird dies an einem Beispiel demonstriert.
 
 		\begin{figure}[h]
 			\begin{subfigure}[b]{0.5\textwidth}
 				\center
-				\includegraphics[width=0.95\textwidth]{pic/sponza-noise-high.png}
+				\includegraphics[width=0.95\textwidth]{pic/noise-fairy-high.png}
 			\end{subfigure}
 			\begin{subfigure}[b]{0.5\textwidth}
 				\center
-				\includegraphics[width=0.95\textwidth]{pic/sponza-noise-low.png}
+				\includegraphics[width=0.95\textwidth]{pic/noise-fairy-low.png}
 			\end{subfigure}
-			\caption[Rauschen des Path Tracing anhand der \enquote{Sponza}-Szene]{Die Bilder zeigen die gerenderte \enquote{Sponza}-Szene, deren Materialien aus Lambertschen Strahlern bestehen und deren Umgebungsbeleuchtung eine konstante Funktion ist. Für das linke Bild wurde an jedem sichtbaren Punkt der Szene die Irradianz durch $16$ Messungen ermittelt. Das Resultat beinhaltet noch einen großen Anteil des Rauschens. Im rechten Bild wurden jeweils $1024$ Messungen durchgeführt, wodurch es wesentlich rauschärmer als das Linke ist.}
-			\label{fig:sponza-noise}
+			\caption[Rauschen durch Path Tracing anhand der \enquote{Fairy}-Szene]{Die Bilder zeigen die gerenderte \enquote{Fairy}-Szene. Für das linke Bild wurde an jedem sichtbaren Punkt der Szene die Irradianz durch $16$ Messungen ermittelt. Das Resultat beinhaltet noch einen großen Anteil des Rauschens. Im rechten Bild wurden jeweils $1024$ Messungen durchgeführt, wodurch es wesentlich rauschärmer als das Linke ist.}
+			\label{fig:fairy-noise}
 		\end{figure}
 
 		Möchte man die Irradianz für den Irradiance Cache oder auch die Irradiance Map ermitteln, so muss also darauf geachtet werden, dass das Rauschen des Endresultates und damit dessen Fehler klein bleibt.
@@ -492,6 +492,121 @@
 			\caption[Vierte adaptive Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene mit einer stark konzentrierten Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $1470\unit{s}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
 			\label{fig:irr-est-ra-shaderball4}
 		\end{figure}
+
+		\begin{figure}[h]
+			\begin{subfigure}[t]{\textwidth}
+				\center
+				\includegraphics[width=0.8\textwidth]{pic/irr_est-ra-r8-ref.png}
+				\caption{Path Tracing}
+			\end{subfigure}
+			\begin{subfigure}[t]{\textwidth}
+				\center
+				\includegraphics[width=0.8\textwidth]{pic/irr_est-ra-r8-irr.png}
+				\caption{Irradianz}
+			\end{subfigure}
+			\begin{subfigure}[t]{\textwidth}
+				\center
+				\includegraphics[width=0.8\textwidth]{pic/irr_est-ra-r8-scount.png}
+				\caption{Sampleanzahl}
+			\end{subfigure}
+			\caption[Vierte adaptive Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene mit einer stark konzentrierten Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $1470\unit{s}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
+			\label{fig:irr-est-ra-shaderball4}
+		\end{figure}
+
+		\begin{figure}[h]
+			\begin{subfigure}[t]{\textwidth}
+				\center
+				\includegraphics[width=0.85\textwidth]{pic/irr_est-ra-r8_2-ref.png}
+				\caption{Path Tracing}
+			\end{subfigure}
+			\begin{subfigure}[t]{\textwidth}
+				\center
+				\includegraphics[width=0.85\textwidth]{pic/irr_est-ra-r8_2-irr.png}
+				\caption{Irradianz}
+			\end{subfigure}
+			\begin{subfigure}[t]{\textwidth}
+				\center
+				\includegraphics[width=0.85\textwidth]{pic/irr_est-ra-r8_2-scount.png}
+				\caption{Sampleanzahl}
+			\end{subfigure}
+			\caption[Vierte adaptive Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene mit einer stark konzentrierten Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $1470\unit{s}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
+			\label{fig:irr-est-ra-shaderball4}
+		\end{figure}
+
+		\begin{figure}[h]
+			\begin{subfigure}[t]{0.5\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_3-ref.png}
+				\caption{Path Tracing}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.5\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_4-ref.png}
+				\caption{Path Tracing}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.5\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_3-irr.png}
+				\caption{Irradianz}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.5\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_4-irr.png}
+				\caption{Irradianz}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.5\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_3-scount.png}
+				\caption{Sampleanzahl}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.5\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_4-scount.png}
+				\caption{Sampleanzahl}
+			\end{subfigure}
+			\caption[Vierte adaptive Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene mit einer stark konzentrierten Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $1470\unit{s}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
+			\label{fig:irr-est-ra-shaderball4}
+		\end{figure}
+
+		% \begin{figure}[h]
+		% 	\begin{subfigure}[t]{0.33\textwidth}
+		% 		\center
+		% 		\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_3-ref.png}
+		% 		\caption{Path Tracing}
+		% 	\end{subfigure}
+		% 	\begin{subfigure}[t]{0.33\textwidth}
+		% 		\center
+		% 		\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_3-irr.png}
+		% 		\caption{Irradianz}
+		% 	\end{subfigure}
+		% 	\begin{subfigure}[t]{0.33\textwidth}
+		% 		\center
+		% 		\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_3-scount.png}
+		% 		\caption{Sampleanzahl}
+		% 	\end{subfigure}
+		% 	\caption[Vierte adaptive Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene mit einer stark konzentrierten Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $1470\unit{s}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
+		% 	\label{fig:irr-est-ra-shaderball4}
+		% \end{figure}
+
+		% \begin{figure}[h]
+		% 	\begin{subfigure}[t]{0.33\textwidth}
+		% 		\center
+		% 		\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_4-ref.png}
+		% 		\caption{Path Tracing}
+		% 	\end{subfigure}
+		% 	\begin{subfigure}[t]{0.33\textwidth}
+		% 		\center
+		% 		\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_4-irr.png}
+		% 		\caption{Irradianz}
+		% 	\end{subfigure}
+		% 	\begin{subfigure}[t]{0.33\textwidth}
+		% 		\center
+		% 		\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_4-scount.png}
+		% 		\caption{Sampleanzahl}
+		% 	\end{subfigure}
+		% 	\caption[Vierte adaptive Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene mit einer stark konzentrierten Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $1470\unit{s}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
+		% 	\label{fig:irr-est-ra-shaderball4}
+		% \end{figure}
 
 		\FloatBarrier
 
