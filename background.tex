@@ -2,8 +2,8 @@
 \label{sec:grundlagen_und_methoden}
 
 	In den folgenden Kapiteln wird eine grundlegende Einführung und Definition der Verfahren gegeben, die für den weiteren Verlauf dieser Arbeit von Belang sind.
-	Viele dieser Themen können hier nur angerissen werden, da ihre komplette Behandlung den Rahmen und das Ziel des Themas verfehlen würde.
-	Für eine genauere Einführung in die einzelnen Themengebiete, wird dem Leser geraten sich mit den genannten Quellen auseinander zu setzen.
+	Viele dieser Themen können hier nur angerissen werden, da ihre komplette Behandlung den Rahmen und das Ziel des Themas sprengen würden.
+	Für eine genauere Einführung in die einzelnen Themengebiete, wird dem Leser geraten, sich mit den genannten Quellen auseinander zu setzen.
 
 	\subsection{Szenengeometrie} % (fold)
 	\label{sub:szenengeometrie}
@@ -102,7 +102,6 @@
 
 		Der letzte Schritt zur vollständigen Beschreibung der Szenengeometrie, besteht darin, eine Menge von Dreiecken zu bilden, sodass diese ein physikalisches Objekt gut genug approximieren.
 		In \cite{pbrt3} und \cite{course-triangle-mesh} werden solche Mengen auch \enquote{Meshs} (engl.: \textit{triangle mesh}) genannt.
-		Wir wollen hier eine unübliche Definition geben.
 		\begin{definition}[Mesh]
 			Seien $n\in\SN$ und Dreiecke $\triangle_i$ mit Shading-Normalen $\nu_i$ für alle $i\in\SN,i\leq n$.
 			Weiterhin definieren wir
@@ -153,7 +152,7 @@
 		Gilt dabei $\omega_\m{o}\in\shs{\nu}$, so befindet sich $\omega_\m{o}$ in der gleichen Hemisphere bezüglich $\mu$ wie $\omega_\m{i}$ und es handelt sich um eine Reflexion des Lichtes.
 		Der verbleibende Fall beschreibt die Transmission.
 		Die BSDF stellt damit eine Verallgemeinerung der idealen Reflexion und Brechung an Oberflächen dar.
-		\cite[S.~571~ff]{pbrt3} und \cite[S.~135~ff]{veach-thesis} weisen zudem nach, dass die Helmholtz-Reziprozität nur für den reflektierten Anteil des Lichtes gilt.
+		Die Quellen \cite[S.~571~ff]{pbrt3} und \cite[S.~135~ff]{veach-thesis} weisen zudem nach, dass die Helmholtz-Reziprozität nur für den reflektierten Anteil des Lichtes gilt.
 		In Abbildung \ref{fig:brdf} ist das Beispiel einer typischen BSDF gezeigt, die keine Transmission des Lichtes zulässt \cite[S.~509~ff]{pbrt3}.
 
 		\begin{figure}[h]
@@ -165,7 +164,7 @@
 
 		Die hier eingeführten Funktionen für die Charakterisierung von Materialien können auf verschiedene Weisen verallgemeinert werden.
 		Zu beachten ist vor allem die fehlende Abhängigkeit von der Wellenlänge des einfallenden und der des gestreuten Lichtes, welche Effekte wie Dispersion, Irisieren und Lumineszenz verhindert.
-		Eine weiteres physikalisches Phänomen stellt die Volumenstreuung dar.
+		Ein weiteres physikalisches Phänomen stellt die Volumenstreuung dar.
 		Bei der Betrachtung dieser wird ein Material durch die sogenannte \enquote{BSSRDF} beschrieben \cite[S.~671~ff]{pbrt3}.
 
 
@@ -518,7 +517,7 @@
 			\]
 			Die zu $L$ gehörige Irradianz definieren wir durch die folgende Funktion.
 			\[
-				\func{E}{\e{T}\times(0,\infty)}{[0,\infty)},\qquad E(x,\lambda)\define \integral{\shs{\nu(x)}}{}{L(x,\lambda,\omega)\dotp{\mu(x)}{\omega}}{\sigma(\omega)}
+				\func{R}{\e{T}\times(0,\infty)}{[0,\infty)},\qquad R(x,\lambda)\define \integral{\shs{\nu(x)}}{}{L(x,\lambda,\omega)\dotp{\mu(x)}{\omega}}{\sigma(\omega)}
 			\]
 		\end{definition}
 
@@ -599,9 +598,9 @@
 	\label{sub:rendergleichung}
 
 		Die \enquote{Rendergleichung} (engl.: \textit{rendering equation} oder \textit{light transport equation}, \cite[S.~861]{pbrt3}) ist eine Integralgleichung, die 1986 von James T. Kajiya entwickelt wurde, um die bis zu diesem Zeitpunkt verbreiteten Rendertechniken für die Simulation globaler Beleuchtungseffekte auf eine gemeinsame Basis zu stellen \cite{kajiya-lte}.
-		In \cite{kajiya-lte}, \cite[S.~349~ff,~862~ff]{pbrt3} und \cite{veach-thesis} wird sie mithilfe der Prinzipien der geometrischen Optik und dem Energieerhaltungssatz hergeleitet.
-		\cite{veach-thesis} stellt dabei die resultierende Gleichung zusätzlich in einer Operator-Formulierung dar.
-		Insbesondere handelt es sich bei der Rendergleichung um eine Fredholm-Integralgleichung 2.Art, die unter gewissen Voraussetzungen eine eindeutige Lösung besitzt (siehe hierzu \cite[S.~103~ff]{veach-thesis} und \cite{integral-equations}).
+		In den Quellen \cite{kajiya-lte}, \cite[S.~349~ff,~862~ff]{pbrt3} und \cite{veach-thesis} wird sie mithilfe der Prinzipien der geometrischen Optik und dem Energieerhaltungssatz hergeleitet.
+		Quelle \cite{veach-thesis} stellt dabei die resultierende Gleichung zusätzlich in einer Operator-Formulierung dar.
+		Insbesondere handelt es sich bei der Rendergleichung um eine Fredholm-Integralgleichung 2.Art, die damit unter gewissen Voraussetzungen eine eindeutige Lösung besitzt (siehe hierzu \cite[S.~103~ff]{veach-thesis} und \cite{integral-equations}).
 		% \begin{definition}[Rendergleichung]
 		% 	Sei $\s{S}$ eine gegebene Szene mit Strahldichte-Funktion $L_\s{S}$.
 		% 	Dann gehorcht $L_\s{S}$ der Rendergleichung, wenn für alle $x\in S(\s{S})$ und $\omega_0\in \Omega$ gilt
@@ -663,10 +662,10 @@
 		\end{figure}
 
 		Alle genannten Verfahren arbeiten auf der Basis von Zufallszahlen.
-		Da die Rendergleichung eine mehrdimensionale Integralgleichung ist, bietet sich die Verwendung verschiedener \enquote{Monte-Carlo-Methoden} an \cite{monte-carlo-method}.
+		Da die Rendergleichung eine mehrdimensionale Integralgleichung ist, bietet sich die Verwendung verschiedener \enquote{Monte-Carlo-Methoden} an, weil diese eine effiziente Schätzung mehrdimensionaler Integrale erlauben \cite{monte-carlo-method}.
 		Für uns bedeutet diese Tatsache, dass es sich bei der Abfrage der Strahldichte für diese numerischen Verfahren um die Realisierung einer Zufallsvariable handelt, deren Erwartungswert im besten Falle der der wahren Strahldichte entspricht.
 		Eine detailliertere Betrachtung dieser Eigenschaft wird in den weiteren Kapiteln folgen.
-		Für die Konstruktion der Irradiance Maps ist es im Grunde genommen unwichtig, welcher Algorithmus verwendet wird, sofern er in der Lage ist die Strahldichte für gegebene Parameter zu evaluieren.
+		Für die Konstruktion der Irradiance Maps ist es im Grunde genommen unwichtig, welcher Algorithmus verwendet wird, sofern er in der Lage ist, die Strahldichte für gegebene Parameter zu evaluieren.
 		Wir verwenden hier einen einfachen Path Tracing Algorithmus.
 
 	% subsection rendergleichung (end)

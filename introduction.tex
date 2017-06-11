@@ -1,4 +1,4 @@
-\section{Introduktion} % (fold)
+\section{Einleitung} % (fold)
 \label{sec:introduktion}
 
 	\begin{figure}[b]
@@ -35,19 +35,19 @@
 	Eine der wichtigsten Arten ist gerade die ideale diffuse Streuung, welche der Szene ein grundlegendes plastisches Aussehen gibt.
 	Sie ist unabhängig von der Richtung des einfallenden Lichtstrahls und damit auch invariant unter Änderung des Beobachtungspunktes \cite{intro-radiometry}.
 	Für Path Tracing bedeutet dies, dass für jede Änderung der Kamera die eigentlich konstante Lichtverteilung neu berechnet werden muss.
-	Diese Evaluierung nimmt aber auch den größten Rechenaufwand in Anspruch, da für jeden dieser Punkt Licht aus dessen gesamten Hemisphere eingesammelt werden muss.
+	Diese Evaluierung nimmt aber auch den größten Rechenaufwand in Anspruch, da für jeden dieser Punkte Licht aus dessen gesamten Hemisphere eingesammelt werden muss.
 	Um also das Verfahren des Path Tracings zu optimieren, müssten die diffusen Lichtverhältnisse vorberechnet und auf der Oberfläche der Szene gespeichert werden \cite{irradiance-caching}.
 
 	Besonders in der Computerspieleindustrie wird dieses Problem mithilfe von sogenannten \enquote{Lightmaps} gelöst, welche für viele Punkte der Szene deren \enquote{Irradianz} in einer Textur speichern \cite{tricks-game}.
 	Während des Renderings werden diese Irradianzen dann zusammen mit der Farbe der Materialtextur ausgelesen, miteinander multipliziert und dargestellt.
 	Die Generierung einer solchen Lightmap ist jedoch mit diversen Tücken verbunden, welche in vielen Fällen nur durch manuelle Optimierung beseitigt werden können.
 
-	Aus diesem Grund führen wir im Laufe dieser Arbeit die sogenannten \enquote{Irradiance Maps} ein, die Irradianzen eines Punktes auf der Oberfläche der zugehörigen Szene speichern.
+	Aus diesem Grund führe ich im Laufe dieser Arbeit die sogenannten \enquote{Irradiance Maps} ein, die Irradianzen eines Punktes auf der Oberfläche der zugehörigen Szene speichern.
 	Die benötigte Datenstruktur soll dabei speziell für die Verwendung von \enquote{Raytracing} und Path Tracing ausgelegt sein.
-	Wir werden eine genauere Betrachtung der Irradianzbestimmung vornehmen, um so deren Prozess zu vereinfachen.
-	Des Weiteren präsentieren wir einen Algorithmus zur adaptiven und automatischen Generierung einer solchen Irradiance Map.
+	Ich werde eine genauere Betrachtung der Irradianzbestimmung vornehmen, um so deren Prozess zu vereinfachen.
+	Des Weiteren präsentiere ich einen Algorithmus zur adaptiven und automatischen Generierung einer solchen Irradiance Map.
 
-	Abbildung \ref{fig:intro-shaderball} zeigt ein Beispiel, in welchem deutlich wird, dass Irradiance Maps in der Lage sind die diffusen Lichtverhältnisse sehr gut zu approximieren, jedoch bei schlechter Generierung viel Speicher benötigen (siehe \ref{subfig:intro-shaderball-lm-big}).
+	Abbildung \ref{fig:intro-shaderball} (Quelle aller Abbildungen: Markus Pawellek 2017) zeigt ein Beispiel, in welchem deutlich wird, dass Irradiance Maps in der Lage sind die diffusen Lichtverhältnisse sehr gut zu approximieren, jedoch bei schlechter Generierung viel Speicher benötigen (siehe \ref{subfig:intro-shaderball-lm-big}).
 	Außerdem ist in \ref{subfig:intro-shaderball-lm-small} erkennbar, dass für einen Großteil der Szene eine vergleichsweise kleine Auflösung der Irradiance Map ausreicht.
 	Es wird also auch darum gehen, diesen Sachverhalt bei der Konstruktion auszunutzen.
 

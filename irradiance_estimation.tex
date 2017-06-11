@@ -10,8 +10,8 @@
 
 		Wie bereits in Abschnitt \ref{sub:bsdf} erwähnt, ist es im Allgemeinen nicht möglich, die BSDF eines Materials in geschlossener Form anzugeben.
 		Es gibt jedoch verschiedene Verfahren um einfache BSDF-Modelle zu konstruieren, die in der Simulation der Strahldichte Anwendung finden.
-		In \cite[S.~507~f]{pbrt3} wird hierfür die Verwendung von Messdaten, phenomenologischen Beobachtungen, Simulationsergebnissen und physikalischen Gesetzen als Beispiel genannt.
-		Durch die Kombination solcher Modelle ist man dann in der Lage auch diverse komplexe Materialien zu simulieren.
+		In Quelle \cite[S.~507~f]{pbrt3} wird hierfür die Verwendung von Messdaten, phenomenologischen Beobachtungen, Simulationsergebnissen und physikalischen Gesetzen als Beispiel genannt.
+		Durch die Kombination solcher Modelle ist man in der Lage auch diverse komplexe Materialien zu simulieren.
 		Das folgende Theorem formuliert dieses Vorgehen genauer.
 		\begin{theorem*}[BSDF-Reihe]
 			Seien $\mu\in\ssp$, $(f_n)_{n\in\SN}$ eine Folge von BSDFs bezüglich $\mu$ und $(\alpha_n)_{n\in\SN}$ eine Folge von Werten in $[0,1]$, sodass die beiden folgenden Eigenschaften für $\sigma^2$-fast-alle $(\omega_\m{i},\omega_\m{o})\in\ssp\times\ssp$ gelten.
@@ -152,7 +152,7 @@
 		Verwendet man jetzt das Korollar des vorigen Abschnittes, so lässt sich das einfache Modell der Lambertsch diffusen Reflexion zum Beispiel mit einer idealen Reflexion verbinden, wie es in Abbildung \ref{fig:shaderball-bsdf-sum} gezeigt ist.
 		Das resultierende Material ist komplexer aufgebaut und beschreibt eine andere Klasse von BSDFs.
 		Die Verwendung eines Lambertschen Strahlers kann somit durch Kombination mit anderen BSDF-Modellen auf einen größeren Bereich von Materialarten ausgeweitet werden.
-		Mithin ist es in der Praxis in fast allen Szenen nötig diffuse Reflexionen an den Oberflächen der Objekte auszuwerten.
+		Mithin ist es in der Praxis in fast allen Szenen nötig, diffuse Reflexionen an den Oberflächen der Objekte auszuwerten.
 
 		\begin{figure}[h]
 			\begin{subfigure}[b]{0.5\textwidth}
@@ -178,17 +178,17 @@
 		Die BSDF $\tilde{f}(x,\cdot,\cdot)$ ergibt sich meistens aus stark richtungsabhängigen Anteilen, wie zum Beispiel der idealen Reflexion, der idealen Brechung oder ähnlich glänzenden Materialien.
 		Diese Anteile können vergleichsweise gut durch Raytracing beziehungsweise auch Path Tracing gerendert werden.
 		Die Berechnung von $R(x,\lambda)$ erfordert jedoch immer eine Integration über die gesamte Hemisphere, bei der jeder erhaltene Wert gleichermaßen gewichtet werden muss.
-		Diese Bedingung erschwert die Evaluierung und resultiert in entsprechend langen Zeiträumen des Renderings.
+		Diese Tatsache erschwert die Evaluierung und führt zu entsprechend langen Zeiträumen des Renderings.
 
-		Der große Vorteil an der Irradianz besteht jedoch darin, dass sie unabhängig von der betrachteten Richtung ist.
-		Die empfangene Strahldichte von $x$ ist konstant egal von welchem Punkt im Raum aus man $x$ betrachtet.
+		Ein Vorteil der Irradianz besteht jedoch darin, dass sie unabhängig von der betrachteten Richtung ist.
+		Die empfangene Strahldichte von $x$ ist konstant, egal von welchem Punkt im Raum aus man $x$ betrachtet.
 		Diese Eigenschaft ermöglicht es, $R(x,\lambda)$ vorzuberechnen und am Punkt $x$ zu speichern.
-		Jedes mal, wenn man nun den Punkt $x$ aus einer Richtung $\tilde{\omega}\in\shs{\nu(x)}$ betrachtet, wird das Integral des rechten Teils der Gleichung effizient durch Path Tracing geschätzt. Der Wert $R(x,\lambda)$ kann mit $E(x,\lambda,\tilde{\omega})$ ausgelesen und zum resultierenden Wert hinzugefügt werden.
+		Jedes Mal, wenn man nun den Punkt $x$ aus einer Richtung $\tilde{\omega}\in\shs{\nu(x)}$ betrachtet, wird das Integral des rechten Teils der Gleichung effizient durch Path Tracing geschätzt. Der Wert $R(x,\lambda)$ kann mit $E(x,\lambda,\tilde{\omega})$ ausgelesen und zum resultierenden Wert hinzugefügt werden.
 		Infolgedessen verkürzen sich die benötigten Renderzeiten.
-		Da es sich bei $R$ um die Irradianz handelt, wollen wir die zugehörige Datenstruktur, die ihre Werte speichert \enquote{Irradiance Map} nennen.
+		Da es sich bei $R$ um die Irradianz handelt, wollen wir die zugehörige Datenstruktur, die ihre Werte speichert, \enquote{Irradiance Map} nennen.
 
 		Wir möchten hier bemerken, dass die genannten Eigenschaften nur für die Translation des Beobachtungspunktes gelten.
-		Die Änderung der Beleuchtung oder Geometrie führt zu einer neuen Szene $\tilde{\Sigma}$ deren Irradianz $\tilde{R}$ im Allgemeinen nicht $R$ entspricht.
+		Die Änderung der Beleuchtung oder Geometrie führt zu einer neuen Szene $\tilde{\Sigma}$, deren Irradianz $\tilde{R}$ im Allgemeinen nicht $R$ entspricht.
 		Die Irradiance Map muss demnach für jede Modifizierung der Szene neu berechnet werden, um die korrekten Werte der Irradianz zu beinhalten.
 
 	% subsection lambertsch_diffuse_materialien_und_die_rendergleichung (end)
@@ -224,7 +224,7 @@
 	\subsection{Schätzung der Irradianz} % (fold)
 	\label{sub:schaetzung_der_irradianz}
 
-		In Abschnitt \ref{sub:rendergleichung} wurde erwähnt das die meisten Renderverfahren, wie zum Beispiel das hier verwendete Path Tracing, auf der Basis von Zufallsvariablen arbeiten.
+		In Abschnitt \ref{sub:rendergleichung} wurde erwähnt, dass die meisten Renderverfahren, wie zum Beispiel das hier verwendete Path Tracing, auf der Basis von Zufallsvariablen arbeiten.
 		Das Integral in der Rendergleichung wird dabei mithilfe geeigneter Monte-Carlo-Methoden berechnet.
 		Aus diesem Grund bildet sich bei den Lösungen der Rendergleichung immer ein gewisses \enquote{Rauschen} (engl.: \textit{noise}) aus.
 		In Abbildung \ref{fig:fairy-noise} wird dies an einem Beispiel demonstriert.
@@ -279,14 +279,15 @@
 		\[
 			\bar{\e{R}} \define \frac{2\pi}{n}\sum_{i=1}^n \e{R}_i
 		\]
-		Nach \cite[S.~249~ff]{prob-theory} ergibt sich dann mit einem $i\in\SN,i\leq n$ für den Erwartungswert und die Varianz
+		Nach Quelle \cite[S.~249~ff]{prob-theory} ergibt sich dann mit einem $i\in\SN,i\leq n$ für den Erwartungswert und die Varianz
 		\[
 			\expect \bar{\e{R}} = R(x,\lambda),\qquad \var \bar{\e{R}} = \frac{4\pi^2}{n}\var \e{R}_i
 		\]
 		Wir können also zufällige Richtungen der Hemisphere auswählen und für diese die Strahldichte ermitteln.
 		Das arithmetische Mittel sollte dann nach dem \enquote{schwachen Gesetz der großen Zahlen} \cite[S.~254]{prob-theory} für eine steigende Anzahl von Messwerten gegen den Wert der Irradianz konvergieren.
 		Es sei hier auch auf die Quellen \cite{kajiya-lte,pbrt3,veach-thesis} verwiesen, die diese Herleitung mithilfe der \enquote{Pfadintegral-Formulierung} der Rendergleichung vollführen.
-		Das eben beschriebene Verfahren ist ein typisches Beispiel der Monte-Carlo-Methode \cite{monte-carlo-method}.
+
+		Das eben beschriebene Verfahren ist ein typisches Beispiel einer Monte-Carlo-Methode \cite{monte-carlo-method}.
 		Die Abbildungen \ref{fig:irr-est-rc-dragon} und \ref{fig:irr-est-rc-shaderball} zeigen es anhand zweier Beispielszenen für verschiedene $n\in\SN$.
 
 		\begin{figure}[h]
