@@ -1,10 +1,12 @@
-\section{Schätzung der Irradianz} % (fold)
-\label{sec:schätzung_der_irradianz}
+\section{Bestimmung der Irradianz} % (fold)
+\label{sec:bestimmung_der_irradianz}
 
+	Nach der Einführung der Rendergleichung und dem Nennen verschiedener Methoden zur Simulation dieser, wollen wir nun die bereits in Kapitel \ref{sec:introduktion} angesprochenen Probleme aufgreifen und Lösungsmethoden entwerfen.
+	In diesem Kapitel wird es vor allem um die Eigenschaften spezieller Materialien, die auch Lambertsche Strahler genannt werden, und die Beschreibung einer Messmethode der Irradianz gehen.
+	Im noch folgenden Kapitel werden die gewonnen Informationen implizit bei der Konstruktion der Irradiance Map angewendet.
 
-
-	\subsection{Analyse von Materialien} % (fold)
-	\label{sub:analyse_von_materialien}
+	\subsection{Konstruktion komplexer Materialien} % (fold)
+	\label{sub:konstruktion_komplexer_materialien}
 
 		Wie bereits in Abschnitt \ref{sub:bsdf} erwähnt, ist es im Allgemeinen nicht möglich, die BSDF eines Materials in geschlossener Form anzugeben.
 		Es gibt jedoch verschiedene Verfahren um einfache BSDF-Modelle zu konstruieren, die in der Simulation der Strahldichte Anwendung finden.
@@ -89,12 +91,12 @@
 			\]
 		\end{corollary*}
 
-	% subsection analyse_von_materialien (end)
+	% subsection konstruktion_komplexer_materialien (end)
 
-	\subsection{Lambertsch diffuse Materialien und die Rendergleichung} % (fold)
-	\label{sub:lambertsch_diffuse_materialien_und_die_rendergleichung}
+	\subsection{Äquivalenz Lambertscher Strahler und der Irradianz} % (fold)
+	\label{sub:aquivalenz_lambertscher_strahler_und_der_irradianz}
 
-		Eines der einfachsten BSDF-Modelle ist das der lambertsch diffusen Reflexion, welches in Abschnitt \ref{sub:bsdf} als Beispiel eingeführt wurde.
+		Eines der einfachsten BSDF-Modelle ist das der Lambertsch diffusen Reflexion, welches in Abschnitt \ref{sub:bsdf} als Beispiel eingeführt wurde.
 		Die einfallende Strahldichte wird bei diesem Modell gleichmäßig in alle Richtungen der Halbkugel gestreut, was auch der idealen diffusen Reflexion entspricht.
 		Eine Oberfläche mit dieser Eigenschaft wird auch Lambertscher Strahler (engl.: \textit{Lambertian radiator}, \cite[S.~17]{intro-radiometry}) genannt.
 		Zu beachten ist, dass diese BSDF keinerlei Transmission von Licht beschreibt und auch im Allgemeinen keiner physikalischen Basis entspricht.
@@ -135,7 +137,7 @@
 			L(x,\lambda,\omega_\m{o}) = E(x,\lambda,\omega_\m{o}) + \frac{1}{\pi}R(x,\lambda)
 		\]
 		In den meisten Fällen ist $E$ selbst unabhängig von $\omega_\m{o}$ und an vielen Punkten im Raum sogar identisch mit Null.
-		Für matte Oberflächen, deren Reflexionsverhalten durch einen lambertschen Strahler charakterisiert werden kann, reicht es dementsprechend die Irradianz zu betrachten \cite{irr-grad,irradiance-caching}.
+		Für matte Oberflächen, deren Reflexionsverhalten durch einen Lambertschen Strahler charakterisiert werden kann, reicht es dementsprechend die Irradianz zu betrachten \cite{irr-grad,irradiance-caching}.
 
 		% Wir wollen nun einen Punkt $x$ einer Oberfläche mit Normaler $\mu\in\ssp$ und der BSDF eines lambertschen Strahlers bezüglich $\mu$ betrachten.
 		% Dann ergibt sich der Anteil $L_\m{r}$ des reflektierten, aber nicht emittierten Lichtes, am Punkt $x$ in Richtung $\omega_0\in\shs{\mu}$ mit Wellenlänge $\lambda\in(0,\infty)$ aus dem zweiten Term der Rendergleichung.
@@ -147,9 +149,9 @@
 		% Die reflektierte Strahldichte für einen lambertschen Strahler ist damit unabhängig von der Richtung $\omega_0$ und entspricht gerade der durch $\frac{1}{\pi}$-skalierten Irradianz.
 		% Folglich reicht es für ideale diffuse Oberflächen die richtungsunabhängige Irradianz zu betrachten.
 
-		Verwendet man jetzt das Korollar des vorigen Abschnittes, so lässt sich das einfache Modell der lambertsch diffusen Reflexion zum Beispiel mit einer idealen Reflexion verbinden, wie es in Abbildung \ref{fig:shaderball-bsdf-sum} gezeigt ist.
-		Das resultierende Material ist komplexer aufgebaut und beschreibt eine andere Klasse von Materialien.
-		Die Verwendung eines lambertschen Strahlers kann somit durch Kombination mit anderen BSDF-Modellen auf einen größeren Bereich von Materialarten ausgeweitet werden.
+		Verwendet man jetzt das Korollar des vorigen Abschnittes, so lässt sich das einfache Modell der Lambertsch diffusen Reflexion zum Beispiel mit einer idealen Reflexion verbinden, wie es in Abbildung \ref{fig:shaderball-bsdf-sum} gezeigt ist.
+		Das resultierende Material ist komplexer aufgebaut und beschreibt eine andere Klasse von BSDFs.
+		Die Verwendung eines Lambertschen Strahlers kann somit durch Kombination mit anderen BSDF-Modellen auf einen größeren Bereich von Materialarten ausgeweitet werden.
 		Mithin ist es in der Praxis in fast allen Szenen nötig diffuse Reflexionen an den Oberflächen der Objekte auszuwerten.
 
 		\begin{figure}[h]
@@ -165,7 +167,7 @@
 			\label{fig:shaderball-bsdf-sum}
 		\end{figure}
 
-		Wir nehmen jetzt an, dass sich die BSDF am Punkt $x$ aus der Kombination eines lambertschen Strahlers mit Koeffizient $\alpha$ und einer beliebigen BSDF $\tilde{f}(x,\cdot,\cdot)$ mit Koeffizient $\beta$ ergibt.
+		Wir nehmen jetzt an, dass sich die BSDF am Punkt $x$ aus der Kombination eines Lambertschen Strahlers mit Koeffizient $\alpha$ und einer beliebigen BSDF $\tilde{f}(x,\cdot,\cdot)$ mit Koeffizient $\beta$ ergibt.
 		Dabei fordern wir, dass $\alpha,\beta\in[0,1]$ und $\alpha +\beta\leq 1$ gilt.
 		Das Korollar über die Summe von BSDFs tätigt dann eine klare Aussage über die Form des reflektierten Anteils.
 		\[
@@ -191,36 +193,36 @@
 
 	% subsection lambertsch_diffuse_materialien_und_die_rendergleichung (end)
 
-	\subsection{Irradiance Map und Irradiance Cache} % (fold)
-	\label{sub:irradiance_map_und_irradiance_cache}
+	% \subsection{Irradiance Map und Irradiance Cache} % (fold)
+	% \label{sub:irradiance_map_und_irradiance_cache}
 
-		In \cite{irradiance-caching} und \cite[S.~783~ff]{pbrt2} wird das Verfahren des sogenannten \enquote{Irradiance Caching} beschrieben.
-		Es basiert auf der vorherigen Gleichung und ermöglicht das Zwischenspeichern der Irradianz in einem \enquote{Cache}.
-		Dabei werden nur Werte, für die genügend bereits aufgenommene Werte in der Nähe gefunden werden, durch diesen Cache interpoliert.
-		Ist dies nicht der Fall, so wird die Irradianz an diesem Punkt neu geschätzt und im Cache abgelegt.
-		Der Cache besteht aus einer räumlichen Datenstruktur (engl.: \textit{spatial datastructure}), wie zum Beispiel einem \enquote{Octree}, der die einzelnen Irradianz-Werte mit ihrer Position im Raum unabhängig von der Mesh speichert.
-		Dies ermöglicht die Implementierung einer effizienten Suche für die bereits aufgenommenen Werte.
+	% 	In \cite{irradiance-caching} und \cite[S.~783~ff]{pbrt2} wird das Verfahren des sogenannten \enquote{Irradiance Caching} beschrieben.
+	% 	Es basiert auf der vorherigen Gleichung und ermöglicht das Zwischenspeichern der Irradianz in einem \enquote{Cache}.
+	% 	Dabei werden nur Werte, für die genügend bereits aufgenommene Werte in der Nähe gefunden werden, durch diesen Cache interpoliert.
+	% 	Ist dies nicht der Fall, so wird die Irradianz an diesem Punkt neu geschätzt und im Cache abgelegt.
+	% 	Der Cache besteht aus einer räumlichen Datenstruktur (engl.: \textit{spatial datastructure}), wie zum Beispiel einem \enquote{Octree}, der die einzelnen Irradianz-Werte mit ihrer Position im Raum unabhängig von der Mesh speichert.
+	% 	Dies ermöglicht die Implementierung einer effizienten Suche für die bereits aufgenommenen Werte.
 
-		Irradiance Caching ist damit ein Verfahren, welches in Abhängigkeit des derzeitigen Beobachtungspunktes Werte aufnimmt, speichert und interpoliert.
-		Folglich berechnet es nur die Irradianzen an Punkten, die durch den Beobachter gesehen werden.
-		Auch die Interpolation kann sich dadurch dem derzeitigen Bildausschnitt anpassen und exaktere Ergebnisse liefern.
+	% 	Irradiance Caching ist damit ein Verfahren, welches in Abhängigkeit des derzeitigen Beobachtungspunktes Werte aufnimmt, speichert und interpoliert.
+	% 	Folglich berechnet es nur die Irradianzen an Punkten, die durch den Beobachter gesehen werden.
+	% 	Auch die Interpolation kann sich dadurch dem derzeitigen Bildausschnitt anpassen und exaktere Ergebnisse liefern.
 
-		Eines der wichtigsten Probleme besteht darin, dass die Interpolation der aufgenommenen Werte über dem Raum und nicht über der Oberfläche der Szene stattfindet.
-		Diese fehlerhafte Interpolation führt in einigen Szenen mit dünnen Wänden zu sogenannten \enquote{light leaks} und anderen Beleuchtungs-Artefakten.
-		Weiterhin ist es im Allgemeinen ratsam nur die indirekte Irradianz durch einen Irradiance Cache anzunähern, da sich diese über der Oberfläche nur langsam ändert und gut approximiert werden kann.
-		Beleuchtungseffekte, die durch die Umgebungsbeleuchtung oder andere direkte Lichtquellen erzeugt werden, müssen hiernach für jedes Bild neu berechnet werden.
+	% 	Eines der wichtigsten Probleme besteht darin, dass die Interpolation der aufgenommenen Werte über dem Raum und nicht über der Oberfläche der Szene stattfindet.
+	% 	Diese fehlerhafte Interpolation führt in einigen Szenen mit dünnen Wänden zu sogenannten \enquote{light leaks} und anderen Beleuchtungs-Artefakten.
+	% 	Weiterhin ist es im Allgemeinen ratsam nur die indirekte Irradianz durch einen Irradiance Cache anzunähern, da sich diese über der Oberfläche nur langsam ändert und gut approximiert werden kann.
+	% 	Beleuchtungseffekte, die durch die Umgebungsbeleuchtung oder andere direkte Lichtquellen erzeugt werden, müssen hiernach für jedes Bild neu berechnet werden.
 
-		Ein andere Variante ist die in dieser Arbeit besprochene komplette Vorberechnung einer Irradiance Map.
-		Sie speichert die aufgenommenen Werte durch eine passende Datenstruktur auf der Oberfläche der Szene und ermöglicht eine vergleichsweise einfache lokale Interpolation.
-		Beispiele finden sich in \cite{course-photon-map,gi-llde,gi-density-estimation}.
-		Dies ermöglicht das Speichern der direkten Irradianz und verhindert die Entstehung einiger Beleuchtungsartefakte.
-		Allerdings müssen Irradiance Maps auch Werte für Bereiche der Szene speichern, die vom Beobachter aus nicht gesehen werden.
-		Dies führt dazu, dass Irradiance Maps im Allgemeinen einen sehr viel höheren Speicherverbrauch aufweisen als Irradiance Caches.
+	% 	Ein andere Variante ist die in dieser Arbeit besprochene komplette Vorberechnung einer Irradiance Map.
+	% 	Sie speichert die aufgenommenen Werte durch eine passende Datenstruktur auf der Oberfläche der Szene und ermöglicht eine vergleichsweise einfache lokale Interpolation.
+	% 	Beispiele finden sich in \cite{course-photon-map,gi-llde,gi-density-estimation}.
+	% 	Dies ermöglicht das Speichern der direkten Irradianz und verhindert die Entstehung einiger Beleuchtungsartefakte.
+	% 	Allerdings müssen Irradiance Maps auch Werte für Bereiche der Szene speichern, die vom Beobachter aus nicht gesehen werden.
+	% 	Dies führt dazu, dass Irradiance Maps im Allgemeinen einen sehr viel höheren Speicherverbrauch aufweisen als Irradiance Caches.
 
 	% subsection irradiance_map_und_irradiance_cache (end)
 
-	\subsection{Fehlerabschätzung der Irradianz} % (fold)
-	\label{sub:fehlerabschätzung_der_irradianz}
+	\subsection{Schätzung der Irradianz} % (fold)
+	\label{sub:schaetzung_der_irradianz}
 
 		In Abschnitt \ref{sub:rendergleichung} wurde erwähnt das die meisten Renderverfahren, wie zum Beispiel das hier verwendete Path Tracing, auf der Basis von Zufallsvariablen arbeiten.
 		Das Integral in der Rendergleichung wird dabei mithilfe geeigneter Monte-Carlo-Methoden berechnet.
@@ -240,35 +242,52 @@
 			\label{fig:fairy-noise}
 		\end{figure}
 
-		Möchte man die Irradianz für den Irradiance Cache oder auch die Irradiance Map ermitteln, so muss also darauf geachtet werden, dass das Rauschen des Endresultates und damit dessen Fehler klein bleibt.
-		Mathematisch lässt sich dieser Sachverhalt durch Zufallsvariablen formulieren.
-		Wir gehen davon aus, dass die Abfrage der Strahldichte einer Zufallsvariable
+		Möchte man die Irradianz für die Irradiance Map ermitteln, so muss darauf geachtet werden, dass das Rauschen des Endresultates und damit dessen Fehler klein bleibt.
+		Erst durch die Beschränkung des Fehlers können gemessene Irradianzen an verschiedenen Punkten interpoliert werden, ohne das Artefakte wie in der späteren Abbildung \ref{subfig:irr-est-rc-shaderball-512} entstehen.
 
-		% \begin{figure}[h]
-		% 	\begin{subfigure}[t]{0.5\textwidth}
-		% 		\center
-		% 		\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-ref.png}
-		% 		\caption{\parbox[t]{0.5\textwidth}{Path Tracing}}
-		% 	\end{subfigure}
-		% 	\begin{subfigure}[t]{0.5\textwidth}
-		% 		\center
-		% 		\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-s512.png}
-		% 		\caption{\parbox[t]{0.5\textwidth}{$512$ Samples \\ $7.32\unit{s}$}}
-		% 	\end{subfigure}
-		% 	\medskip\\
-		% 	\begin{subfigure}[t]{0.5\textwidth}
-		% 		\center
-		% 		\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-s4096.png}
-		% 		\caption{\parbox[t]{0.5\textwidth}{$4096$ Samples \\ $56.08\unit{s}$}}
-		% 	\end{subfigure}
-		% 	\begin{subfigure}[t]{0.5\textwidth}
-		% 		\center
-		% 		\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-s16384.png}
-		% 		\caption{\parbox[t]{0.5\textwidth}{$16384$ Samples \\ $222.06\unit{s}$}}
-		% 	\end{subfigure}
-		% 	\caption{Die Abbildungen zeigen erzeugte }
-		% 	\label{fig:irr-est-rc-dragon}
-		% \end{figure}
+		Für die folgende Betrachtung nehmen wir wieder an, dass eine Szene $\Sigma\define(\e{T},\nu,f,E,U)$ und eine Strahldichte $L$ von $\Sigma$, die der Rendergleichung genügt, gegeben seien.
+		Wir bezeichnen $R$ als die Irradianz von $L$ und wählen eine festen Punkt $x\in\e{T}$ und eine feste Wellenlänge $\lambda\in(0,\infty)$.
+		Um die Zufälligkeit der Simulation mathematisch zu fassen, verwenden wir einen Wahrscheinlichkeitsraum $(X,\e{X},p)$ und für jedes $\omega\in\ssp$ die folgende Zufallsvariable.
+		\[
+			\func{\e{L}_\omega}{X}{[0,\infty)},\qquad \expect\e{L}_\omega = \tilde{L}(x,\lambda,\omega)
+		\]
+		Die Simulation von $\tilde{L}(x,\lambda,\omega)$ durch Path Tracing oder einem ähnlichen Algorithmus entspricht dann der Realisierung $\e{L}_\omega(\xi)$ mit $\xi\in X$.
+		Für die Irradianz $R(x,\lambda)$ führen wir einen weiteren Wahrscheinlichkeitsraum $(Y,\e{Y},q)$ ein.
+		Seien $n\in\SN$ und unabhängige, identische Zufallsvariablen $\func{w_i}{Y}{\shs{\nu(x)}}$ für alle $i\in\SN,i\leq n$ mit der folgenden zugehörigen Wahrscheinlichkeitsdichte bezüglich $\sigma$ gegeben.
+		\[
+			\func{\varrho}{\shs{\nu(x)}}{[0,\infty)},\qquad \varrho(\omega)\define\frac{1}{2\pi}
+		\]
+		Die $w_i$ sind damit für alle $i\in\SN,i\leq n$ auf der Hemisphere $\shs{\nu(x)}$ gleichverteilt.
+		Wir sind nun in der Lage weitere Zufallsvariablen $\e{R}_i$ für alle $i\in\SN,i\leq n$ auf dem Produkt-Wahrscheinlichkeitsraum $(X\times Y,\e{X}\otimes\e{Y}, p\otimes q)$ zu definieren, deren Erwartungswert eine Aussage über die Irradianz trifft.
+		\[
+			\func{\e{R}_i}{X\times Y}{[0,\infty)},\qquad \e{R}_i(\xi,\zeta)\define \e{L}_{w_i(\zeta)}(\xi) \dotp{\nu(x)}{w_i(\zeta)}
+		\]
+		Die folgende Rechnung zeigt den Zusammenhang des Erwartungswertes von $\e{R}_i$ mit $R(x,\lambda)$ für alle $i\in\SN,i\leq n$.
+		\begin{alignat*}{3}
+			\expect \e{R}_i &=&&\ \integral{X\times Y}{}{\e{R}_i}{(p\otimes q)} \\
+			\text{(Satz von Fubini \cite[S.~175~f]{measure-theory})}\qquad &=&&\ \integral{Y}{}{ \integral{X}{}{ \e{R}_i(\xi,\zeta) }{p(\xi)} }{q(\zeta)} \\
+			\text{(Definition $\e{R}_i$)}\qquad &=&&\ \integral{Y}{}{ \integral{X}{}{ \e{L}_{w_i(\zeta)}(\xi) \dotp{\nu(x)}{w_i(\zeta)} }{p(\xi)} }{q(\zeta)} \\
+			\text{(Linearität Integral)}\qquad &=&&\ \integral{Y}{}{ \dotp{\nu(x)}{w_i(\zeta)} \integral{X}{}{ \e{L}_{w_i(\zeta)}(\xi)  }{p(\xi)} }{q(\zeta)} \\
+			\text{(Definition Erwartungswert)}\qquad&=&&\ \integral{Y}{}{ \dotp{\nu(x)}{w_i(\zeta)}\expect \e{L}_{w_i(\zeta)} }{q(\zeta)} \\
+			\text{(Definition $\e{L}_{w_i(\zeta)}$)}\qquad&=&&\ \integral{Y}{}{ \tilde{L}(x,\lambda,w_i(\zeta)) \dotp{\nu(x)}{w_i(\zeta)}}{q(\zeta)} \\
+			\text{(Transformation \cite[S.~191~f]{measure-theory})}\qquad &=&&\ \integral{w_i(Y)}{}{ \tilde{L}(x,\lambda,\zeta) \dotp{\nu(x)}{\zeta}}{q_{w_i}(\zeta)} \\
+			\text{(Maße mit Dichten \cite[S.~127~f]{measure-theory})}\qquad &=&&\ \integral{\shs{\nu(x)}}{}{\tilde{L}(x,\lambda,\omega)\dotp{\nu(x)}{\omega}\varrho(\omega)}{\sigma(\omega)} \\
+			\text{(Definition $\varrho$)}\qquad&=&&\ \frac{1}{2\pi} \integral{\shs{\nu(x)}}{}{\tilde{L}(x,\lambda,\omega)\dotp{\nu(x)}{\omega}}{\sigma(\omega)} \\
+			\text{(Definition Irradianz)}\qquad&=&&\ \frac{R(x,\lambda)}{2\pi}
+		\end{alignat*}
+		Durch diese Äquivalenz erlangen wir die Möglichkeit einen erwartungstreuen Schätzer $\bar{\e{R}}$ der Irradianz $R(x,\lambda)$ zu definieren.
+		\[
+			\bar{\e{R}} \define \frac{2\pi}{n}\sum_{i=1}^n \e{R}_i
+		\]
+		Nach \cite[S.~249~ff]{prob-theory} ergibt sich dann mit einem $i\in\SN,i\leq n$ für den Erwartungswert und die Varianz
+		\[
+			\expect \bar{\e{R}} = R(x,\lambda),\qquad \var \bar{\e{R}} = \frac{4\pi^2}{n}\var \e{R}_i
+		\]
+		Wir können also zufällige Richtungen der Hemisphere auswählen und für diese die Strahldichte ermitteln.
+		Das arithmetische Mittel sollte dann nach dem \enquote{schwachen Gesetz der großen Zahlen} \cite[S.~254]{prob-theory} für eine steigende Anzahl von Messwerten gegen den Wert der Irradianz konvergieren.
+		Es sei hier auch auf die Quellen \cite{kajiya-lte,pbrt3,veach-thesis} verwiesen, die diese Herleitung mithilfe der \enquote{Pfadintegral-Formulierung} der Rendergleichung vollführen.
+		Das eben beschriebene Verfahren ist ein typisches Beispiel der Monte-Carlo-Methode \cite{monte-carlo-method}.
+		Die Abbildungen \ref{fig:irr-est-rc-dragon} und \ref{fig:irr-est-rc-shaderball} zeigen es anhand zweier Beispielszenen für verschiedene $n\in\SN$.
 
 		\begin{figure}[h]
 			\begin{subfigure}[t]{0.33\textwidth}
@@ -293,27 +312,7 @@
 			\label{fig:irr-est-rc-dragon}
 		\end{figure}
 
-		\begin{figure}[h]
-			\begin{subfigure}[b]{0.33\textwidth}
-				\center
-				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-s512-err.png}
-				\caption{$512$ Samples}
-			\end{subfigure}
-			\begin{subfigure}[b]{0.33\textwidth}
-				\center
-				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-s4096-err.png}
-				\caption{$4096$ Samples}
-			\end{subfigure}
-			\begin{subfigure}[b]{0.33\textwidth}
-				\center
-				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-s16384-err.png}
-				\caption{$16384$ Samples}
-			\end{subfigure}
-			\caption[Fehler der Vertex-Irradiance-Map anhand der \enquote{Dragon}-Szene]{Die Bilder zeigen die geschätzten Standardabweichungen der Irradianzen an den Eckpunkten der \enquote{Dragon}-Szene analog zu Abbildung \ref{fig:irr-est-rc-dragon}. Eine hellere Farbe bedeutet dabei eine höhere Standardabweichung. Deutlich erkennbar ist die Abnahme des Fehlers für größere Sampleanzahlen. Dennoch bleiben auch für $2^{14}$ Samples noch Stellen übgrig, die einen vergleichsweise hohen Fehler aufweisen.}
-			\label{fig:irr-est-rc-dragon-err}
-		\end{figure}
-
-		\begin{figure}[h]
+		\begin{figure}[H]
 			\begin{subfigure}[t]{0.5\textwidth}
 				\center
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-shaderball2-ref.png}
@@ -340,6 +339,29 @@
 			\end{subfigure}
 			\caption[Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die gerenderte \enquote{Shaderball}-Szene entsprechend der Benennung aus Abbildung \ref{fig:irr-est-rc-dragon}. Die Monte-Carlo-Integration erzeugt in \ref{subfig:irr-est-rc-shaderball-512} mit nur $2^9$ Samples ein fleckiges Muster, welches durch die Verteilung der Zufallsvariable um den Erwartungswert hervorgerufen wird. In \ref{subfig:irr-est-rc-shaderball-4096} und \ref{subfig:irr-est-rc-shaderball-16384} ist erkennbar, dass die Entstehung von Flecken durch eine höhere Sampleanzahl verringert werden kann. Dennoch sind in \ref{subfig:irr-est-rc-shaderball-16384} auch für $2^{14}$ Samples im unteren Stand der Szene noch Flecken sichtbar.}
 			\label{fig:irr-est-rc-shaderball}
+		\end{figure}
+
+		Die Ergebnisse des Algorithmus varieren stark mit der Szenengeometrie und der Umgebungsbeleuchtung.
+		Während im Bild \ref{subfig:irr-est-rc-dragon-4096} in der \enquote{Dragon}-Szene mit einer einfachen Umgebungsbeleuchtung bereits nach $4096$ Messungen an einem Punkt kein Unterschied mehr zum Referenzbild \ref{subfig:irr-est-ra-dragon-ref} festgestellt werden kann, sind in der \enquote{Shaderball}-Szene in Bild \ref{subfig:irr-est-rc-shaderball-16384} mit $16384$ Messungen pro Punkt immer noch fleckige Artefakte zu sehen.
+
+		\begin{figure}[h]
+			\begin{subfigure}[b]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-s512-err.png}
+				\caption{$512$ Samples}
+			\end{subfigure}
+			\begin{subfigure}[b]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-s4096-err.png}
+				\caption{$4096$ Samples}
+			\end{subfigure}
+			\begin{subfigure}[b]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-s16384-err.png}
+				\caption{$16384$ Samples}
+			\end{subfigure}
+			\caption[Fehler der Vertex-Irradiance-Map anhand der \enquote{Dragon}-Szene]{Die Bilder zeigen die geschätzten Standardabweichungen der Irradianzen an den Eckpunkten der \enquote{Dragon}-Szene analog zu Abbildung \ref{fig:irr-est-rc-dragon}. Eine hellere Farbe bedeutet dabei eine höhere Standardabweichung. Deutlich erkennbar ist die Abnahme des Fehlers für größere Sampleanzahlen. Dennoch bleiben auch für $2^{14}$ Samples noch Stellen übgrig, die einen vergleichsweise hohen Fehler aufweisen.}
+			\label{fig:irr-est-rc-dragon-err}
 		\end{figure}
 
 		\begin{figure}[h]
@@ -387,7 +409,9 @@
 				\caption{Sampleanzahl}
 				\label{subfig:irr-est-ra-dragon-scount}
 			\end{subfigure}
-			\caption[Erste adaptive Vertex-Irradiance-Map anhand der \enquote{Dragon}-Szene]{Die Bilder zeigen die \enquote{Dragon}-Szene mit einer schwach variierenden Umgebungsbeleuchtung. \ref{subfig:irr-est-ra-dragon-ref} ist das durch Path Tracing erzeugte Referenzbild. \ref{subfig:irr-est-ra-dragon-irr} zeigt die an den Eckpunkten adaptiv aufgenommenen Irradianzen mit linearer Interpolation. \ref{subfig:irr-est-ra-dragon-scount} stellt dabei die zugehörigen Sampleanzahlen dar. Hier bedeutet eine hellere Farbe eine höhere Sampleanzahl. Die Berechnungszeit betrug $253\unit{s}$ mit der maximalen Sampleanzahl $2^{16}$ und einem maximalen relativen Fehler von $3\unit{\%}$.}
+			\caption[Erste adaptive Vertex-Irradiance-Map anhand der \enquote{Dragon}-Szene]{Die Bilder zeigen die \enquote{Dragon}-Szene mit einer schwach variierenden Umgebungsbeleuchtung. \ref{subfig:irr-est-ra-dragon-ref} ist das durch Path Tracing erzeugte Referenzbild. \ref{subfig:irr-est-ra-dragon-irr} zeigt die an den Eckpunkten adaptiv aufgenommenen Irradianzen mit linearer Interpolation. \ref{subfig:irr-est-ra-dragon-scount} stellt dabei die zugehörigen Sampleanzahlen dar. Hier bedeutet eine hellere Farbe eine höhere Sampleanzahl. Die Berechnungszeit betrug $253\unit{s}$ mit der maximalen Sampleanzahl $2^{16}$ und einem maximalen relativen Fehler von $3\unit{\%}$.
+
+			Die ersten beiden dienen dem Vergleich der Korrektheit des Algorithmus. Das dritte Bild }
 			\label{fig:irr-est-ra-dragon}
 		\end{figure}
 
@@ -509,8 +533,8 @@
 				\includegraphics[width=0.8\textwidth]{pic/irr_est-ra-r8-scount.png}
 				\caption{Sampleanzahl}
 			\end{subfigure}
-			\caption[Vierte adaptive Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene mit einer stark konzentrierten Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $1470\unit{s}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
-			\label{fig:irr-est-ra-shaderball4}
+			\caption[Adaptive Vertex-Irradiance-Map anhand der \enquote{Audi R8}-Szene]{Die Bilder zeigen die \enquote{Audi R8}-Szene mit der \enquote{Sky 20}-Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $17.8\unit{h}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
+			\label{fig:irr-est-ra-audi}
 		\end{figure}
 
 		\begin{figure}[h]
@@ -529,8 +553,8 @@
 				\includegraphics[width=0.85\textwidth]{pic/irr_est-ra-r8_2-scount.png}
 				\caption{Sampleanzahl}
 			\end{subfigure}
-			\caption[Vierte adaptive Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene mit einer stark konzentrierten Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $1470\unit{s}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
-			\label{fig:irr-est-ra-shaderball4}
+			\caption[Adaptive Vertex-Irradiance-Map anhand der \enquote{Audi R8}-Szene]{Die Bilder zeigen die \enquote{Audi R8}-Szene mit der \enquote{Sky 20}-Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $17.8\unit{h}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
+			\label{fig:irr-est-ra-audi2}
 		\end{figure}
 
 		\begin{figure}[h]
@@ -564,8 +588,8 @@
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_4-scount.png}
 				\caption{Sampleanzahl}
 			\end{subfigure}
-			\caption[Vierte adaptive Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene mit einer stark konzentrierten Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $1470\unit{s}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
-			\label{fig:irr-est-ra-shaderball4}
+			\caption[Adaptive Vertex-Irradiance-Map anhand der \enquote{Audi R8}-Szene]{Die Bilder zeigen die \enquote{Audi R8}-Szene mit der \enquote{Sky 20}-Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $17.8\unit{h}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
+			\label{fig:irr-est-ra-audi3}
 		\end{figure}
 
 		% \begin{figure}[h]
