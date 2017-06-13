@@ -1,0 +1,41 @@
+\documentclass{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{mathrsfs}
+\usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
+\pagestyle{empty}
+\begin{document}
+\definecolor{ttttff}{rgb}{0.2,0.2,1.}
+\begin{tikzpicture}[line cap=round,line join=round,>={Stealth},x=7.878141309324678cm,y=7.878141309324678cm]
+\clip(-0.4426610139212369,-0.07531494329293834) rectangle (0.43783967633030263,0.30548553771000564);
+\draw [line width=0.4pt] (-1.,0.)-- (1.,0.);
+\draw [line width=0.4pt] (0.,1.5)-- (0.,-1.);
+\draw [shift={(-0.2,0.)},line width=0.4pt,color=ttttff]  plot[domain=0.:3.141592653589793,variable=\t]({1.*0.2*cos(\t r)+0.*0.2*sin(\t r)},{0.*0.2*cos(\t r)+1.*0.2*sin(\t r)});
+\draw [shift={(0.2,0.)},line width=0.4pt,color=ttttff]  plot[domain=0.:3.141592653589793,variable=\t]({1.*0.2*cos(\t r)+0.*0.2*sin(\t r)},{0.*0.2*cos(\t r)+1.*0.2*sin(\t r)});
+\draw [->,line width=0.4pt,dash pattern=on 3pt off 3pt,color=ttttff] (-0.38477590650225735,0.07653668647301796) -- (-0.24619397662556436,0.01913417161825451);
+\draw [->,line width=0.4pt,dash pattern=on 3pt off 3pt,color=ttttff] (-0.34142135623730946,0.14142135623730948) -- (-0.23535533905932718,0.03535533905932725);
+\draw [->,line width=0.4pt,dash pattern=on 3pt off 3pt,color=ttttff] (-0.276536686473018,0.18477590650225736) -- (-0.21913417161825446,0.04619397662556435);
+\draw [->,line width=0.4pt,dash pattern=on 3pt off 3pt,color=ttttff] (-0.2,0.2) -- (-0.2,0.05);
+\draw [->,line width=0.4pt,dash pattern=on 3pt off 3pt,color=ttttff] (-0.12346331352698202,0.1847759065022574) -- (-0.18086582838174547,0.04619397662556432);
+\draw [->,line width=0.4pt,dash pattern=on 3pt off 3pt,color=ttttff] (-0.05857864376269048,0.14142135623730953) -- (-0.16464466094067262,0.035355339059327334);
+\draw [->,line width=0.4pt,dash pattern=on 3pt off 3pt,color=ttttff] (-0.01522409349774265,0.07653668647301796) -- (-0.1538060233744356,0.01913417161825451);
+\draw [->,line width=0.4pt,dash pattern=on 3pt off 3pt,color=ttttff] (0.015224093497742643,0.07653668647301792) -- (0.15380602337443555,0.01913417161825451);
+\draw [->,line width=0.4pt,dash pattern=on 3pt off 3pt,color=ttttff] (0.05857864376269047,0.14142135623730945) -- (0.16464466094067262,0.035355339059327306);
+\draw [->,line width=0.4pt,dash pattern=on 3pt off 3pt,color=ttttff] (0.12346331352698199,0.1847759065022573) -- (0.18086582838174545,0.046193976625564376);
+\draw [->,line width=0.4pt,dash pattern=on 3pt off 3pt,color=ttttff] (0.2,0.2) -- (0.2,0.05);
+\draw [->,line width=0.4pt,dash pattern=on 3pt off 3pt,color=ttttff] (0.2765366864730179,0.1847759065022573) -- (0.21913417161825444,0.046193976625564376);
+\draw [->,line width=0.4pt,dash pattern=on 3pt off 3pt,color=ttttff] (0.34142135623730946,0.14142135623730953) -- (0.23535533905932723,0.035355339059327306);
+\draw [->,line width=0.4pt,dash pattern=on 3pt off 3pt,color=ttttff] (0.38477590650225724,0.07653668647301792) -- (0.24619397662556436,0.01913417161825451);
+\begin{scriptsize}
+\draw[color=black] (0.08274724467776567,-0.031129233471921626) node {Boden};
+\draw[color=black] (-0.06828754525589255,0.277367358732995) node {Wand};
+\draw [fill=black] (-0.2,0.) circle (1.5pt);
+\draw[color=black] (-0.19763116855014243,-0.044786634689326796) node {$x_1$};
+\draw [fill=black] (0.2,0.) circle (1.5pt);
+\draw[color=black] (0.20245034946561183,-0.044786634689326796) node {$x_2$};
+\draw[color=ttttff] (-0.17031636611533185,0.23157489582757768) node {$L(x_1,\lambda,\omega)$};
+\draw[color=ttttff] (0.23458541115362425,0.22996814274317706) node {$L(x_2,\lambda,\omega)$};
+\end{scriptsize}
+\end{tikzpicture}
+\end{document}

@@ -35,15 +35,33 @@
 	% 	\\
 	% 	\hline
 	% \end{tabular}
-	\begin{tabularx}{\textwidth}{p{0.1\textwidth}p{0.9\textwidth}}
+	\begin{tabularx}{\textwidth}{p{0.15\textwidth}p{0.84\textwidth}}
 		\hline
 		\textbf{Symbol} & \textbf{Definition} \\
 		\hline
 		\hline \\
 
+		$x\in A$ & $x$ ist ein Element der Menge $A$ \\
+
+		$A\subset B$ & $A$ ist eine Teilmenge von $B$: $\forall x\in A:\quad x\in B$ \\
+
+		$A\times B$ & $\set[x\in A,y\in B]{(x,y)}$ für Mengen $A$ und $B$ \\
+
+		$\emptyset$ & leere Menge: $\set{}$ \\
+
+		$\func{f}{X}{Y}$ & Abbildung $f$ mit Definitionsmenge $X$ und Wertebereich $Y$ \\
+
+		$\im f$ & $\set[x\in X]{f(x)}\subset Y$ mit der Abbildung $\func{f}{X}{Y}$ und Mengen $X$, $Y$ \\
+
+		$f(A)$ & $\set[x\in A]{f(x)}$ Bild der Menge $A\subset X$ unter der Abbildung $\func{f}{X}{Y}$ \\
+
 		$\SN$ & Menge der natürlichen Zahlen $\set{1,2,3,\ldots}$ \\
 
+		$\SN_0$ & Menge der natürlichen Zahlen mit der Null $\set{0,1,2,3,\ldots}$ \\
+
 		$\SR$ & Menge der reellen Zahlen \\
+
+		$\infty$ & $-\infty < x < \infty$ für alle $x\in\SR$ \textit{(Unendlich)} \\
 
 		$\overline{\SR}$ & $\SR\cup\set{-\infty,\infty}$ \\
 
@@ -55,6 +73,10 @@
 
 		$(a,b]$ & $\set[a < x \leq b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
 
+		$\sign{x}$ & Vorzeichen von $x\in\SR$: $\sign{x}\define \begin{cases} 1 &: x\geq 0 \\ -1 &: x < 0\end{cases}$ \\
+
+		$\abs{x}$ & Betrag von $x\in\SR$: $\abs{x}\define \begin{cases} x &: x\geq 0 \\ -x &: x < 0\end{cases}$ \\
+
 		$\dotp{x}{y}$ & $\sum_{i=1}^n x_iy_i$ mit $x,y\in\SR^n$ für $n\in\SN$ \\
 
 		$\norm{x}$ & $\sqrt{\dotp{x}{x}}$ mit $x\in\SR^n$ für $n\in\SN$ \\
@@ -63,7 +85,7 @@
 
 		$\shs{\mu}$ & $\set[\dotp{\mu}{x}\geq 0]{x\in\ssp}$ mit $\mu\in\ssp$\\
 
-		$\im f$ & $\set[x\in X]{f(x)}\subset Y$ mit der Abbildung $\func{f}{X}{Y}$ und Mengen $X$, $Y$
+		$\pi$ & Kreiszahl: $\pi = 3.141529\ldots$ \\
 
 		\\
 		\hline

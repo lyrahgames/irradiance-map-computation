@@ -286,9 +286,8 @@
 		Wir können also zufällige Richtungen der Hemisphere auswählen und für diese die Strahldichte ermitteln.
 		Das arithmetische Mittel sollte dann nach dem \enquote{schwachen Gesetz der großen Zahlen} \cite[S.~254]{prob-theory} für eine steigende Anzahl von Messwerten gegen den Wert der Irradianz konvergieren.
 		Es sei hier auch auf die Quellen \cite{kajiya-lte,pbrt3,veach-thesis} verwiesen, die diese Herleitung mithilfe der \enquote{Pfadintegral-Formulierung} der Rendergleichung vollführen.
-
 		Das eben beschriebene Verfahren ist ein typisches Beispiel einer Monte-Carlo-Methode \cite{monte-carlo-method}.
-		Die Abbildungen \ref{fig:irr-est-rc-dragon} und \ref{fig:irr-est-rc-shaderball} zeigen es anhand zweier Beispielszenen für verschiedene $n\in\SN$.
+		Die Abbildungen \ref{fig:irr-est-rc-dragon} und \ref{fig:irr-est-rc-shaderball} zeigen es anhand zweier Beispielszenen für verschiedene Sampleanzahlen.
 
 		\begin{figure}[h]
 			\begin{subfigure}[t]{0.33\textwidth}
@@ -313,7 +312,7 @@
 			\label{fig:irr-est-rc-dragon}
 		\end{figure}
 
-		\begin{figure}[H]
+		\begin{figure}[h]
 			\begin{subfigure}[t]{0.5\textwidth}
 				\center
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-shaderball2-ref.png}
@@ -338,12 +337,55 @@
 				\caption{\parbox[t]{0.5\textwidth}{$16384$ Samples \\ $191.22\unit{s}$}}
 				\label{subfig:irr-est-rc-shaderball-16384}
 			\end{subfigure}
-			\caption[Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die gerenderte \enquote{Shaderball}-Szene entsprechend der Benennung aus Abbildung \ref{fig:irr-est-rc-dragon}. Die Monte-Carlo-Integration erzeugt in \ref{subfig:irr-est-rc-shaderball-512} mit nur $2^9$ Samples ein fleckiges Muster, welches durch die Verteilung der Zufallsvariable um den Erwartungswert hervorgerufen wird. In \ref{subfig:irr-est-rc-shaderball-4096} und \ref{subfig:irr-est-rc-shaderball-16384} ist erkennbar, dass die Entstehung von Flecken durch eine höhere Sampleanzahl verringert werden kann. Dennoch sind in \ref{subfig:irr-est-rc-shaderball-16384} auch für $2^{14}$ Samples im unteren Stand der Szene noch Flecken sichtbar.}
+			\caption[Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die gerenderte \enquote{Shaderball}-Szene mit der \enquote{Uffzi Gallery}-HDR entsprechend der Benennung aus Abbildung \ref{fig:irr-est-rc-dragon}. Die Monte-Carlo-Integration erzeugt in \ref{subfig:irr-est-rc-shaderball-512} mit nur $2^9$ Samples ein fleckiges Muster, welches durch die Verteilung der Zufallsvariable um den Erwartungswert hervorgerufen wird. In \ref{subfig:irr-est-rc-shaderball-4096} und \ref{subfig:irr-est-rc-shaderball-16384} ist erkennbar, dass die Entstehung von Flecken durch eine höhere Sampleanzahl verringert werden kann. Dennoch sind in \ref{subfig:irr-est-rc-shaderball-16384} auch für $2^{14}$ Samples im unteren Stand der Szene noch Flecken sichtbar.}
 			\label{fig:irr-est-rc-shaderball}
 		\end{figure}
 
-		Die Ergebnisse des Algorithmus varieren stark mit der Szenengeometrie und der Umgebungsbeleuchtung.
-		Während im Bild \ref{subfig:irr-est-rc-dragon-4096} in der \enquote{Dragon}-Szene mit einer einfachen Umgebungsbeleuchtung bereits nach $4096$ Messungen an einem Punkt kein Unterschied mehr zum Referenzbild \ref{subfig:irr-est-ra-dragon-ref} festgestellt werden kann, sind in der \enquote{Shaderball}-Szene in Bild \ref{subfig:irr-est-rc-shaderball-16384} mit $16384$ Messungen pro Punkt immer noch fleckige Artefakte zu sehen.
+		Die Ergebnisse des Algorithmus varieren stark mit der Szenengeometrie und der gegebenen Umgebungsbeleuchtung.
+		Während im Bild \ref{subfig:irr-est-rc-dragon-4096} in der \enquote{Dragon}-Szene mit einer einfachen Umgebungsbeleuchtung bereits nach $4096$ Messungen an einem Punkt kein Unterschied mehr zum Referenzbild \ref{subfig:irr-est-ra-dragon-ref} festgestellt werden kann, sind in der \enquote{Shaderball}-Szene mit der \enquote{Uffzi Gallery}-HDR in Bild \ref{subfig:irr-est-rc-shaderball-16384} mit $16384$ Messungen pro Punkt immer noch fleckige Artefakte zu sehen.
+
+		Eine einfache Erklärung für dieses Phänomen kann durch eine Analyse der Szene gefunden werden.
+		Für komplexe Umgebungsbeleuchtungen wie in Anhang \ref{sec:verwendete_hdr_maps} muss im Allgemeinen eine sehr viel höhere Sampleanzahl verwendet werden, um in der Lage zu sein Details, wie zum Beispiel kleine Lichtquellen, aufzulösen und in die Schätzung mit einzubeziehen.
+		Weiterhin spielt auch die Konstellation der Dreiecke zum Rest der Szene eine Große Rolle.
+		In der \enquote{Dragon}-Szene werden vom Beobachter ausgesendete Strahlen meisten nur ein einziges Mal an der Oberfläche der Mesh reflektiert.
+		Nach der Reflexion treffen sie keine weiteren Dreiecke, wodurch im letzten Schritt nur noch die Umgebungsbeleuchtung evaluiert wird.
+		Dies verringert die Varianz der gemessenen Irradianz, weil die einfallende Strahldichte für fast alle Richtungen durch die feste Umgebungsbeleuchtung und nicht durch eine Zufallsvariable gegebene ist.
+		Im unteren Stand der \enquote{Shaderball}-Szene ist dies nicht mehr der Fall.
+		Hier kann es durchaus passieren, dass ein Strahl mehrere Male reflektiert werden muss, um entweder zur Umgebungsbeleuchtung zu gelangen oder durch ein Material absorbiert zu werden.
+		Dieser Effekt erhöht die Varianz eines Messpunktes.
+
+		Aus dieser Betrachtung lässt sich schließen, dass die Verringerung der Varianz aller Punkte für beliebige Szenen nur durch extrem hohe Sampleanzahlen möglich ist.
+		Eine solche Schätzung für alle Eckpunkte der Szene durchzuführen, wäre zeitraubend und ineffizient.
+
+	% subsection fehlerabschätzung_der_irradianz (end)
+
+	\subsection{Fehler der Irradianzschätzung} % (fold)
+	\label{sub:fehler_der_irradianzschätzung}
+
+		Um die Schätzung der Irradianz effizienter zu gestalten, benötigen wir ein Maß für den Fehler dieser Schätzung.
+		Im letzten Abschnitt verwendeten wir hierfür die Varianz der Zufallsvariable.
+		Für eine feste vorgegebene Anzahl von Samples zeigte sich diese als ausreichend.
+		Möchte man jedoch die Sampleanzahl an verschiedenen Punkten der Oberfläche variieren, so benötigen wir ein Fehlermaß, welches in den Bereichen von Artefakten einen hohen und sonst einen niedrigen Wert besitzt.
+		Die Varianz erfüllt diese Eigenschaft nicht, da die Strahldichte und damit auch die Irradianz nach unten aber nicht nach oben beschränkte Funktionen sind.
+		Eine Strahldichte mit großem Erwartungswert weist im Allgemeinen einen höhere Varianz als eine Strahldichte mit niedrigem Erwartungswert auf.
+		Die weitere Verwendung der Varianz als Fehlermaß würde damit zu extrem genauen Messungen in hellen Bereichen und zu extrem ungenauen Messungen in dunklen Bereichen der Szene führen.
+		Die Abbildungen \ref{fig:irr-est-rc-dragon} und \ref{fig:irr-est-rc-shaderball} zeigen jedoch, dass die Entstehung von Artefakten nicht durch die Helligkeit charakterisiert wird.
+
+		Die hier verwendete Altenative ist der sogenannte \enquote{Variationskoeffizient} (engl.: \textit{coefficient of variation} oder \textit{relative standard deviation}, \cite{coeff-of-variation}), der im Folgenden für die Zufallsvariable $\bar{\e{R}}$ des vorigen Abschnittes definiert wird.
+		Mithilfe der Zufallsvariablen $\e{R}_i,i\in\SN,i\leq n$ führen wir einen Schätzer $\e{C}$ dieses Koeffizienten ein.
+		\[
+			\rsd \bar{\e{R}} \define \frac{\sqrt{\var \bar{\e{R}}}}{\expect \bar{\e{R}}},\qquad \e{C} \define \frac{1}{ \bar{\e{R}} } \sqrt{\frac{1}{n(n-1)}\sum_{i=1}^n \curvb{2\pi\e{R}_i - \bar{\e{R}}}^2}
+		\]
+		$\e{C}$ ist im Allgemeinen nicht erwartungstreu, kann aber für spezielle Verteilungen durch eine Skalierung korrigiert werden \cite{coeff-of-variation}.
+		Für hinreichend große $n\in\SN$ ist der eingeführte Bias jedoch vernachlässigbar.
+		Um bei der Schätzung des Variationskoeffizienten keine Division durch Null zu erhalten, verwenden wir im Computer eine leicht modifizierte Variante $\tilde{\e{C}}_\varepsilon$ für ein $\varepsilon\in(0,\infty)$.
+		\[
+			\tilde{\e{C}}_\varepsilon \define \frac{1}{ \bar{\e{R}} + \varepsilon } \sqrt{\frac{1}{n(n-1)}\sum_{i=1}^n \curvb{2\pi\e{R}_i - \bar{\e{R}}}^2}
+		\]
+		Es stellte sich heraus, dass $\varepsilon = 0.0001$ eine gute Wahl ist.
+		Die Abbildungen \ref{fig:irr-est-rc-dragon-err} und \ref{fig:irr-est-rc-shaderball-err} zeigen die Szenen der Abbildung \ref{fig:irr-est-rc-dragon} beziehungsweise \ref{fig:irr-est-rc-shaderball}.
+		Bei ihnen wird der modifizierte Variationskoeffizient über die Eckpunkte der Meshes interpoliert und dargestellt.
+		Ein Vergleich mit den zugehörigen Irradianzbildern zeigt, dass das so erhaltene Fehlermaß gerade in den Bereichen der Artefakte einen hohen Wert besitzt und damit den gestellten Anforderungen Genüge leistet.
 
 		\begin{figure}[h]
 			\begin{subfigure}[b]{0.33\textwidth}
@@ -361,7 +403,7 @@
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-s16384-err.png}
 				\caption{$16384$ Samples}
 			\end{subfigure}
-			\caption[Fehler der Vertex-Irradiance-Map anhand der \enquote{Dragon}-Szene]{Die Bilder zeigen die geschätzten Standardabweichungen der Irradianzen an den Eckpunkten der \enquote{Dragon}-Szene analog zu Abbildung \ref{fig:irr-est-rc-dragon}. Eine hellere Farbe bedeutet dabei eine höhere Standardabweichung. Deutlich erkennbar ist die Abnahme des Fehlers für größere Sampleanzahlen. Dennoch bleiben auch für $2^{14}$ Samples noch Stellen übgrig, die einen vergleichsweise hohen Fehler aufweisen.}
+			\caption[Fehler der Vertex-Irradiance-Map anhand der \enquote{Dragon}-Szene]{Die Bilder zeigen die \enquote{Dragon}-Szene aus Abbildung \ref{fig:irr-est-rc-dragon} mit den an den Eckpunkten geschätzten modifizierten Variationskoeffizienten. Auch hier findet eine lineare Interpolation zwischen ihnen statt. Eine hellere Farbe bedeutet dabei ein höherer Wert. Deutlich erkennbar ist die Abnahme des Fehlers für größere Sampleanzahlen. Dennoch bleiben auch für $2^{14}$ Samples noch Bereiche, die einen vergleichsweise hohen Fehler aufweisen.}
 			\label{fig:irr-est-rc-dragon-err}
 		\end{figure}
 
@@ -381,9 +423,22 @@
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-shaderball2-s16384-err.png}
 				\caption{$16384$ Samples}
 			\end{subfigure}
-			\caption[Fehler der Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die Standardabweichungen der \enquote{Shaderball}-Szene aus Abbildung \ref{fig:irr-est-rc-shaderball} entsprechend der Benennung aus Abbildung \ref{fig:irr-est-rc-dragon}. Vor allem Bereiche, die schwach von außen beleuchtet werden oder in Nischen liegen, weisen einen erhöhten Fehler auf. Die regelmäßigen Artefakte entstehen durch geringe Auflösung der Mesh in diesen Bereichen.}
+			\caption[Fehler der Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene aus Abbildung \ref{fig:irr-est-rc-shaderball} mit den an den Eckpunkten geschätzten modifizierten Variationskoeffizienten entsprechend der Abbildung \ref{fig:irr-est-rc-dragon-err}. Vor allem Bereiche, die schwach von außen beleuchtet werden oder in Nischen liegen, weisen einen erhöhten Fehler auf. Die regelmäßigen Artefakte im unteren Teil entstehen durch die geringe Auflösung der Mesh.}
 			\label{fig:irr-est-rc-shaderball-err}
 		\end{figure}
+
+	% subsection fehler_der_irradianzschätzung (end)
+
+	\subsection{Adaptive Schätzung der Irradianz} % (fold)
+	\label{sub:adaptive_schätzung_der_irradianz}
+
+		Das im letzten Abschnitt eingeführte Fehlermaß soll nun verwendet werden, um einen Algorithmus zu formulieren, der die Irradianz eines Punktes effizient durch eine variable Anzahl von Samples schätzen kann.
+		Die Idee besteht darin solange Samples über der Hemisphere aufzunehmen, bis der geschätzte modifizierte Variationskoeffizient kleiner als eine gegebenen Schranke ist.
+		Um die Rechenzeit zu beschränken verwendet man eine maximale Sampleanzahl, nach derer der Algorithmus den geschätzten Wert speichert und terminiert.
+		Es gibt aber auch eine vorgeschriebene Mindestanzahl von Samples, die der Algorithmus braucht, um überhaupt den Variationskoeffizienten zu schätzen.
+		Der folgende Quelltext implementiert dieses Verfahren durch die Sprache \enquote{C++}.
+
+		\input{code-est_irr_adap}
 
 		\begin{figure}[h]
 			\begin{subfigure}[t]{0.33\textwidth}
@@ -635,8 +690,8 @@
 
 		\FloatBarrier
 
-		\input{code-est_irr_adap}
 
-	% subsection fehlerabschätzung_der_irradianz (end)
+
+	% subsection adaptive_schätzung_der_irradianz (end)
 
 % section schätzung_der_irradianz (end)

@@ -1,0 +1,29 @@
+\documentclass{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{mathrsfs}
+\usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
+\pagestyle{empty}
+\begin{document}
+\definecolor{ttttff}{rgb}{0.2,0.2,1.}
+\begin{tikzpicture}[line cap=round,line join=round,>={Stealth},x=3.5075343368585226cm,y=3.5075343368585226cm]
+\clip(-0.6210864993565188,-0.18076907422160393) rectangle (0.6223036035846546,0.6745326026500503);
+\draw [line width=0.4pt] (-1.,0.)-- (1.,0.);
+\draw [line width=0.4pt] (0.,1.5)-- (0.,-1.);
+\draw [shift={(0.,0.)},line width=0.4pt,color=ttttff]  plot[domain=0.:3.141592653589793,variable=\t]({1.*0.5*cos(\t r)+0.*0.5*sin(\t r)},{0.*0.5*cos(\t r)+1.*0.5*sin(\t r)});
+\draw [->,line width=0.4pt,dash pattern=on 3pt off 3pt,color=ttttff] (-0.46193976625564337,0.19134171618254486) -- (-0.18477590650225728,0.07653668647301792);
+\draw [->,line width=0.4pt,dash pattern=on 3pt off 3pt,color=ttttff] (-0.3535533905932738,0.3535533905932738) -- (-0.14142135623730948,0.14142135623730948);
+\draw [->,line width=0.4pt,dash pattern=on 3pt off 3pt,color=ttttff] (-0.19134171618254486,0.46193976625564337) -- (-0.07653668647301792,0.18477590650225728);
+\draw [->,line width=0.4pt,dash pattern=on 3pt off 3pt,color=ttttff] (0.19134171618254486,0.46193976625564337) -- (0.07653668647301792,0.18477590650225728);
+\draw [->,line width=0.4pt,dash pattern=on 3pt off 3pt,color=ttttff] (0.3535533905932738,0.3535533905932738) -- (0.14142135623730948,0.14142135623730948);
+\draw [->,line width=0.4pt,dash pattern=on 3pt off 3pt,color=ttttff] (0.46193976625564337,0.19134171618254486) -- (0.18477590650225728,0.07653668647301792);
+\begin{scriptsize}
+\draw[color=black] (0.2681258166862598,-0.07338538351304824) node {Boden};
+\draw[color=black] (-0.1425697021640066,0.5596132143479117) node {Wand};
+\draw [fill=black] (0.,0.) circle (1.5pt);
+\draw[color=black] (-0.08228412141534364,-0.09599247629379681) node {$x$};
+\draw[color=ttttff] (0.38116128059000287,0.4993276335992488) node {$L(x,\lambda,\omega)$};
+\end{scriptsize}
+\end{tikzpicture}
+\end{document}
