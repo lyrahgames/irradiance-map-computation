@@ -378,7 +378,7 @@
 		\]
 		$\e{C}$ ist im Allgemeinen nicht erwartungstreu, kann aber für spezielle Verteilungen durch eine Skalierung korrigiert werden \cite{coeff-of-variation}.
 		Für hinreichend große $n\in\SN$ ist der eingeführte Bias jedoch vernachlässigbar.
-		Um bei der Schätzung des Variationskoeffizienten keine Division durch Null zu erhalten, verwenden wir im Computer eine leicht modifizierte Variante $\tilde{\e{C}}_\varepsilon$ für ein $\varepsilon\in(0,\infty)$.
+		Um bei der Schätzung des Variationskoeffizienten keine Division durch Null zu erhalten, verwenden wir im Computer eine leicht modifizierte Variante $\tilde{\e{C}}_\varepsilon$ für ein $\varepsilon\in(0,\infty)$, die wir auch als \enquote{relativen Fehler} bezeichnen.
 		\[
 			\tilde{\e{C}}_\varepsilon \define \frac{1}{ \bar{\e{R}} + \varepsilon } \sqrt{\frac{1}{n(n-1)}\sum_{i=1}^n \curvb{2\pi\e{R}_i - \bar{\e{R}}}^2}
 		\]
@@ -433,82 +433,46 @@
 	\label{sub:adaptive_schätzung_der_irradianz}
 
 		Das im letzten Abschnitt eingeführte Fehlermaß soll nun verwendet werden, um einen Algorithmus zu formulieren, der die Irradianz eines Punktes effizient durch eine variable Anzahl von Samples schätzen kann.
-		Die Idee besteht darin solange Samples über der Hemisphere aufzunehmen, bis der geschätzte modifizierte Variationskoeffizient kleiner als eine gegebenen Schranke ist.
-		Um die Rechenzeit zu beschränken verwendet man eine maximale Sampleanzahl, nach derer der Algorithmus den geschätzten Wert speichert und terminiert.
+		Die Idee besteht darin, solange Samples über der Hemisphere aufzunehmen, bis der geschätzte modifizierte Variationskoeffizient kleiner als eine gegebenen Schranke ist.
+		Um die Rechenzeit zu beschränken, verwendet man eine maximale Sampleanzahl, nach derer der Algorithmus den geschätzten Wert speichert und terminiert.
 		Es gibt aber auch eine vorgeschriebene Mindestanzahl von Samples, die der Algorithmus braucht, um überhaupt den Variationskoeffizienten zu schätzen.
 		Der folgende Quelltext implementiert dieses Verfahren durch die Sprache \enquote{C++}.
+		Zu beachten ist, dass in der Implementierung selbst die Realisierungen nicht mit $2\pi$ multipliziert werden.
+		Diese Vereinfachung ändert jedoch nicht die Funktionsweise.
 
 		\input{code-est_irr_adap}
 
-		\begin{figure}[h]
-			\begin{subfigure}[t]{0.33\textwidth}
-				\center
-				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-dragon-ref.png}
-				\caption{Path Tracing}
-				\label{subfig:irr-est-ra-dragon-ref}
-			\end{subfigure}
-			\begin{subfigure}[t]{0.33\textwidth}
-				\center
-				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-dragon-irr.png}
-				\caption{Irradianz}
-				\label{subfig:irr-est-ra-dragon-irr}
-			\end{subfigure}
-			% \medskip \\
-			% \begin{subfigure}[t]{0.33\textwidth}
-			% 	\center
-			% 	\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-dragon-err.png}
-			% 	\caption{Standardabweichung}
-			% \end{subfigure}
-			\begin{subfigure}[t]{0.33\textwidth}
-				\center
-				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-dragon-scount.png}
-				\caption{Sampleanzahl}
-				\label{subfig:irr-est-ra-dragon-scount}
-			\end{subfigure}
-			\caption[Erste adaptive Vertex-Irradiance-Map anhand der \enquote{Dragon}-Szene]{Die Bilder zeigen die \enquote{Dragon}-Szene mit einer schwach variierenden Umgebungsbeleuchtung. \ref{subfig:irr-est-ra-dragon-ref} ist das durch Path Tracing erzeugte Referenzbild. \ref{subfig:irr-est-ra-dragon-irr} zeigt die an den Eckpunkten adaptiv aufgenommenen Irradianzen mit linearer Interpolation. \ref{subfig:irr-est-ra-dragon-scount} stellt dabei die zugehörigen Sampleanzahlen dar. Hier bedeutet eine hellere Farbe eine höhere Sampleanzahl. Die Berechnungszeit betrug $253\unit{s}$ mit der maximalen Sampleanzahl $2^{16}$ und einem maximalen relativen Fehler von $3\unit{\%}$.
-
-			Die ersten beiden dienen dem Vergleich der Korrektheit des Algorithmus. Das dritte Bild }
-			\label{fig:irr-est-ra-dragon}
-		\end{figure}
+		Die Ergebnisse des Algorithmus sind in den Abbildungen \ref{fig:irr-est-ra-dragon2}, \ref{fig:irr-est-ra-shaderball2}, \ref{fig:irr-est-ra-shaderball4} und \ref{fig:irr-est-ra-audi3} für verschiedene Szenen und Umgebungsbeleuchtungen gezeigt.
+		Weitere Beispiele sind in Anhang \ref{sec:ergebnisse_adaptive_irradianzschaetzung} aufgelistet.
+		Lässt man Artefakte, die einer zu geringen Auflösung der Szenengeometrie entspringen, beiseite, so führt die Annäherung der Irradianz in allen Ergebnissen zu einer sehr guten Übereinstimmung mit den zugehörigen Referenzbildern.
+		Auch die Berechnungszeit betrug in den meisten Fällen nicht einmal die Hälfte der Zeit des ursprünglichen Verfahrens.
+		Zu allen Ergebnissen wurde zudem die Verteilung der Samples angegeben.
+		Diese bestätigt die in Abschnitt \ref{sub:schaetzung_der_irradianz} aufgestellten Theorien zur Erklärung der Entstehung von Flecken und ähnlichen Artefakten.
+		Die Verwendung einer komplizierten Umgebungsbeleuchtung, wie der \enquote{Ennis-Brown House}-HDR, für die \enquote{Dragon}-Szene in Abbildung \ref{fig:irr-est-ra-dragon2} resultierte in einer wesentlich höheren durchschnittlichen Sampleanzahl als die Verwendung einer schwach variierender Umgebungsbeleuchtung in Abbildung \ref{fig:irr-est-ra-dragon} Anhang \ref{sec:ergebnisse_adaptive_irradianzschaetzung}.
+		Auch im unteren Stand oder den oberen Löchern der \enquote{Shaderball}-Szene in den Abbildungen \ref{fig:irr-est-ra-shaderball2} und \ref{fig:irr-est-ra-shaderball4}, in denen Strahlen mehrmals reflektieren, wurden deutlich mehr Samples benötigt als im Rest der gesamten Bilder.
+		Dies führt jedoch dazu, dass jegliche vorher sichtbaren zufälligen Artefakte verschwinden.
 
 		\begin{figure}[h]
 			\begin{subfigure}[t]{0.33\textwidth}
 				\center
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-dragon2-ref.png}
 				\caption{Path Tracing}
+				\label{subfig:irr-est-ra-dragon2-ref}
 			\end{subfigure}
 			\begin{subfigure}[t]{0.33\textwidth}
 				\center
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-dragon2-irr.png}
 				\caption{Irradianz}
+				\label{subfig:irr-est-ra-dragon2-irr}
 			\end{subfigure}
 			\begin{subfigure}[t]{0.33\textwidth}
 				\center
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-dragon2-scount.png}
 				\caption{Sampleanzahl}
+				\label{subfig:irr-est-ra-dragon2-scount}
 			\end{subfigure}
-			\caption[Zweite adaptive Vertex-Irradiance-Map anhand der \enquote{Dragon}-Szene]{Die Bilder zeigen die \enquote{Dragon}-Szene mit einer stark variierenden Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $559\unit{s}$ mit der maximalen Sampleanzahl $2^{16}$ und einem maximalen relativen Fehler von $3\unit{\%}$.}
+			\caption[Zweite adaptive Vertex-Irradiance-Map anhand der \enquote{Dragon}-Szene]{Die Bilder zeigen die \enquote{Dragon}-Szene mit der \enquote{Ennis-Brown House}-HDR. \ref{subfig:irr-est-ra-dragon2-ref} ist das durch Path Tracing erzeugte Referenzbild. \ref{subfig:irr-est-ra-dragon2-irr} zeigt die an den Eckpunkten adaptiv aufgenommenen Irradianzen mit linearer Interpolation. \ref{subfig:irr-est-ra-dragon2-scount} stellt dabei die zugehörigen Sampleanzahlen dar. Hier bedeutet eine hellere Farbe eine höhere Sampleanzahl. Die Berechnungszeit betrug $559\unit{s}$ mit der maximalen Sampleanzahl $2^{16}$ und einem maximalen relativen Fehler von $3\unit{\%}$.}
 			\label{fig:irr-est-ra-dragon2}
-		\end{figure}
-
-		\begin{figure}[h]
-			\begin{subfigure}[t]{0.33\textwidth}
-				\center
-				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball-ref.png}
-				\caption{Path Tracing}
-			\end{subfigure}
-			\begin{subfigure}[t]{0.33\textwidth}
-				\center
-				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball-irr.png}
-				\caption{Irradianz}
-			\end{subfigure}
-			\begin{subfigure}[t]{0.33\textwidth}
-				\center
-				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball-scount.png}
-				\caption{Sampleanzahl}
-			\end{subfigure}
-			\caption[Erste adaptive Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene mit einer stark variierenden Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $1170\unit{s}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
-			\label{fig:irr-est-ra-shaderball}
 		\end{figure}
 
 		\begin{figure}[h]
@@ -527,30 +491,8 @@
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball2-scount.png}
 				\caption{Sampleanzahl}
 			\end{subfigure}
-			\caption[Zweite adaptive Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene der Abbildung \ref{fig:irr-est-ra-shaderball} aus einem anderen Blickwinkel. Die aufgenommenen Irradianzen beinhalten im unteren Stand weniger Rauschen als das Referenzbild.}
+			\caption[Zweite adaptive Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene der Abbildung \ref{fig:irr-est-ra-shaderball} Anhang \ref{sec:ergebnisse_adaptive_irradianzschaetzung} aus einem anderen Blickwinkel unter Verwendung der \enquote{Sky 20}-HDR. Die Benennung ist analog zu Abbildung \ref{fig:irr-est-ra-dragon2}. Die aufgenommenen Irradianzen beinhalten im unteren Stand teilweise weniger Rauschen als das Referenzbild. Die Berechnungszeit betrug $1170\unit{s}$ mit einer maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
 			\label{fig:irr-est-ra-shaderball2}
-		\end{figure}
-
-		\begin{figure}[h]
-			\begin{subfigure}[t]{\textwidth}
-				\center
-				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball3-ref.png}
-				\caption{Path Tracing}
-			\end{subfigure}
-			\medskip \\
-			\begin{subfigure}[t]{\textwidth}
-				\center
-				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball3-irr.png}
-				\caption{Irradianz}
-			\end{subfigure}
-			\medskip \\
-			\begin{subfigure}[t]{\textwidth}
-				\center
-				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball3-scount.png}
-				\caption{Sampleanzahl}
-			\end{subfigure}
-			\caption[Dritte adaptive Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene mit einer stark konzentrierten Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $1090\unit{s}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
-			\label{fig:irr-est-ra-shaderball3}
 		\end{figure}
 
 		\begin{figure}[h]
@@ -569,48 +511,8 @@
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball4-scount.png}
 				\caption{Sampleanzahl}
 			\end{subfigure}
-			\caption[Vierte adaptive Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene mit einer stark konzentrierten Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $1470\unit{s}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
+			\caption[Vierte adaptive Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene mit der \enquote{Grace Cathedral}-HDR. Die Benennung ist analog zu Abbildung \ref{fig:irr-est-ra-dragon2}. Die Berechnungszeit betrug $1470\unit{s}$ mit einer maximalen Sampleanzahl von $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
 			\label{fig:irr-est-ra-shaderball4}
-		\end{figure}
-
-		\begin{figure}[h]
-			\begin{subfigure}[t]{\textwidth}
-				\center
-				\includegraphics[width=0.8\textwidth]{pic/irr_est-ra-r8-ref.png}
-				\caption{Path Tracing}
-			\end{subfigure}
-			\begin{subfigure}[t]{\textwidth}
-				\center
-				\includegraphics[width=0.8\textwidth]{pic/irr_est-ra-r8-irr.png}
-				\caption{Irradianz}
-			\end{subfigure}
-			\begin{subfigure}[t]{\textwidth}
-				\center
-				\includegraphics[width=0.8\textwidth]{pic/irr_est-ra-r8-scount.png}
-				\caption{Sampleanzahl}
-			\end{subfigure}
-			\caption[Adaptive Vertex-Irradiance-Map anhand der \enquote{Audi R8}-Szene]{Die Bilder zeigen die \enquote{Audi R8}-Szene mit der \enquote{Sky 20}-Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $17.8\unit{h}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
-			\label{fig:irr-est-ra-audi}
-		\end{figure}
-
-		\begin{figure}[h]
-			\begin{subfigure}[t]{\textwidth}
-				\center
-				\includegraphics[width=0.85\textwidth]{pic/irr_est-ra-r8_2-ref.png}
-				\caption{Path Tracing}
-			\end{subfigure}
-			\begin{subfigure}[t]{\textwidth}
-				\center
-				\includegraphics[width=0.85\textwidth]{pic/irr_est-ra-r8_2-irr.png}
-				\caption{Irradianz}
-			\end{subfigure}
-			\begin{subfigure}[t]{\textwidth}
-				\center
-				\includegraphics[width=0.85\textwidth]{pic/irr_est-ra-r8_2-scount.png}
-				\caption{Sampleanzahl}
-			\end{subfigure}
-			\caption[Adaptive Vertex-Irradiance-Map anhand der \enquote{Audi R8}-Szene]{Die Bilder zeigen die \enquote{Audi R8}-Szene mit der \enquote{Sky 20}-Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $17.8\unit{h}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
-			\label{fig:irr-est-ra-audi2}
 		\end{figure}
 
 		\begin{figure}[h]
@@ -644,53 +546,41 @@
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_4-scount.png}
 				\caption{Sampleanzahl}
 			\end{subfigure}
-			\caption[Adaptive Vertex-Irradiance-Map anhand der \enquote{Audi R8}-Szene]{Die Bilder zeigen die \enquote{Audi R8}-Szene mit der \enquote{Sky 20}-Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $17.8\unit{h}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
+			\caption[Adaptive Vertex-Irradiance-Map anhand der \enquote{Audi R8}-Szene]{Die Bilder zeigen die \enquote{Audi R8}-Szene mit der \enquote{Sky 20}-HDR aus zwei unterschiedlichen Blickwinkeln und einer analogen Benennung zu Abbildung \ref{fig:irr-est-ra-dragon2}. Die Berechnungszeit betrug $17.8\unit{h}$ mit einer maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$. Zu beachten ist, dass die adaptive Irradianzschätzung im Inneren der Szene zu einem rauschfreien Resultat führt.}
 			\label{fig:irr-est-ra-audi3}
 		\end{figure}
 
-		% \begin{figure}[h]
-		% 	\begin{subfigure}[t]{0.33\textwidth}
-		% 		\center
-		% 		\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_3-ref.png}
-		% 		\caption{Path Tracing}
-		% 	\end{subfigure}
-		% 	\begin{subfigure}[t]{0.33\textwidth}
-		% 		\center
-		% 		\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_3-irr.png}
-		% 		\caption{Irradianz}
-		% 	\end{subfigure}
-		% 	\begin{subfigure}[t]{0.33\textwidth}
-		% 		\center
-		% 		\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_3-scount.png}
-		% 		\caption{Sampleanzahl}
-		% 	\end{subfigure}
-		% 	\caption[Vierte adaptive Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene mit einer stark konzentrierten Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $1470\unit{s}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
-		% 	\label{fig:irr-est-ra-shaderball4}
-		% \end{figure}
-
-		% \begin{figure}[h]
-		% 	\begin{subfigure}[t]{0.33\textwidth}
-		% 		\center
-		% 		\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_4-ref.png}
-		% 		\caption{Path Tracing}
-		% 	\end{subfigure}
-		% 	\begin{subfigure}[t]{0.33\textwidth}
-		% 		\center
-		% 		\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_4-irr.png}
-		% 		\caption{Irradianz}
-		% 	\end{subfigure}
-		% 	\begin{subfigure}[t]{0.33\textwidth}
-		% 		\center
-		% 		\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_4-scount.png}
-		% 		\caption{Sampleanzahl}
-		% 	\end{subfigure}
-		% 	\caption[Vierte adaptive Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene mit einer stark konzentrierten Umgebungsbeleuchtung analog zu Abbildung \ref{fig:irr-est-ra-dragon}. Die Berechnungszeit betrug $1470\unit{s}$ mit der maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
-		% 	\label{fig:irr-est-ra-shaderball4}
-		% \end{figure}
-
 		\FloatBarrier
 
+		Ein komplexeres Beispiel anhand der \enquote{Audi R8}-Szene mit der \enquote{Sky 20}-HDR ist in den Abbildungen \ref{fig:irr-est-ra-audi} und \ref{fig:irr-est-ra-audi2} aus Anhang \ref{sec:ergebnisse_adaptive_irradianzschaetzung} und der Abbildung \ref{fig:irr-est-ra-audi3} zu sehen.
+		In der Szene wurden diverse zusammengesetzte BSDFs verwendet um einen realistischeren Eindruck zu vermitteln.
+		Für die Scheiben und Scheinwerfer wurde ein Glas-Material verwendet, welches die ideale Brechung von Licht für einen gegebenen Brechungsindex zulässt.
+		Vor allem im Inneren der Szene in Abbildung \ref{fig:irr-est-ra-audi3} werden extrem viele Strahlen benötigt.
+		In diesen Bereichen kann Licht, welches durch die Umgebungsbeleuchtung ausgesendet wird, nur durch die Transmission von Strahlen an den Glasscheiben eingesammelt werden.
+		Da aber auch die Transmission als zufälliger Prozess betrachtet wird, ist die Wahrscheinlichkeit, Licht einzusammeln, äußerst gering.
+		Die Folge ist, dass sowohl bei der Irradianzschätzung als auch beim Path Tracing mit sehr hohen relativen Fehlern beziehungsweise starkem Rauschen zu rechnen ist.
+		Außerhalb der Szene werden eigentlich nur in den Radkästen und unter dem Auto viele Samples benötigt.
+		Ein Großteil der Strahlen trifft nach einer Reflexion direkt auf die Umgebungsbeleuchtung, was wieder einen sehr kleinen relativen Fehler zur Folge hat.
 
+		In allen Messungen konnten durch die Verwendung einer oberen relativen Fehlerschranke von $1\unit{\%}$ und einer maximalen Sampleanzahl von $2^{18}$ die zufälligen Fehler der Schätzung stark verringert werden, sodass das menschliche Auge nicht mehr in der Lage war, diese zu erkennen.
+		Auch in sehr dunklen Bereichen war die Verwendung von $256$ Samples als Mindestanzahl vollkommen ausreichend.
+		Dennoch sind die Berechnungszeiten in allen Ergebnissen viel größer als die Darstellungszeit des Path Tracing Bildes.
+		Eine der Ursachen besteht in der Konvergenzordnung des adaptiven Irradianzschätzers.
+		Aus Abschnitt \ref{sub:schaetzung_der_irradianz} ist bekannt, dass sich die Varianz dieses Schätzers aus der folgenden Gleichung mit den zuvor eingeführten Variablen für ein $i\in\SN,i\leq n$ ergibt.
+		\[
+			\var \bar{\e{R}} = \frac{4\pi^2}{n}\var \e{R}_i
+		\]
+		Die Standardabweichung und damit auch der relative Fehler des Schätzers konvergieren also nur mit der Laufzeitkomplexität $\Theta_n\curvb{\frac{1}{\sqrt{n}}}$ gegen Null.
+		Die Halbierung des Fehlers fordert dementsprechend viermal so viele Samples wie zuvor \cite[S.~39~f]{veach-thesis}.
+		Um diese Eigenschaft zu verbessern, wurde eine Vielzahl von Varianzreduktionsmethoden entwickelt, wie zum Beispiel \enquote{Stratified Sampling} \cite[S.~432~ff]{pbrt3}, \enquote{Importance Sampling} \cite[S.~794~ff]{pbrt3} und \enquote{Quasi-Monte-Carlo Integration} \cite{quasi-monte-carlo}.
+		Viele dieser Verfahren sind zwar auf eine konstante Sampleanzahl ausgelegt, könnten aber durch Modifikationen für eine adaptive Irradianzschätzung verwendet werden.
+		Zum Beispiel würde es sich bei Stratified Sampling als Vorteil erweisen eine konstante Anzahl von \enquote{Stratas} zu verwenden und durch eine unabhängige Stichprobe deren Gewichtung zu ermitteln.
+		Die Schätzung der Irradianz mithilfe dieser Gewichte würde zu einer geringeren benötigten Gesamtsampleanzahl führen und so das Verfahren beschleunigen.
+		Eine weitere Herangehensweise ist die Abänderung der Interpolation zwischen Punkten.
+		Anstatt für jeden Punkt ein lineares Verfahren zu verwenden, könnte man einen komplexeren Filter oder auch Kern (engl.: \textit{kernel}) durch Berechnung der Faltung mit den geschätzten Irradianzwerten benutzen \cite[S.~402~ff]{pbrt3}.
+		Dies könnte dazu führen, dass sich zufällige Fehler nicht durch sichtbare kleine Flecken auf der Oberfläche auswirken, sondern durch nicht-wahrnehmbare Farbverläufe.
+		Damit wäre man nicht gezwungen eine obere Fehlerschranke von $1\unit{\%}$ zu verwenden und demnach würde auch dieser Ansatz das Verfahren beschleunigen.
+		Eine Änderung der Interpolation würde den Algorithmus der adaptiven Schätzung jedoch nicht abändern.
 
 	% subsection adaptive_schätzung_der_irradianz (end)
 
