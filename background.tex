@@ -169,11 +169,11 @@
 
 		BSDFs sind im Allgemeinen nicht in geschlossener Form formulierbar \cite[S.~507~f]{pbrt3}.
 		Aus diesem Grund wollen wir für die Konstruktion realistischer Materialien, wie bei der Approximation von Oberflächen, verschiedene einfache BSDFs zu Grunde legen.
-		In den beiden folgenden Beispielen handelt es sich um die BSDFs $f$ bezüglich der Normalen $\mu\in\ssp$ für die lambertsch diffuse Reflexion (engl.: \textit{lambertian reflection}, \cite[S.~531~f]{pbrt3}) und für die ideale Reflexion (engl.: \textit{specular reflection}, \cite[S.~144~f]{veach-thesis}).
+		In den beiden folgenden Beispielen handelt es sich um die BSDFs $f$ bezüglich der Normalen $\mu\in\ssp$ für die Lambertsch diffuse Reflexion (engl.: \textit{Lambertian reflection}, \cite[S.~531~f]{pbrt3}) und für die ideale Reflexion (engl.: \textit{specular reflection}, \cite[S.~144~f]{veach-thesis}).
 		Weitere BSDF-Modelle sind in \cite{pbrt3,veach-thesis,radiosity} zu finden.
 		Es seien $\omega_\m{i},\omega_\m{o}\in\ssp$ mit $\nu\define\sign(\dotp{\mu}{\omega_\m{i}})\cdot\mu$ gegeben.
 		\[
-			f(\omega_\m{i},\omega_\m{o}) = \frac{1}{\pi}\mathds{1}_{\shs{\nu}}(\omega_\m{o}) \hfill \text{(lambertsch diffuse Reflexion)}
+			f(\omega_\m{i},\omega_\m{o}) = \frac{1}{\pi}\mathds{1}_{\shs{\nu}}(\omega_\m{o}) \hfill \text{(Lambertsch diffuse Reflexion)}
 		\]
 		\[
 			f(\omega_\m{i},\omega_\m{o}) = \frac{\delta_{\omega_\m{o}}(2\dotp{\mu}{\omega_\m{i}}\mu - \omega_\m{i})}{\abs{\dotp{\mu}{\omega_\m{i}}}} \hfill \text{(ideale Reflexion)}
@@ -410,7 +410,7 @@
 		\begin{figure}
 			\center
 			\includegraphics[width=0.95\textwidth]{pic/example-audi_r8-pt.png}
-			\caption[Path Tracing am Beispiel der \enquote{Audi R8}-Szene mit \enquote{Basketball Court}-HDR]{Die Abbildung stellt eine durch Path Tracing simulierte Lösung der Rendergleichung für die \enquote{Audi R8}-Szene mit \enquote{Basketball Court}-HDR dar. Für die BSDFs ist immer eine Mischung aus idealer Reflexion, lambertsch diffuser Reflexion und idealer Brechung gewählt worden.}
+			\caption[Path Tracing am Beispiel der \enquote{Audi R8}-Szene mit \enquote{Basketball Court}-HDR]{Die Abbildung stellt eine durch Path Tracing simulierte Lösung der Rendergleichung für die \enquote{Audi R8}-Szene mit \enquote{Basketball Court}-HDR dar. Für die BSDFs ist immer eine Mischung aus idealer Reflexion, Lambertsch diffuser Reflexion und idealer Brechung gewählt worden.}
 			\label{fig:example-audi-r8-pt}
 		\end{figure}
 
