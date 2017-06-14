@@ -2,39 +2,6 @@
 % \setlength\extrarowheight{5pt}
 \renewcommand{\arraystretch}{1.3}
 \begin{table}[H]
-	% \begin{tabular}[\textwidth]{p{0.1\textwidth}p{0.9\textwidth}}
-	% 	\hline
-	% 	\textbf{Symbol} & \textbf{Definition} \\
-	% 	\hline
-	% 	\hline \\
-
-	% 	$\SN$ & Menge der natürlichen Zahlen (Null nich eingeschlossen) \\
-
-	% 	$\SR$ & Menge der reellen Zahlen \\
-
-	% 	$\overline{\SR}$ & $\SR\cup\set{-\infty,\infty}$ \\
-
-	% 	$(a,b)$ & $\set[a < x < b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
-
-	% 	$[a,b]$ & $\set[a \leq x \leq b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
-
-	% 	$[a,b)$ & $\set[a \leq x < b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
-
-	% 	$(a,b]$ & $\set[a < x \leq b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
-
-	% 	$\dotp{x}{y}$ & $\sum_{i=1}^n x_iy_i$ mit $x,y\in\SR^n$ für $n\in\SN$ \\
-
-	% 	$\norm{x}$ & $\sqrt{\dotp{x}{x}}$ mit $x\in\SR^n$ für $n\in\SN$ \\
-
-	% 	$\ssp$ & $\set[\norm{x}=1]{x\in\SR^3}$ \\
-
-	% 	$\shs{\mu}$ & $\set[\dotp{\mu}{x}\geq 0]{x\in\ssp}$ mit $\mu\in\ssp$\\
-
-	% 	$\im f$ & $\set[x\in X]{f(x)}\subset Y$ mit der Abbildung $\func{f}{X}{Y}$ und Mengen $X$, $Y$
-
-	% 	\\
-	% 	\hline
-	% \end{tabular}
 	\begin{tabularx}{\textwidth}{p{0.15\textwidth}p{0.84\textwidth}}
 		\hline
 		\textbf{Symbol} & \textbf{Definition} \\
@@ -43,19 +10,19 @@
 
 		$\exists!\ldots :\ldots$ & Es existiert genau ein $\ldots$, sodass $\ldots$ gilt. \\
 
-		$x\in A$ & $x$ ist ein Element der Menge $A$ \\
+		$x\in A$ & $x$ ist ein Element der Menge $A$. \\
 
-		$A\subset B$ & $A$ ist eine Teilmenge von $B$: $\forall x\in A:\quad x\in B$ \\
+		$A\subset B$ & $A$ ist eine Teilmenge von $B$. \\
 
-		$A\cap B$ & $\set[x\in B]{x\in A}$ Mengenschnitt \\
+		$A\cap B$ & $\set[x\in B]{x\in A}$ für Mengen $A,B$ --- Mengenschnitt \\
 
-		$A\cup B$ & $\set[x\in A \text{ oder } x\in B]{x}$ Mengenvereinigung \\
+		$A\cup B$ & $\set[x\in A \text{ oder } x\in B]{x}$ für Mengen $A,B$ --- Mengenvereinigung \\
 
-		$A\setminus B$ & $\set[x\not\in B]{x\in A}$ \\
+		$A\setminus B$ & $\set[x\not\in B]{x\in A}$ für Mengen $A,B$ --- Differenzmenge \\
 
-		$A\times B$ & $\set[x\in A,y\in B]{(x,y)}$ für Mengen $A$ und $B$ \\
+		$A\times B$ & $\set[x\in A,y\in B]{(x,y)}$ für Mengen $A$ und $B$ --- kartesisches Produkt \\
 
-		$\emptyset$ & leere Menge: $\set{}$ \\
+		$\emptyset$ & leere Menge \\
 
 		$\func{f}{X}{Y}$ & Abbildung $f$ mit Definitionsmenge $X$ und Wertebereich $Y$ \\
 
@@ -73,7 +40,7 @@
 
 		$\SN$ & $\set{1,2,3,\ldots}$ --- Menge der natürlichen Zahlen  \\
 
-		$\SN_0$ & $\set{0,1,2,3,\ldots}$ --- Menge der natürlichen Zahlen mit der Null  \\
+		$\SN_0$ & $\set{0,1,2,\ldots}$ --- Menge der natürlichen Zahlen mit der Null  \\
 
 		$\SR$ & Menge der reellen Zahlen \\
 
@@ -157,7 +124,7 @@
 
 		$\e{X}\otimes\e{Y}$ & Produkt-$\sigma$-Algebra der $\sigma$-Algebren $\e{X},\e{Y}$ \\
 
-		$\delta_x$ & Diracsche Deltadistribution am Punkt $x\in X$ der Menge $X$ \\
+		$\delta_x$ & Diracsche Delta-Distribution am Punkt $x\in X$ der Menge $X$ \\
 
 		$\expect X$ & $\integral{\Omega}{}{X}{P}$ --- Erwartungswert der Zufallsvariable $X$ auf $(\Omega,\e{A},P)$\\
 
