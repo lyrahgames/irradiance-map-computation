@@ -308,7 +308,7 @@
 				\caption{\parbox[t]{0.5\textwidth}{$4096$ Samples \\ $56.08\unit{s}$}}
 				\label{subfig:irr-est-rc-dragon-4096}
 			\end{subfigure}
-			\caption[Vertex-Irradiance-Map anhand der \enquote{Dragon}-Szene]{Die Bilder zeigen die gerenderte \enquote{Dragon}-Szene mit einer schwach variierenden Umgebungsbeleuchtung. \ref{subfig:irr-est-rc-dragon-pt} ist ein durch Path Tracing aufgenommenes Referenzbild. Für \ref{subfig:irr-est-rc-dragon-512} und \ref{subfig:irr-est-rc-dragon-4096} wurden die Irradianzen an den Eckpunkten der Mesh geschätzt und gespeichert. Zwischen den Eckpunkten fand eine lineare Interpolation statt. Die Anzahl der Samples gibt an, wie viele Stichprobenwerte verwendet wurden, um die Irradianz an jedem Punkt zu schätzen. Die Zeit entspricht dabei der Berechnungsdauer. \ref{subfig:irr-est-rc-dragon-4096} weist zum Referenzbild keine Unterschiede auf. In \ref{subfig:irr-est-rc-dragon-512} sind jedoch einige schwache Artefakte in Form von Lichtflecken zu beobachten.}
+			\caption[Vertex Lighting anhand der \enquote{Dragon}-Szene]{Die Bilder zeigen die gerenderte \enquote{Dragon}-Szene mit einer schwach variierenden Umgebungsbeleuchtung. \ref{subfig:irr-est-rc-dragon-pt} ist ein durch Path Tracing aufgenommenes Referenzbild. Für \ref{subfig:irr-est-rc-dragon-512} und \ref{subfig:irr-est-rc-dragon-4096} wurden die Irradianzen an den Eckpunkten der Mesh geschätzt und gespeichert. Zwischen den Eckpunkten fand eine lineare Interpolation statt. Die Anzahl der Samples gibt an, wie viele Stichprobenwerte verwendet wurden, um die Irradianz an jedem Punkt zu schätzen. Die Zeit entspricht dabei der Berechnungsdauer. \ref{subfig:irr-est-rc-dragon-4096} weist zum Referenzbild keine Unterschiede auf. In \ref{subfig:irr-est-rc-dragon-512} sind jedoch einige schwache Artefakte in Form von Lichtflecken zu beobachten.}
 			\label{fig:irr-est-rc-dragon}
 		\end{figure}
 
@@ -337,7 +337,7 @@
 				\caption{\parbox[t]{0.5\textwidth}{$16384$ Samples \\ $191.22\unit{s}$}}
 				\label{subfig:irr-est-rc-shaderball-16384}
 			\end{subfigure}
-			\caption[Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die gerenderte \enquote{Shaderball}-Szene mit der \enquote{Uffzi Gallery}-HDR entsprechend der Benennung aus Abbildung \ref{fig:irr-est-rc-dragon}. Die Monte-Carlo-Integration erzeugt in \ref{subfig:irr-est-rc-shaderball-512} mit nur $2^9$ Samples ein fleckiges Muster, welches durch die Verteilung der Zufallsvariable um den Erwartungswert hervorgerufen wird. In \ref{subfig:irr-est-rc-shaderball-4096} und \ref{subfig:irr-est-rc-shaderball-16384} ist erkennbar, dass die Entstehung von Flecken durch eine höhere Sampleanzahl verringert werden kann. Dennoch sind in \ref{subfig:irr-est-rc-shaderball-16384} auch für $2^{14}$ Samples im unteren Stand der Szene noch Flecken sichtbar.}
+			\caption[Vertex Lighting anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die gerenderte \enquote{Shaderball}-Szene mit der \enquote{Uffzi Gallery}-HDR entsprechend der Benennung aus Abbildung \ref{fig:irr-est-rc-dragon}. Die Monte-Carlo-Integration erzeugt in \ref{subfig:irr-est-rc-shaderball-512} mit nur $2^9$ Samples ein fleckiges Muster, welches durch die Verteilung der Zufallsvariable um den Erwartungswert hervorgerufen wird. In \ref{subfig:irr-est-rc-shaderball-4096} und \ref{subfig:irr-est-rc-shaderball-16384} ist erkennbar, dass die Entstehung von Flecken durch eine höhere Sampleanzahl verringert werden kann. Dennoch sind in \ref{subfig:irr-est-rc-shaderball-16384} auch für $2^{14}$ Samples im unteren Stand der Szene noch Flecken sichtbar.}
 			\label{fig:irr-est-rc-shaderball}
 		\end{figure}
 
@@ -403,7 +403,7 @@
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-dragon2-s16384-err.png}
 				\caption{$16384$ Samples}
 			\end{subfigure}
-			\caption[Fehler der Vertex-Irradiance-Map anhand der \enquote{Dragon}-Szene]{Die Bilder zeigen die \enquote{Dragon}-Szene aus Abbildung \ref{fig:irr-est-rc-dragon} mit den an den Eckpunkten geschätzten modifizierten Variationskoeffizienten. Auch hier findet eine lineare Interpolation zwischen ihnen statt. Eine hellere Farbe bedeutet dabei ein höherer Wert. Deutlich erkennbar ist die Abnahme des Fehlers für größere Sampleanzahlen. Dennoch bleiben auch für $2^{14}$ Samples noch Bereiche, die einen vergleichsweise hohen Fehler aufweisen.}
+			\caption[Relativer Fehler der \enquote{Dragon}-Szene]{Die Bilder zeigen die \enquote{Dragon}-Szene aus Abbildung \ref{fig:irr-est-rc-dragon} mit den an den Eckpunkten geschätzten modifizierten Variationskoeffizienten. Auch hier findet eine lineare Interpolation zwischen ihnen statt. Eine hellere Farbe bedeutet dabei ein höherer Wert. Deutlich erkennbar ist die Abnahme des Fehlers für größere Sampleanzahlen. Dennoch bleiben auch für $2^{14}$ Samples noch Bereiche, die einen vergleichsweise hohen Fehler aufweisen.}
 			\label{fig:irr-est-rc-dragon-err}
 		\end{figure}
 
@@ -423,7 +423,7 @@
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-rc-shaderball2-s16384-err.png}
 				\caption{$16384$ Samples}
 			\end{subfigure}
-			\caption[Fehler der Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene aus Abbildung \ref{fig:irr-est-rc-shaderball} mit den an den Eckpunkten geschätzten modifizierten Variationskoeffizienten entsprechend der Abbildung \ref{fig:irr-est-rc-dragon-err}. Vor allem Bereiche, die schwach von außen beleuchtet werden oder in Nischen liegen, weisen einen erhöhten Fehler auf. Die regelmäßigen Artefakte im unteren Teil entstehen durch die geringe Auflösung der Mesh.}
+			\caption[Relativer Fehler der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene aus Abbildung \ref{fig:irr-est-rc-shaderball} mit den an den Eckpunkten geschätzten modifizierten Variationskoeffizienten entsprechend der Abbildung \ref{fig:irr-est-rc-dragon-err}. Vor allem Bereiche, die schwach von außen beleuchtet werden oder in Nischen liegen, weisen einen erhöhten Fehler auf. Die regelmäßigen Artefakte im unteren Teil entstehen durch die geringe Auflösung der Mesh.}
 			\label{fig:irr-est-rc-shaderball-err}
 		\end{figure}
 
@@ -471,7 +471,7 @@
 				\caption{Sampleanzahl}
 				\label{subfig:irr-est-ra-dragon2-scount}
 			\end{subfigure}
-			\caption[Zweite adaptive Vertex-Irradiance-Map anhand der \enquote{Dragon}-Szene]{Die Bilder zeigen die \enquote{Dragon}-Szene mit der \enquote{Ennis-Brown House}-HDR. \ref{subfig:irr-est-ra-dragon2-ref} ist das durch Path Tracing erzeugte Referenzbild. \ref{subfig:irr-est-ra-dragon2-irr} zeigt die an den Eckpunkten adaptiv aufgenommenen Irradianzen mit linearer Interpolation. \ref{subfig:irr-est-ra-dragon2-scount} stellt dabei die zugehörigen Sampleanzahlen dar. Hier bedeutet eine hellere Farbe eine höhere Sampleanzahl. Die Berechnungszeit betrug $559\unit{s}$ mit der maximalen Sampleanzahl $2^{16}$ und einem maximalen relativen Fehler von $3\unit{\%}$.}
+			\caption[Vertex Lighting anhand der \enquote{Dragon}-Szene mit \enquote{Ennis-Brown House}-HDR]{Die Bilder zeigen die \enquote{Dragon}-Szene mit der \enquote{Ennis-Brown House}-HDR. \ref{subfig:irr-est-ra-dragon2-ref} ist das durch Path Tracing erzeugte Referenzbild. \ref{subfig:irr-est-ra-dragon2-irr} zeigt die an den Eckpunkten adaptiv aufgenommenen Irradianzen mit linearer Interpolation. \ref{subfig:irr-est-ra-dragon2-scount} stellt dabei die zugehörigen Sampleanzahlen dar. Hier bedeutet eine hellere Farbe eine höhere Sampleanzahl. Die Berechnungszeit betrug $559\unit{s}$ mit der maximalen Sampleanzahl $2^{16}$ und einem maximalen relativen Fehler von $3\unit{\%}$.}
 			\label{fig:irr-est-ra-dragon2}
 		\end{figure}
 
@@ -491,7 +491,7 @@
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball2-scount.png}
 				\caption{Sampleanzahl}
 			\end{subfigure}
-			\caption[Zweite adaptive Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene der Abbildung \ref{fig:irr-est-ra-shaderball} Anhang \ref{sec:ergebnisse_adaptive_irradianzschaetzung} aus einem anderen Blickwinkel unter Verwendung der \enquote{Sky 20}-HDR. Die Benennung ist analog zu Abbildung \ref{fig:irr-est-ra-dragon2}. Die aufgenommenen Irradianzen beinhalten im unteren Stand teilweise weniger Rauschen als das Referenzbild. Die Berechnungszeit betrug $1170\unit{s}$ mit einer maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
+			\caption[Vertex Lighting anhand der \enquote{Shaderball}-Szene mit \enquote{Ennis-Brown House}-HDR]{Die Bilder zeigen die \enquote{Shaderball}-Szene der Abbildung \ref{fig:irr-est-ra-shaderball} Anhang \ref{sec:ergebnisse_adaptive_irradianzschaetzung} aus einem anderen Blickwinkel unter Verwendung der \enquote{Sky 20}-HDR. Die Benennung ist analog zu Abbildung \ref{fig:irr-est-ra-dragon2}. Die aufgenommenen Irradianzen beinhalten im unteren Stand teilweise weniger Rauschen als das Referenzbild. Die Berechnungszeit betrug $1170\unit{s}$ mit einer maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
 			\label{fig:irr-est-ra-shaderball2}
 		\end{figure}
 
@@ -511,7 +511,7 @@
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-shaderball4-scount.png}
 				\caption{Sampleanzahl}
 			\end{subfigure}
-			\caption[Vierte adaptive Vertex-Irradiance-Map anhand der \enquote{Shaderball}-Szene]{Die Bilder zeigen die \enquote{Shaderball}-Szene mit der \enquote{Grace Cathedral}-HDR. Die Benennung ist analog zu Abbildung \ref{fig:irr-est-ra-dragon2}. Die Berechnungszeit betrug $1470\unit{s}$ mit einer maximalen Sampleanzahl von $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
+			\caption[Vertex Lighting anhand der \enquote{Shaderball}-Szene mit \enquote{Ennis-Brown House}-HDR]{Die Bilder zeigen die \enquote{Shaderball}-Szene mit der \enquote{Grace Cathedral}-HDR. Die Benennung ist analog zu Abbildung \ref{fig:irr-est-ra-dragon2}. Die Berechnungszeit betrug $1470\unit{s}$ mit einer maximalen Sampleanzahl von $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$.}
 			\label{fig:irr-est-ra-shaderball4}
 		\end{figure}
 
@@ -526,6 +526,7 @@
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_4-ref.png}
 				\caption{Path Tracing}
 			\end{subfigure}
+			\medskip \\
 			\begin{subfigure}[t]{0.5\textwidth}
 				\center
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_3-irr.png}
@@ -536,6 +537,7 @@
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_4-irr.png}
 				\caption{Irradianz}
 			\end{subfigure}
+			\medskip \\
 			\begin{subfigure}[t]{0.5\textwidth}
 				\center
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_3-scount.png}
@@ -546,7 +548,7 @@
 				\includegraphics[width=0.95\textwidth]{pic/irr_est-ra-r8_4-scount.png}
 				\caption{Sampleanzahl}
 			\end{subfigure}
-			\caption[Adaptive Vertex-Irradiance-Map anhand der \enquote{Audi R8}-Szene]{Die Bilder zeigen die \enquote{Audi R8}-Szene mit der \enquote{Sky 20}-HDR aus zwei unterschiedlichen Blickwinkeln und einer analogen Benennung zu Abbildung \ref{fig:irr-est-ra-dragon2}. Die Berechnungszeit betrug $17.8\unit{h}$ mit einer maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$. Zu beachten ist, dass die adaptive Irradianzschätzung im Inneren der Szene zu einem rauschfreien Resultat führt.}
+			\caption[Vertex Lighting anhand der \enquote{Audi R8}-Szene mit \enquote{Sky 20}-HDR]{Die Bilder zeigen die \enquote{Audi R8}-Szene mit der \enquote{Sky 20}-HDR aus zwei unterschiedlichen Blickwinkeln und einer analogen Benennung zu Abbildung \ref{fig:irr-est-ra-dragon2}. Die Berechnungszeit betrug $17.8\unit{h}$ mit einer maximalen Sampleanzahl $2^{18}$ und einem maximalen relativen Fehler von $1\unit{\%}$. Zu beachten ist, dass die adaptive Irradianzschätzung im Inneren der Szene zu einem rauschfreien Resultat führt.}
 			\label{fig:irr-est-ra-audi3}
 		\end{figure}
 

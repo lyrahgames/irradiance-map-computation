@@ -1,7 +1,7 @@
 \section*{Symboltabelle}
 % \setlength\extrarowheight{5pt}
 \renewcommand{\arraystretch}{1.3}
-\begin{table}[h]
+\begin{table}[H]
 	% \begin{tabular}[\textwidth]{p{0.1\textwidth}p{0.9\textwidth}}
 	% 	\hline
 	% 	\textbf{Symbol} & \textbf{Definition} \\
@@ -41,9 +41,17 @@
 		\hline
 		\hline \\
 
+		$\exists!\ldots :\ldots$ & Es existiert genau ein $\ldots$, sodass $\ldots$ gilt. \\
+
 		$x\in A$ & $x$ ist ein Element der Menge $A$ \\
 
 		$A\subset B$ & $A$ ist eine Teilmenge von $B$: $\forall x\in A:\quad x\in B$ \\
+
+		$A\cap B$ & $\set[x\in B]{x\in A}$ Mengenschnitt \\
+
+		$A\cup B$ & $\set[x\in A \text{ oder } x\in B]{x}$ Mengenvereinigung \\
+
+		$A\setminus B$ & $\set[x\not\in B]{x\in A}$ \\
 
 		$A\times B$ & $\set[x\in A,y\in B]{(x,y)}$ für Mengen $A$ und $B$ \\
 
@@ -51,41 +59,121 @@
 
 		$\func{f}{X}{Y}$ & Abbildung $f$ mit Definitionsmenge $X$ und Wertebereich $Y$ \\
 
+		$f(\cdot,y)$ & Für Abbildung $\func{f}{X\times Y}{Z}$ mit $y\in Y$ gilt $f(\cdot,y)(x)=f(x,y)$ für alle $x\in X$ \\
+
 		$\im f$ & $\set[x\in X]{f(x)}\subset Y$ mit der Abbildung $\func{f}{X}{Y}$ und Mengen $X$, $Y$ \\
 
-		$f(A)$ & $\set[x\in A]{f(x)}$ Bild der Menge $A\subset X$ unter der Abbildung $\func{f}{X}{Y}$ \\
+		$f(A)$ & $\set[x\in A]{f(x)}$ mit Abbildung $\func{f}{X}{Y}$ und Menge $A\subset X$ \\
 
-		$\SN$ & Menge der natürlichen Zahlen $\set{1,2,3,\ldots}$ \\
+		$\inv{f}(A)$ & $\set[f(x)\in A]{x\in X}$ mit Abbildung $\func{f}{X}{Y}$ und Menge $A\subset Y$ \\
 
-		$\SN_0$ & Menge der natürlichen Zahlen mit der Null $\set{0,1,2,3,\ldots}$ \\
+		$\inv{f}$ & Inverse einer bijektiven Abbildung $\func{f}{X}{Y}$ \\
+
+		$f\vert_A$ & Einschränkung der Abbildung $\func{f}{X}{Y}$ auf die Menge $A\subset X$ \\
+
+		$\SN$ & $\set{1,2,3,\ldots}$ --- Menge der natürlichen Zahlen  \\
+
+		$\SN_0$ & $\set{0,1,2,3,\ldots}$ --- Menge der natürlichen Zahlen mit der Null  \\
 
 		$\SR$ & Menge der reellen Zahlen \\
 
-		$\infty$ & $-\infty < x < \infty$ für alle $x\in\SR$ \textit{(Unendlich)} \\
+		$\infty$ & $-\infty < x < \infty$ für alle $x\in\SR$ --- Unendlich \\
 
 		$\overline{\SR}$ & $\SR\cup\set{-\infty,\infty}$ \\
 
-		$(a,b)$ & $\set[a < x < b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
+		$(a,b)$ & $\set[a < x < b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ --- offenes Intervall \\
 
-		$[a,b]$ & $\set[a \leq x \leq b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
+		$[a,b]$ & $\set[a \leq x \leq b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ --- geschlossenes Intervall \\
 
 		$[a,b)$ & $\set[a \leq x < b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
 
 		$(a,b]$ & $\set[a < x \leq b]{x\in\SR}$ mit $a,b\in\overline{\SR}$ \\
 
-		$\sign{x}$ & Vorzeichen von $x\in\SR$: $\sign{x}\define \begin{cases} 1 &: x\geq 0 \\ -1 &: x < 0\end{cases}$ \\
+		$\sup A$ & Supremum der Menge $A\subset \SR$ \\
 
-		$\abs{x}$ & Betrag von $x\in\SR$: $\abs{x}\define \begin{cases} x &: x\geq 0 \\ -x &: x < 0\end{cases}$ \\
+		$\min A$ & Minimum der Menge $A\subset \SR$ \\
 
-		$\dotp{x}{y}$ & $\sum_{i=1}^n x_iy_i$ mit $x,y\in\SR^n$ für $n\in\SN$ \\
+		$\sign{x}$ & Vorzeichen von $x\in\SR$ \\
 
-		$\norm{x}$ & $\sqrt{\dotp{x}{x}}$ mit $x\in\SR^n$ für $n\in\SN$ \\
+		$\abs{x}$ & Betrag von $x\in\SR$ \\
 
-		$\ssp$ & $\set[\norm{x}=1]{x\in\SR^3}$ \\
+		$\mathds{1}_A(x)$ & charakteristische Funktion mit Menge $A\subset X$ und Wert $x\in X$ für Menge $X$ \\
 
-		$\shs{\mu}$ & $\set[\dotp{\mu}{x}\geq 0]{x\in\ssp}$ mit $\mu\in\ssp$\\
+		$\floorb{x}$ & Abrundungsfunktion für ein $x\in\SR$ \\
 
-		$\pi$ & Kreiszahl: $\pi = 3.141529\ldots$ \\
+		$\ceilb{x}$ & Aufrundungsfunktion für ein $x\in\SR$ \\
+
+		$\dotp{x}{y}$ & $\sum_{i=1}^n x_iy_i$ mit $x,y\in\SR^n$ für $n\in\SN$ --- Skalarprodukt \\
+
+		$\norm{x}$ & $\sqrt{\dotp{x}{x}}$ mit $x\in\SR^n$ für $n\in\SN$ --- Norm \\
+
+		$\crossp{x}{y}$ & Kreuzprodukt der Vektoren $x,y\in\SR^3$ \\
+
+		$x_n\conv[n\conv\infty] x$ & Die Folge $(x_n)_{n\in\SN}$ in $\SR$ konvergiert gegen $x\in\SR$. \\
+
+		$\ssp$ & $\set[\norm{x}=1]{x\in\SR^3}$ --- Sphäre der Richtungen \\
+
+		$\shs{\mu}$ & $\set[\dotp{\mu}{x}\geq 0]{x\in\ssp}$ mit $\mu\in\ssp$ --- Hemisphäre der Richtungen \\
+
+		$\lambda$ & Lebesgue-Maß \\
+
+		$\sigma$ & Oberflächen-Maß einer Untermannigfaltigkeit in $\SR^n$ für $n\in\SN$ \\
+
+		% $\integral{X}{}{f}{\mu}$ & Integral über Funktion $f$ bezüglich Maßraum $(X,\e{A},\mu)$ \\
+
+		% $p\otimes q$ & Produktmaß der Maße $p,q$ \\
+
+		% $\e{X}\otimes\e{Y}$ & Produkt-$\sigma$-Algebra der $\sigma$-Algebren $\e{X},\e{Y}$ \\
+
+		% $\delta_x$ & Diracsche Deltadistribution am Punkt $x\in X$ der Menge $X$ \\
+
+		% $\expect X$ & $\integral{\Omega}{}{X}{P}$ Erwartungswert der Zufallsvariable $X$ auf $(\Omega,\e{A},P)$\\
+
+		% $\var X$ & $\expect\curvb{X-\expect X}^2$ Varianz der Zufallsvariable $X$ auf $(\Omega,\e{A},P)$\\
+
+		% $\Theta(f),\Theta_n(f(n))$ & Landau-Symbol der asymptotisch scharfen Schranke für Abbildung $\func{f}{\SN}{\SR}$ \\
+
+		% $\pi$ & Kreiszahl: $\pi = 3.141529\ldots$ \\
+
+		\\
+		\hline
+	\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+	\begin{tabularx}{\textwidth}{p{0.15\textwidth}p{0.84\textwidth}}
+		\hline
+		\textbf{Symbol} & \textbf{Definition} \\
+		\hline
+		\hline \\
+
+		% $\lambda$ & Lebesgue-Maß \\
+
+		% $\sigma$ & Oberflächen-Maß einer Untermannigfaltigkeit in $\SR^n$ für $n\in\SN$ \\
+
+		$\integral{X}{}{f}{\mu}$ & Integral über Funktion $f$ bezüglich Maßraum $(X,\e{A},\mu)$ \\
+
+		$p\otimes q$ & Produktmaß der Maße $p,q$ \\
+
+		$\e{X}\otimes\e{Y}$ & Produkt-$\sigma$-Algebra der $\sigma$-Algebren $\e{X},\e{Y}$ \\
+
+		$\delta_x$ & Diracsche Deltadistribution am Punkt $x\in X$ der Menge $X$ \\
+
+		$\expect X$ & $\integral{\Omega}{}{X}{P}$ --- Erwartungswert der Zufallsvariable $X$ auf $(\Omega,\e{A},P)$\\
+
+		$\var X$ & $\expect\curvb{X-\expect X}^2$ --- Varianz der Zufallsvariable $X$ auf $(\Omega,\e{A},P)$\\
+
+		$\Theta(f),\Theta_n(f(n))$ & Landau-Symbol der asymptotisch scharfen Schranke für Abbildung $\func{f}{\SN}{\SR}$ \\
+
+		$\pi$ & $3.141592\ldots$ --- Kreiszahl \\
+
+		$1\unit{MiB}$ & $2^{10}\unit{kiB} = 2^{20}\unit{B} = 2^{20}\unit{Byte}$ --- Speichereinheit \\
+
+		$1\unit{s}$ & Eine Sekunde \\
+
+		$1\unit{h}$ & $3600\unit{s}$ --- Eine Stunde \\
+
+		$1\unit{\%}$ & $0.01$ --- Ein Prozent
 
 		\\
 		\hline
