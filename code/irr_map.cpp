@@ -1,29 +1,33 @@
 namespace irr_map{
 
 
+// Irradiance Map Datenstruktur
 struct triangle_uvmap{
-	uint order;
-	vecf4 *data;
+	uint order; // Ordnung
+	vecf4 *data; // Messwerte
 
-	vecf4 operator()(float u, float v) const;
+	vecf4 operator()(float u, float v) const; // lineare Interpolation
 };
 
-
+// Ordnungsfunktion
 inline uint size(uint order){
 	return ((order+1)*(order+2))>>1;
 }
 
+// Speicherindex-Funktion
 inline uint memidx(uint uidx, uint vidx){
 	const uint sum = uidx + vidx;
 	return ((sum * (sum+1)) >> 1) + vidx;
 }
 
+// verfeinerte Speicherindex-Funktion
 inline uint memidx(uint uidx, uint vidx, uint shift){
 	const uint suidx = uidx << shift;
 	const uint svidx = vidx << shift;
 	return memidx(suidx, svidx);
 }
 
+// lineare Interpolation
 inline vec4f triangle_uvmap::operator()(float u, float v) const{
 	const float nu = order * u;
 	const float nv = order * v;
