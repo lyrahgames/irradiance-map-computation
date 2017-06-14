@@ -225,139 +225,181 @@
 	\subsection{Irradiance Map Generator} % (fold)
 	\label{sub:irradiance_map_generator}
 
+		Die Generierung der Irradiance Map erfolgt durch die Erzeugung der Irradiance Map für jedes Dreieck.
+		Da die Szenen im Allgemeinen sehr viele Dreiecke besitzen, ist diese Operation leicht parallelisierbar.
+
+		Die Grundidee bei der Erzeugung besteht in der Verwendung der Verfeinerung einer Irradiance Map.
+		Damit man Punkte nicht mehrmals messen muss, behält man die bereits berechneten Messwerte und verdoppelt die Ordnung.
+		Für die neu hinzukommenden Messpunkte führt man wieder die Irradianzschätzung durch und wiederholt das Verfahren.
+		Auch hier gibt es wieder eine maximale Ordnung, um die Berechnungszeit zu beschränken.
+		Um das Verfahren früher abzubrechen, benötigen wir ein Fehlermaß, welches klein bei ausreichenden Approximationen ist.
+
+		Geht man davon aus, dass die Irradianz bezüglich der Wellenlänge $\lambda\in(0,\infty)$ auf dem Dreieck eine gleichmäßig stetige Funktion ist, so konvergiert eine Folge von linear approximierenden Irradiance Map Fortsetzungen $(g_n)_{n\in\SN}$ der Irradiance Maps $f_n,n\in\SN$, sodass $f_{n+1}$ eine Verfeinerung von $f_n$ für alle $n\in\SN$ darstellt, punktweise gegen diese.
+		$(g_n(x))_{n\in\SN}$ ist damit für jeden Punkt $x\in\triangle$ auch eine Cauchy-Folge.
+		Insbesondere gelten dann die folgenden Aussagen für ein $\varepsilon\in(0,\infty)$.
+		\[
+			g_n \conv[n\conv\infty] R(\cdot,\lambda)\vert_\triangle,\qquad \abs{g_n(x) - g_m(x)} \conv[n,m\conv\infty] 0
+		\]
+		\[
+			\sup_{x\in\triangle}\abs{g_n(x) - g_m(x)} \conv[n,m\conv\infty] 0,\qquad
+			\sup_{x\in\triangle}\frac{\abs{g_n(x) - g_m(x)}}{R(x,\lambda) + \varepsilon} \conv[n,m\conv\infty] 0
+		\]
+		In der letzten Aussage tritt wieder ein relativer Fehler auf, der in seiner Funktionsweise dem modifizierten Variationskoeffizienten aus Abschnitt \ref{sub:fehler_der_irradianzschaetzung} sehr ähnelt.
+		Auch hier wollen wir die Approximation, aufgrund der in diesem Abschnitt genannten Tatsachen, durch einen relativen Fehler bewerten.
+		Da man $R(x,\lambda)$ nicht für alle $x\in\triangle$ kennt, betrachten wir den folgenden relativen Fehler $e_{n+1}$ einer Funktion $g_{n+1}$ für $n\in\SN$.
+		\[
+			e_{n+1} \define \sup_{x\in\im p_{n+1}}\frac{\abs{g_{n+1}(x) - g_{n}(x)}}{R(x,\lambda) + \varepsilon} \conv[n\conv\infty] 0
+		\]
+		$e_{n+1}$ lässt sich vergleichsweise einfach bestimmen und stellt ein gutes Fehlermaß für die Bewertung der Approximation dar.
+		Im Algorithmus werden wir eine Fehlerschranke definieren, die angibt, wann eine berechnete Verfeinerung ausreicht, um so die Rechenzeit weiter zu verkürzen.
+		Zu beachten ist, dass mindestens $g_2$ konstruiert werden muss, da $e_1$ nicht definiert ist und keinen Sinn ergeben würde.
+
+		Ein wichtiges Problem besteht allerdings darin, dass sich $R(\cdot,\lambda)$ nur an wenigen Punkten ermitteln lässt, ohne die Berechnungszeit stark zu erhöhen.
+		Für hochfrequente Änderungen von $R(\cdot,\lambda)\vert_\triangle$ kann es demnach passieren, dass der relative Fehler eine Approximation gut bewertet, während dies aber nicht der Fall ist.
+		Um das Problem zu beheben, ist es entweder notwendig, extrem viele Punkte in $\triangle$ aufzunehmen, um ein besseres Fehlermaß zu erhalten, oder durch weitere einfache Fehlermaße, wie zum Beispiel $d_{n+1}\define \frac{e_{n+1}}{e_n},n\in\SN$, einige solcher auftretenden Fehler zu beseitigen.
+		Die Aufnahme einer sehr viel größeren Zahl von Messpunkten, wird zu einem sehr genauen Fehlermaß führen, durch welches eine klare und unverfälschte Bewertung der Approximation möglich ist.
+		Auf der anderen Seite ist das Messen der Irradianz ein aufwendiger Prozess, sodass die Berechnung des Fehlers einen immensen Anteil der Rechenzeit einnehmen würde.
+		Die Anwendung weiterer Fehlermaße ist meistens einfach zu implementieren und behebt diverse entstehende Fehler.
+		Dennoch neigen mehrere Fehlermaße dazu, eine Approximation zu schlecht zu bewerten und resultieren damit auch wieder in einer höheren Berechnungszeit.
+
+		Das beschriebene Verfahren wurde im folgenden \enquote{C++}-Quelltext implementiert.
 
 		\input{code-gen_irr_map}
 
+		Die Abbildungen \ref{fig:irrmap-cornell}, \ref{fig:irrmap-shaderball}, \ref{fig:irrmap-shaderball2}, \ref{fig:irrmap-shaderball-e}, \ref{fig:irrmap-shaderball-e2}, \ref{fig:irrmap-shaderball-e3} und \ref{fig:irrmap-shaderball-e4} zeigen die Ergebnisse des Algorithmus für ausgewählte Szenen.
+		In allen Fällen übertrifft die Approximation durch die Irradiance Map das Vertex Lighting Verfahren.
+		Deutlich wird dies in Abbildung \ref{fig:irrmap-shaderball}.
+		Eine direktionale Lichtquelle lässt sich aufgrund der Unstetigkeit der entstehenden Irradianz im Allgemeinen nur schlecht durch Messpunkte interpolieren.
+		Bild \ref{subfig:irrmap-shaderball-vmap} ist durch eine zu geringe Auflösung der Mesh nicht in der Lage, den Kernschatten des Objektes akzeptabel zu approximieren.
+		Die Irradiance Map in Bild \ref{subfig:irrmap-shaderball-irrmap} entspricht aber dem Anschein nach dem Referenzbild \ref{subfig:irrmap-shaderball-ref}.
+		Erst durch Heranzoomen in Abbildung \ref{fig:irrmap-shaderball2} erkennt man kleine Aliasing-Artefakte am Rand des harten Schattens.
+		Die Darstellung der Ordungen der einzelnen Dreieck Irradiance Maps zeigt zudem, dass der Algorithmus nur dann eine höhere Ordung verwendet, wenn eine Änderung der Irradianz, die größer als die gegebene Fehlerschranke ist, gemessen wird.
+		Auch für einen vergleichsweise glatten Schattenverlauf in den Abbildungen \ref{fig:irrmap-shaderball-e}, \ref{fig:irrmap-shaderball-e2}, \ref{fig:irrmap-shaderball-e3} und \ref{fig:irrmap-shaderball-e4} erzielt die Irradiance Map bessere Ergebnisse, ohne für jedes Dreieck extrem viele Samples zu verwenden.
+		Die durch Vertex Lighting entstehenden Artefakte sind zwar schwach ausgeprägt, können aber dennoch im Vergleich mit den Referenzbildern beobachtet werden.
+		In allen Ergebnissen besaß das Vertex Lighting Verfahren jedoch einen großen Vorteil gegenüber der Irradiance Map.
+		Die Berechnungszeit von Vertex Lighting betrug immer weniger als $5\unit{\%}$ der Irradiance Map Generierungszeit.
+
+		\begin{figure}[h]
+			\begin{subfigure}[t]{0.245\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e-ref.png}
+				\caption{Path Tracing}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.245\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e-vmap.png}
+				\caption{Vertex Lighting}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.245\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e-irrmap.png}
+				\caption{Irradiance Map}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.245\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e-irrmap-order.png}
+				\caption{Irradiance Map Ordnung}
+				\label{subfig:irrmap-shaderball-e-irrmap-order}
+			\end{subfigure}
+			\caption[Irradiance-Map der \enquote{Shaderball}-Szene mit der \enquote{Ennis-Brown House}-HDR]{Die Bilder zeigen die \enquote{Shaderball}-Szene mit der \enquote{Ennis-Brown House}-HDR unter Verwendung von Path Tracing als Referenzbild, von Vertex Lighting und der Irradiance Map. Für die adaptive Irradianzschätzung wurden eine obere Fehlerschranke von $1\unit{\%}$ und maximal $2^{16}$ Samples verwendet. Die Irradiance Map wurde durch circa $9.27\cdot10^6$ Messpunkte bestimmt, die insgesamt $35.4\unit{MiB}$ einnehmen. Die obere Fehlerschranke betrug $10\unit{\%}$ und die maximale Ordnung $2^7$. Die Generierung benötigte $3430\unit{s}$. Die grün markierten Bereich in \ref{subfig:irrmap-shaderball-e-irrmap-order} stellen Dreiecke mit einer Ordnung größer $2$ dar.}
+			\label{fig:irrmap-shaderball-e}
+		\end{figure}
+
+		\begin{figure}[h]
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e3-ref.png}
+				\caption{Path Tracing}
+				\label{subfig:irrmap-shaderball-e3-ref}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e3-vmap.png}
+				\caption{Vertex Lighting}
+				\label{subfig:irrmap-shaderball-e3-vmap}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e3-irrmap.png}
+				\caption{Irradiance Map}
+				\label{subfig:irrmap-shaderball-e3-irrmap}
+			\end{subfigure}
+			\caption[Irradiance-Map der \enquote{Shaderball}-Szene mit der \enquote{Ennis-Brown House}-HDR in den Löchern]{Die Bilder zeigen die oberen Löcher der \enquote{Shaderball}-Szene aus Abbildung \ref{fig:irrmap-shaderball-e}. Die Schattenverläufe in \ref{subfig:irrmap-shaderball-e3-ref} und \ref{subfig:irrmap-shaderball-e3-irrmap} können nicht unterschieden werden. Für Vertex Lighting in \ref{subfig:irrmap-shaderball-e3-vmap} sind am Rand der Löcher Fehler in den Schatten zu sehen.}
+			\label{fig:irrmap-shaderball-e3}
+		\end{figure}
+
+		\begin{figure}[h]
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e4-ref.png}
+				\caption{Path Tracing}
+				\label{subfig:irrmap-shaderball-e4-ref}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e4-vmap.png}
+				\caption{Vertex Lighting}
+				\label{subfig:irrmap-shaderball-e4-vmap}
+			\end{subfigure}
+			\begin{subfigure}[t]{0.33\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e4-irrmap.png}
+				\caption{Irradiance Map}
+				\label{subfig:irrmap-shaderball-e4-irrmap}
+			\end{subfigure}
+			\caption[Irradiance-Map der \enquote{Shaderball}-Szene mit der \enquote{Ennis-Brown House}-HDR in den Löchern]{Die Bilder zeigen den Kernschatten der \enquote{Shaderball}-Szene aus Abbildung \ref{fig:irrmap-shaderball-e}. Die Schattenverläufe in \ref{subfig:irrmap-shaderball-e4-ref} und \ref{subfig:irrmap-shaderball-e4-irrmap} können nicht unterschieden werden. Für Vertex Lighting in \ref{subfig:irrmap-shaderball-e4-vmap} sind vor allem am Rand des Schattens kleine Artefakte zu entdecken.}
+			\label{fig:irrmap-shaderball-e4}
+		\end{figure}
+
+		\begin{figure}[h]
+			\begin{subfigure}[t]{\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e2-ref.png}
+				\caption{Path Tracing}
+				\label{subfig:irrmap-shaderball-e2-ref}
+			\end{subfigure}
+			\medskip \\
+			\begin{subfigure}[t]{\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e2-vmap.png}
+				\caption{Vertex Lighting}
+				\label{subfig:irrmap-shaderball-e2-vmap}
+			\end{subfigure}
+			\medskip \\
+			\begin{subfigure}[t]{\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e2-irrmap.png}
+				\caption{Irradiance Map}
+				\label{subfig:irrmap-shaderball-e2-irrmap}
+			\end{subfigure}
+			\medskip \\
+			\begin{subfigure}[t]{\textwidth}
+				\center
+				\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e2-irrmap-order.png}
+				\caption{Irradiance Map Ordnung}
+				\label{subfig:irrmap-shaderball-e2-irrmap-order}
+			\end{subfigure}
+			\caption[Irradiance-Map der \enquote{Shaderball}-Szene mit der \enquote{Ennis-Brown House}-HDR im unteren Stand]{Die Bilder zeigen den unteren Stand der \enquote{Shaderball}-Szene aus Abbildung \ref{fig:irrmap-shaderball-e}. Die grün markierten Bereiche in \ref{subfig:irrmap-shaderball-e2-irrmap-order} stellen Dreiecke mit einer Ordnung größer $2$ dar. Die Schattenverläufe in \ref{subfig:irrmap-shaderball-e2-ref} und \ref{subfig:irrmap-shaderball-e2-irrmap} können nicht unterschieden werden. Für Vertex Lighting in \ref{subfig:irrmap-shaderball-e2-vmap} ist dies nicht der Fall.}
+			\label{fig:irrmap-shaderball-e2}
+		\end{figure}
+
+		Die Probleme des verwendeten Fehlermaßes wurden bereits beschrieben.
+		Abbildung \ref{fig:irrmap-shaderball2} zeigt das Resultat einer Fehlbewertung.
+		Eine der Dreieck Irradiance Maps auf der unteren Platte approximiert den harten Schattenverlauf auf eine extrem schlechte Weise.
+		Höchstwahrscheinlich konnten in diesem Dreieck aufgrund der schnellen Änderung der Irradianz nur Messpunkte im Kernschatten aufgenommen werden.
+		Die Bewertung durch das Fehlermaß musste demnach positiv ausfallen und die Berechnung beenden.
+		In der Praxis ist es allerdings vergleichsweise einfach, die Beleuchtung direktionaler oder anderer singulärer Lichtquellen durch Raytracing und Path Tracing zu simulieren.
+		Die Verwendung einer Irradiance Map für singuläre Lichtquellen wie in den Abbildungen \ref{fig:irrmap-shaderball} und \ref{fig:irrmap-shaderball2} ist damit ein unwahrscheinlicher Fall.
+		Dennoch zeigt die Szene, das es auch in schwierigeren Situationen möglich ist eine Irradiance Map einzusetzen.
+
+
+		Im derzeitigen Algorithmus wird für jedes Dreieck die Irradianz an Ecken und Kanten mit einer kleinen Verschiebung in das Innere  geschätzt.
+		So werden Fehler der Art aus Abbildung \ref{fig:vertex-lighting-error} verhindert, wie man in Abbildung \ref{fig:irrmap-cornell} anhand der \enquote{Cornell Box}-Szene sehen konnte.
+		Die Ergebnisse des Vertex Lighting aus Abschnitt \ref{sub:adaptive_schaetzung_der_irradianz} und Anhang \ref{sec:ergebnisse_adaptive_irradianzschaetzung} zeigen aber, dass diese Fehler nicht bei allen Eckpunkten und Kanten auftreten.
+		Ein Großteil der Generierungszeit der Irradiance Map besteht also darin, bereits evaluierte Werte noch einmal zu schätzen.
+		Durch eine Analyse der Mesh ist es aber möglich, jedem Eckpunkt und jeder Kante eine Markierung zu geben, die eine Aussage darüber trifft, ob die Irradianz auf dem Eckpunkt beziehungsweise der Kante geschätzte werden darf oder ob sie im Inneren der Dreieck bestimmt werden muss.
+		Die Berechnungszeit könnte somit um ein Vielfaches beschleunigt werden.
+
 	% subsection irradiance_map_generator (end)
-
-
-
-
-	\begin{figure}[h]
-		\begin{subfigure}[b]{0.5\textwidth}
-			\center
-			\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball-ref.png}
-			\caption{Path Tracing}
-		\end{subfigure}
-		\begin{subfigure}[b]{0.5\textwidth}
-			\center
-			\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball-vmap.png}
-			\caption{Vertex Lighting}
-		\end{subfigure}
-		\smallskip \\
-		\begin{subfigure}[b]{0.5\textwidth}
-			\center
-			\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball-irrmap.png}
-			\caption{Irradiance Map}
-		\end{subfigure}
-		\begin{subfigure}[b]{0.5\textwidth}
-			\center
-			\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball-irrmap-order.png}
-			\caption{Irradiance Map Ordnung}
-		\end{subfigure}
-		\caption[Irradiance-Map anhand der \enquote{Cornell Box}-Szene]{Die Bilder zeigen die Standardabweichungen der \enquote{Cornell Box}-Szene aus Abbildung \ref{fig:irr-est-rc-shaderball} entsprechend der Benennung aus Abbildung \ref{fig:irr-est-rc-dragon}. Vor allem Bereiche, die schwach von außen beleuchtet werden oder in Nischen liegen, weisen einen erhöhten Fehler auf. Die regelmäßigen Artefakte entstehen durch geringe Auflösung der Mesh in diesen Bereichen.}
-		\label{fig:irr-map-cornell}
-	\end{figure}
-
-	\begin{figure}[h]
-		\begin{subfigure}[b]{0.5\textwidth}
-			\center
-			\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball2-irrmap.png}
-			\caption{Irradiance Map}
-		\end{subfigure}
-		\begin{subfigure}[b]{0.5\textwidth}
-			\center
-			\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball2-irrmap-order.png}
-			\caption{Irradiance Map Ordnung}
-		\end{subfigure}
-		\caption[Irradiance-Map anhand der \enquote{Cornell Box}-Szene]{Die Bilder zeigen die Standardabweichungen der \enquote{Cornell Box}-Szene aus Abbildung \ref{fig:irr-est-rc-shaderball} entsprechend der Benennung aus Abbildung \ref{fig:irr-est-rc-dragon}. Vor allem Bereiche, die schwach von außen beleuchtet werden oder in Nischen liegen, weisen einen erhöhten Fehler auf. Die regelmäßigen Artefakte entstehen durch geringe Auflösung der Mesh in diesen Bereichen.}
-		\label{fig:irr-map-cornell}
-	\end{figure}
-
-	\begin{figure}[h]
-		\begin{subfigure}[t]{0.245\textwidth}
-			\center
-			\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e-ref.png}
-			\caption{Path Tracing}
-		\end{subfigure}
-		\begin{subfigure}[t]{0.245\textwidth}
-			\center
-			\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e-vmap.png}
-			\caption{Vertex Lighting}
-		\end{subfigure}
-		\begin{subfigure}[t]{0.245\textwidth}
-			\center
-			\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e-irrmap.png}
-			\caption{Irradiance Map}
-		\end{subfigure}
-		\begin{subfigure}[t]{0.245\textwidth}
-			\center
-			\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e-irrmap-order.png}
-			\caption{Irradiance Map Ordnung}
-		\end{subfigure}
-		\caption{}
-	\end{figure}
-
-	\begin{figure}[h]
-		\begin{subfigure}[t]{\textwidth}
-			\center
-			\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e2-ref.png}
-			\caption{Path Tracing}
-		\end{subfigure}
-		\begin{subfigure}[t]{\textwidth}
-			\center
-			\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e2-vmap.png}
-			\caption{Vertex Lighting}
-		\end{subfigure}
-		\begin{subfigure}[t]{\textwidth}
-			\center
-			\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e2-irrmap.png}
-			\caption{Irradiance Map}
-		\end{subfigure}
-		\begin{subfigure}[t]{\textwidth}
-			\center
-			\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e2-irrmap-order.png}
-			\caption{Irradiance Map Ordnung}
-		\end{subfigure}
-		\caption{}
-	\end{figure}
-
-	\begin{figure}[h]
-		\begin{subfigure}[t]{0.33\textwidth}
-			\center
-			\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e3-ref.png}
-			\caption{Path Tracing}
-		\end{subfigure}
-		\begin{subfigure}[t]{0.33\textwidth}
-			\center
-			\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e3-vmap.png}
-			\caption{Vertex Lighting}
-		\end{subfigure}
-		\begin{subfigure}[t]{0.33\textwidth}
-			\center
-			\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e3-irrmap.png}
-			\caption{Irradiance Map}
-		\end{subfigure}
-		\caption{}
-	\end{figure}
-
-	\begin{figure}[h]
-		\begin{subfigure}[t]{0.33\textwidth}
-			\center
-			\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e4-ref.png}
-			\caption{Path Tracing}
-		\end{subfigure}
-		\begin{subfigure}[t]{0.33\textwidth}
-			\center
-			\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e4-vmap.png}
-			\caption{Vertex Lighting}
-		\end{subfigure}
-		\begin{subfigure}[t]{0.33\textwidth}
-			\center
-			\includegraphics[width=0.95\textwidth]{pic/irrmap-shaderball_e4-irrmap.png}
-			\caption{Irradiance Map}
-		\end{subfigure}
-		\caption{}
-	\end{figure}
 
 % section aufbau_und_generierung_der_irradiance_map (end)

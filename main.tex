@@ -18,6 +18,11 @@
 
 \usepackage{emptypage}
 
+% \usepackage[symbol]{footmisc}
+% \renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\renewcommand*{\thefootnote}{\arabic{footnote}}
+\setcounter{footnote}{0}
+
 \begin{document}
 
 	\input{titlepage}
@@ -119,6 +124,9 @@
 
 	\cleardoublepage
 	\input{irradiance_estimation_results}
+
+	\cleardoublepage
+	\input{irradiance_generator_results}
 
 
 
