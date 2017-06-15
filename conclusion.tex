@@ -7,32 +7,31 @@
 
 	Die adaptive Schätzung der Irradianz führt für eine vorgegebene relative Fehlerschranke und einer maximalen Sampleanzahl zu akzeptablen Ergebnissen.
 	In den meisten Fällen konnten keine Unterschiede zum Referenzbild ausgemacht werden.
-	Insbesondere wurde im Laufe der Untersuchung festgestellt, dass die besten Ergebnisse für eine relative Fehlerschranke von $1\unit{\%}$ und einer maximalen Sampleanzahl von $2^{16}$ bis $2^{18}$ entstehen.
+	Insbesondere wurde im Laufe der Untersuchung festgestellt, dass die besten Ergebnisse für eine relative Fehlerschranke von $1\unit{\%}$ und einer maximalen Sampleanzahl von $2^{16}$ bis $2^{18}$ für die in Anhang \ref{sec:verwendete_hdr_maps} verwendeten Umgebungsbeleuchtungen entstehen.
 	Auftretende Fehler in diesem Bereich sind für das menschliche Auge kaum noch wahrnehmbar.
 	Für sehr dunkle Bereiche der Darstellung sollte allerdings noch eine weitere Fehlermetrik verwendet werden, die die Ausbildung schwarzer Flecken in schwach beleuchteten Bereichen verhindert.
 
-	Die Datenstruktur der Irradiance Map ist für einen optimierten Raytracing-Algorithmus sehr gut geeignet, da die Szenen durch Dreiecke gegeben sind und damit eine natürliche Speichermethode für ein schnelles Auslesen der Irradianz-Werte Anwendung findet \cite{ray-triangle-intersection}.
-	Light Leaks werden aufgrund der Speicherung auf der Oberfläche verhindert.
-	Im Gegensatz zum Irradiance Caching lassen sich auch direkte Irradianzen annähern.
-	Zu berücksichtigen bleibt jedoch die Entstehung neuer Artefakte aufgrund möglicher fehlerhafter Geometrien und Aliasing-Effekten.
+	Die Datenstruktur der Irradiance Map ist für einen optimierten Raytracing-Algorithmus sehr gut geeignet, da die Szenen durch Dreiecke gegeben sind und damit eine natürliche Speichermethode für ein schnelles Auslesen der approximierten Irradianz Anwendung findet \cite{ray-triangle-intersection}.
+	Light Leaks und Aliasing-Effekte sind aufgrund der endlichen Anzahl von Messpunkten ohne die Änderung der Szenegeometrie jedoch nicht zu unterbinden, sondern können nur durch entsprechende Korrekturen verringert werden.
 
-	Die Generierung der Irradiance Map funktioniert sowohl für direkte als auch indirekte Irradianzen.
+	Die Generierung der Irradiance Map funktioniert sowohl für die direkte als auch die indirekte Irradianz.
 	Allerdings ist hierbei eine Anpassung der Parameter notwendig.
-	Bessere Ergebnisse werden im Allgemeinen für indirekte Irradianzen erzielt.
+	Bessere Ergebnisse werden im Allgemeinen für die indirekte Irradianz ohne singuläre Lichtquellen erzielt.
 	In der Mehrzahl der Fälle wird das Rauschen vollständig eliminiert, sodass die entstehenden Bilder im Vergleich zu den Referenzbildern realistischer wirken.
 
 	Aufgrund der Tatsache, dass die Geometrie einer Szene im Allgemeinen nicht konvex ist, ist man bei der Berechnung der Irradiance Map dazu gezwungen die Messwerte innerhalb eines Dreiecks aufzunehmen.
-	Diese Einschränkung verhindert die Benutzung von Vertex Lighting als Basis und führt zu einem höheren Rechenzeit.
-	Die geringe Sampleanzahl, die man pro Dreieck verwendet, kann die Irradianzfunktion auf dem Dreieck nicht ausreichend interpolieren, sodass bei einzelnen Dreiecken der Schattenverlauf gar nicht oder falsch reproduziert wird.
+	Diese Einschränkung verhindert die Benutzung von Vertex Lighting als Basis der Irradiance Map Generierung und führt zu einer höheren Rechenzeit.
+	Erst eine genauere Analyse der Mesh könnte dieses Problem beheben.
+	Die geringe Sampleanzahl, die man pro Dreieck verwendet, kann eine hochfrequente Irradianz auf dem Dreieck nicht ausreichend interpolieren, sodass bei einzelnen Dreiecken der Schattenverlauf gar nicht oder falsch reproduziert wird.
 
 	Schlussfolgernd bleibt festzuhalten, dass das Verfahren zur Generierung der Irradiance Map zwar eine Möglichkeit der simultanen Berechnung der Strahldichte darstellt, aber aufgrund der großen Berechnungszeit, des hohen Speicheraufwandes, der unzureichenden Interpolation und den daraus resultierenden Beleuchtungsartefakten nur begrenzt effizient in der Praxis anwendbar ist.
-	Dennoch sind wir durch geeignete Algorithmen in der Lage die Funktionsweise des Irradiance Map Generators zu verbessern.
-	In den Quellen ... sind diverse Varianzreduktionsmethoden erläutert, die das Messen der Irradianz unter Anwendung der hier eingeführten Fehlermetrik durch eine geringere Anzahl von Samples ermöglichen.
+	Dennoch sind wir durch geeignete Algorithmen imstande, die Funktionsweise des Irradiance Map Generators zu verbessern.
+	In den Quellen \cite{quasi-monte-carlo,pbrt3,veach-thesis} sind diverse Varianzreduktionsmethoden erläutert, die das Messen der Irradianz unter Anwendung der hier eingeführten Fehlermetrik durch eine geringere Anzahl von Samples ermöglichen.
 	Dies würde zu einer erheblichen Beschleunigung des Verfahrens beitragen.
 	In Quelle \cite{pbrt2} wird das Verfahren des sogenannten \enquote{Irradiance Caching} beschrieben.
 	Hierbei wird jedem Samplepunkt durch eine Abstandsmetrik eine maximale Interpolationsdistanz zugeordnet.
-	Die Verwendung einer solchen Größe in der Irradiance Map kann zur Verringerung des Speicherverbrauches führen.
-	Fortführend ist in \cite{irradiance-gradients} die Methode der \enquote{Irradiance Gradients} eingeführt worden, die ein alternatives Interpolationsschema zwischen aufgenommenen Samplepunkten der Irradianz auf Basis der restlichen Szenegeometrie erklären.
+	Die Verwendung einer solchen Größe in der Irradiance Map könnte zur Verringerung des Speicherverbrauches führen.
+	Fortführend ist in \cite{irr-grad} die Methode der \enquote{Irradiance Gradients} eingeführt worden, die ein alternatives Interpolationsschema zwischen aufgenommenen Samplepunkten der Irradianz auf Basis der restlichen Szenegeometrie erklären.
 	Eine Abwandlung des Verfahrens für die Irradiance Map könnte in der Lage sein, die Interpolationsartefakte ohne größeren Rechenaufwand zu minimieren und damit auch zu einer Beschleunigung des gesamten Verfahrens beitragen.
 
 % section fazit_und_aussicht (end)
